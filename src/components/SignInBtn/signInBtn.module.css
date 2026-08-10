@@ -1,0 +1,14 @@
+.signIn {
+  background: transparent;
+
+  border: 1px solid #c99a5b;
+  color: #c18f4f;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+
+  padding: 11px 22px;
+
+  cursor: pointer;
+}
