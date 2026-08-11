@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  font-family: Arial, sans-serif;
+  font-size: 15px;
+}
+
+.text {
+  color: #9b8172;
+}
+
+.link {
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  font-family: inherit;
+  font-size: inherit;
+
+  color: #a56f4e;
+
+  cursor: pointer;
+}
+
+.link:hover {
+  color: #6f4f3f;
+  text-decoration: underline;
+}

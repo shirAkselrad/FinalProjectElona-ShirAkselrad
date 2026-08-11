@@ -1,0 +1,20 @@
+.shop {
+  background: transparent;
+  border: none;
+  padding: 6px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  font-weight: 400;
+
+  letter-spacing: 3px;
+  color: #78675d;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.shop:hover {
+  color: #b58b52;
+}

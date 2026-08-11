@@ -1,0 +1,47 @@
+.container {
+  width: 300px;
+  text-align: center;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 267px;
+  height: 370px;
+  margin: 10px auto 30px;
+}
+
+.imageWrapper::before {
+  content: "";
+  position: absolute;
+
+  top: -10px;
+  left: -10px;
+
+  width: 255px;
+  height: 368px;
+
+  border: 1px solid #c9a05d;
+  z-index: 0;
+}
+
+.image {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+
+  width: 267px;
+  height: 370px;
+
+  object-fit: cover;
+}
+
+.caption {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-style: italic;
+
+  color: #a88e7e;
+}

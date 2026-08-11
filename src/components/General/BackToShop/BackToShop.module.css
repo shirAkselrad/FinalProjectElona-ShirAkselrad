@@ -1,0 +1,40 @@
+.backToShop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 400;
+
+  letter-spacing: 3px;
+
+  color: #8a6957;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.arrow {
+  font-family: Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 300;
+
+  color: #a88774;
+
+  transition: transform 0.2s ease;
+}
+
+.backToShop:hover {
+  color: #5f4032;
+}
+
+.backToShop:hover .arrow {
+  transform: translateX(-4px);
+}
