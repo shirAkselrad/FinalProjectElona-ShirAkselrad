@@ -1,20 +1,25 @@
 import styles from "./loginForm.module.css";
-import BackToShop from "../../General/BackToShop/BackToShop.jsx";
+
+import BackLink from "../../General/BackLink/BackLink.jsx";
+import PageIntro from "../../General/PageIntro/PageIntro.jsx";
 import InputField from "../../General/InputField/InputField.jsx";
 import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
 
 import ForgotPassword from "../ForgotPassword/ForgotPassword.jsx";
-import Welcome from "../Welcome/Welcome.jsx";
 
 function LoginForm() {
   return (
     <div className={styles.loginForm}>
       <div className={styles.back}>
-        <BackToShop />
+        <BackLink text="BACK TO SHOP" />
       </div>
 
-      <Welcome welcome="WELCOME BACK" text="Login to your account" />
+      <PageIntro
+        smallTitle="WELCOME BACK"
+        title="Login to your"
+        italicText="account"
+      />
 
       <form className={styles.form}>
         <InputField label="USERNAME" placeholder="Your username" type="text" />
