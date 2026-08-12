@@ -1,11 +1,11 @@
-import Header from "../components/Header/Header.jsx";
-import Main from "../components/AboutUs-Page/Main/Main.jsx"
+import "../App/app.module.css";
+import RegisterPage from "../components/Register-Page/RegisterPage/RegisterPage.jsx";
 import Footer from "../components/Footer/Footer.jsx";
+
 function App() {
   return (
-    <div>
-      <Header />
-      <Main />
+    <div className="app">
+      <RegisterPage />
       <Footer />
     </div>
   );

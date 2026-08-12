@@ -1,3 +1,4 @@
+import styles from "./inputField.module.css"
 function InputField({ label, placeholder, type = "text" }) {
   return (
     <div className={styles.field}>
@@ -7,3 +8,5 @@ function InputField({ label, placeholder, type = "text" }) {
     </div>
   );
 }
+
+export default InputField; 

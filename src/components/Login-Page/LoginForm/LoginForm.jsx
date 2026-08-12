@@ -1,17 +1,23 @@
 import styles from "./loginForm.module.css";
+import BackToShop from "../../General/BackToShop/BackToShop.jsx";
 import InputField from "../../General/InputField/InputField.jsx";
 import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
+
 import ForgotPassword from "../ForgotPassword/ForgotPassword.jsx";
 import Welcome from "../Welcome/Welcome.jsx";
 
 function LoginForm() {
   return (
-    <section className={styles.loginForm}>
-      <LoginTitle welcome="WELCOME BACK" text="Login to your account" />
+    <div className={styles.loginForm}>
+      <div className={styles.back}>
+        <BackToShop />
+      </div>
+
+      <Welcome welcome="WELCOME BACK" text="Login to your account" />
 
       <form className={styles.form}>
-        <InputField label="USERNAME" placeholder="Your username" />
+        <InputField label="USERNAME" placeholder="Your username" type="text" />
 
         <InputField
           label="PASSWORD"
@@ -23,15 +29,15 @@ function LoginForm() {
           <ForgotPassword />
         </div>
 
-        <div className={styles.button}>
-          <FormButton text="SIGN IN" />
+        <div className={styles.signIn}>
+          <GeneralBtn text="SIGN IN" />
+        </div>
+
+        <div className={styles.account}>
+          <AlreadyHave text="Don't have an account?" linkText="Create one" />
         </div>
       </form>
-
-      <div className={styles.account}>
-        <AccountText text="Don't have an account?" linkText="Create one" />
-      </div>
-    </section>
+    </div>
   );
 }
 

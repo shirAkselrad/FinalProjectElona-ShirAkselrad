@@ -1,11 +1,13 @@
-import styles from "./welcome.module.css";
+import styles from "./welcomeRegister.module.css";
 
-function Welcome({ welcome, text }) {
+function WelcomeRegister() {
   return (
     <div className={styles.container}>
-      <p className={styles.welcome}>{welcome}</p>
+      <p className={styles.smallTitle}>JOIN ELONA</p>
 
-      <h1 className={styles.text}>{text}</h1>
+      <h1 className={styles.title}>
+        Create your <span>account</span>
+      </h1>
 
       <div className={styles.decoration}>
         <span className={styles.line}></span>
@@ -16,4 +18,4 @@ function Welcome({ welcome, text }) {
   );
 }
 
-export default Welcome;
+export default WelcomeRegister;

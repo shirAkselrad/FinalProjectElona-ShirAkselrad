@@ -1,4 +1,4 @@
-import styles from "./backToShop.module.css";
+import styles from "./BackToShop.module.css";
 
 function BackToShop() {
   return (
