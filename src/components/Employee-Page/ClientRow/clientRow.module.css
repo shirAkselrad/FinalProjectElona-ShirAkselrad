@@ -1,0 +1,53 @@
+.row {
+  height: 52px;
+
+  border-bottom: 1px solid #e8ddd3;
+
+  color: #6f655e;
+
+  font-size: 14px;
+}
+
+.row td {
+  padding: 0 18px;
+
+  vertical-align: middle;
+}
+
+.row:nth-child(even) {
+  background-color: #fbf8f5;
+}
+
+.role {
+  display: inline-block;
+
+  padding: 4px 12px;
+
+  background-color: #f2ebe4;
+  border-radius: 2px;
+
+  color: #81756c;
+
+  font-size: 13px;
+}
+
+.edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 5px;
+
+  border: none;
+  background: transparent;
+
+  color: #aa8f7b;
+
+  font-size: 17px;
+
+  cursor: pointer;
+}
+
+.edit:hover {
+  color: #765f50;
+}
