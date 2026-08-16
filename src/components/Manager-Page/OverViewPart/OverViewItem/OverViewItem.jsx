@@ -1,4 +1,4 @@
-import styles from "./overviewItem.module.css";
+import styles from "./overViewItem.module.css";
 
 function OverviewItem({ title, number, type }) {
   return (

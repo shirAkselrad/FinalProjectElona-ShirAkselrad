@@ -1,5 +1,6 @@
 import styles from "./inventoryRow.module.css";
-import { FiEdit3 } from "react-icons/fi";
+
+import EditBtn from "../../General/EditBtn/EditBtn.jsx";
 
 function InventoryRow({ image, product, category, price, stock }) {
   return (
@@ -18,7 +19,7 @@ function InventoryRow({ image, product, category, price, stock }) {
       <td className={stock === 0 ? styles.outOfStock : ""}>{stock}</td>
 
       <td>
-        <FiEdit3 className={styles.edit} />
+        <EditBtn />
       </td>
     </tr>
   );

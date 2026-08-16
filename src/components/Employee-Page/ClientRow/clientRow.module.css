@@ -30,24 +30,3 @@
 
   font-size: 13px;
 }
-
-.edit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 5px;
-
-  border: none;
-  background: transparent;
-
-  color: #aa8f7b;
-
-  font-size: 17px;
-
-  cursor: pointer;
-}
-
-.edit:hover {
-  color: #765f50;
-}

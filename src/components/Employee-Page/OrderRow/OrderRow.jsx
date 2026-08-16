@@ -1,7 +1,7 @@
 import styles from "./orderRow.module.css";
 
 import Status from "../Status/Status.jsx";
-import ViewBtn from "../ViewBtn/ViewBtn.jsx";
+import ViewBtn from "../../General/ViewBtn/ViewBtn.jsx";
 
 function OrderRow({ order, client, items, date, total, status }) {
   return (

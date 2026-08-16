@@ -1,5 +1,6 @@
 import styles from "./clientRow.module.css";
-import { FiEdit3 } from "react-icons/fi";
+
+import EditBtn from "../../General/EditBtn/EditBtn.jsx";
 
 function ClientRow({ name, phone, address, email, role }) {
   return (
@@ -11,7 +12,7 @@ function ClientRow({ name, phone, address, email, role }) {
       <td>{role}</td>
 
       <td>
-        <FiEdit3 />
+        <EditBtn />
       </td>
     </tr>
   );

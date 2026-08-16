@@ -1,7 +1,6 @@
-import styles from "./overviewLine.module.css";
+import styles from "./overViewLine.module.css";
 
-import OverviewItem from "../OverviewItem/OverviewItem.jsx";
-
+import OverviewItem from "../OverViewItem/OverViewItem.jsx"
 function OverviewLine() {
   return (
     <div className={styles.overviewLine}>

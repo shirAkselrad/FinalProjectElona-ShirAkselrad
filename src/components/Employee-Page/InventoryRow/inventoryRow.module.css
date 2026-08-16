@@ -33,15 +33,3 @@
   color: #c94b3d;
   font-weight: 600;
 }
-
-.edit {
-  font-size: 17px;
-
-  color: #aa8f7b;
-
-  cursor: pointer;
-}
-
-.edit:hover {
-  color: #765f50;
-}
