@@ -1,0 +1,43 @@
+.orderPopupTitle h2 {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 28px;
+  font-weight: 400;
+
+  color: #2f2925;
+}
+
+.orderPopupTitle p {
+  margin: 10px 0 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+
+  color: #a58e80;
+}
+
+.decoration {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+.line {
+  width: 36px;
+  height: 1px;
+
+  background-color: #d7b77b;
+}
+
+.diamond {
+  width: 4px;
+  height: 4px;
+
+  background-color: #cfa765;
+
+  transform: rotate(45deg);
+}

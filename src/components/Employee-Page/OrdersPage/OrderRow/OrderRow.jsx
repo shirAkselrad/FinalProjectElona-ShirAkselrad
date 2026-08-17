@@ -1,9 +1,9 @@
 import styles from "./orderRow.module.css";
 
-import Status from "../../Status/Status.jsx"
-import ViewBtn from "../../../General/ViewBtn/ViewBtn.jsx"
+import Status from "../../Status/Status.jsx";
+import ViewBtn from "../../../General/ViewBtn/ViewBtn.jsx";
 
-function OrderRow({ order }) {
+function OrderRow({ order, onView }) {
   return (
     <tr className={styles.row}>
       <td className={styles.order}>{order.id}</td>
@@ -21,7 +21,7 @@ function OrderRow({ order }) {
       </td>
 
       <td>
-        <ViewBtn />
+        <ViewBtn onClick={onView} />
       </td>
     </tr>
   );

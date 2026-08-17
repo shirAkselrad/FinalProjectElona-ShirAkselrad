@@ -12,7 +12,25 @@ const orders = [
     date: "17/08/2026",
     total: 250,
     status: "Processing",
+
+    products: [
+      {
+        id: 1,
+        name: "Amber Oval Brooch",
+        quantity: 1,
+        price: 100,
+        removed: false,
+      },
+      {
+        id: 2,
+        name: "Brown Belt",
+        quantity: 2,
+        price: 75,
+        removed: false,
+      },
+    ],
   },
+
   {
     id: 2,
     client: "Roni Peretz",
@@ -20,6 +38,23 @@ const orders = [
     date: "16/08/2026",
     total: 180,
     status: "Completed",
+
+    products: [
+      {
+        id: 1,
+        name: "Clover Brooch",
+        quantity: 1,
+        price: 120,
+        removed: false,
+      },
+      {
+        id: 2,
+        name: "Cream Hat",
+        quantity: 1,
+        price: 60,
+        removed: false,
+      },
+    ],
   },
 ];
 
