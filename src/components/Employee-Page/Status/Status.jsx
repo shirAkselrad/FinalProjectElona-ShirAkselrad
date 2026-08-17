@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown } from "react-icons/fi"; //החץ הקטן שפותח את הבחירה
 
 import styles from "./status.module.css";
 
@@ -16,12 +16,8 @@ function Status({ status }) {
     <div className={styles.statusContainer}>
       <button
         className={`${styles.status} ${styles[currentStatus]}`}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {currentStatus === "complete" && "Complete"}
-        {currentStatus === "processing" && "Processing"}
-        {currentStatus === "canceled" && "Canceled"}
-
+        onClick={() => setIsOpen(!isOpen)}>
+        {currentStatus}
         <FiChevronDown />
       </button>
 
@@ -29,21 +25,21 @@ function Status({ status }) {
         <div className={styles.options}>
           <button
             className={styles.completeOption}
-            onClick={() => changeStatus("complete")}
+            onClick={() => changeStatus("Completed")}
           >
-            Complete
+            Completed
           </button>
 
           <button
             className={styles.processingOption}
-            onClick={() => changeStatus("processing")}
+            onClick={() => changeStatus("Processing")}
           >
             Processing
           </button>
 
           <button
             className={styles.canceledOption}
-            onClick={() => changeStatus("canceled")}
+            onClick={() => changeStatus("Canceled")}
           >
             Canceled
           </button>

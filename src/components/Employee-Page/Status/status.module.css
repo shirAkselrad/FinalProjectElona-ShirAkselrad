@@ -23,19 +23,19 @@
 
 /* status selected */
 
-.complete {
+.Completed {
   color: #38843c;
   background-color: #f2f8f0;
   border: 1px solid #cbdcc7;
 }
 
-.processing {
+.Processing {
   color: #b77a19;
   background-color: #fff8ed;
   border: 1px solid #e7d7bd;
 }
 
-.canceled {
+.Canceled {
   color: #c93c35;
   background-color: #fff2f1;
   border: 1px solid #e7cbc8;

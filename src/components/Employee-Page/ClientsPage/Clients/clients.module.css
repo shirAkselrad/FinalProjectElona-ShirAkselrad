@@ -1,0 +1,30 @@
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 45px;
+}
+
+.clients > :nth-child(2) {
+  margin-bottom: 25px;
+}
+
+.addClient {
+  width: 150px;
+  height: 42px;
+
+  border: none;
+
+  background-color: #21170f;
+  color: white;
+
+  font-size: 11px;
+  letter-spacing: 1.5px;
+
+  cursor: pointer;
+}
+
+.addClient:hover {
+  background-color: #3a2b20;
+}
