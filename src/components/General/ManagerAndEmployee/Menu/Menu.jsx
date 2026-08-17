@@ -2,8 +2,7 @@ import MenuLine from "../../MenuLine/MenuLine.jsx";
 import styles from "./menu.module.css";
 import { useState } from "react";
 
-
-function Menu({ items }) {
+function Menu({ items, setActivePage }) {
   const [activeMenu, setActiveMenu] = useState(items[0].value);
 
   return (
@@ -19,17 +18,21 @@ function Menu({ items }) {
       </div>
 
       <div className={styles.menuLines}>
-        {items.map((item, i) => (
+        {items.map((item) => (
           <MenuLine
-            key={i}
+            key={item.value}
             text={item.text}
             icon={item.icon}
             active={activeMenu === item.value}
-            onClick={() => setActiveMenu(item.value)}
+            onClick={() => {
+              setActiveMenu(item.value);
+              setActivePage(item.value);
+            }}
           />
         ))}
       </div>
     </div>
   );
 }
+
 export default Menu;

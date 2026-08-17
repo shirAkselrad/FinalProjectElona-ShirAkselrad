@@ -2,7 +2,7 @@ import styles from "./line.module.css";
 
 import ProductInfo from "../ProductInfo/ProductInfo.jsx";
 import MinusOrPlus from "../MinusOrPlus/MinusOrPlus.jsx";
-import Remove from "../Remove/Remove.jsx"
+import Remove from "../../../../General/Remove/Remove.jsx";
 
 function Line({ image, name, price, quantity }) {
   return (
