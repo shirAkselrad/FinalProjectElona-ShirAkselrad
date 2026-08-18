@@ -1,6 +1,10 @@
 import styles from "./clientsTable.module.css";
 import ClientRow from "../ClientRow/ClientRow.jsx";
-
+/**
+ *
+ * @param {clients} param0
+ * @returns ClientsTable
+ */
 function ClientsTable({ clients }) {
   return (
     <table className={styles.table}>
@@ -11,10 +15,11 @@ function ClientsTable({ clients }) {
           <th>Address</th>
           <th>Email</th>
           <th>Role</th>
-          <th>Edit</th>
+          <th>Actions</th>
         </tr>
       </thead>
 
+      {/*going through all the clients and building the clients table  */}
       <tbody>
         {clients.map((client) => (
           <ClientRow key={client.id} client={client} />

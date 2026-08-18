@@ -1,6 +1,10 @@
 import styles from "./sectionTitle.module.css";
 
-
+/**
+ *
+ * @param {title} title of the current section
+ * @returns SectionTitle
+ */
 function SectionTitle({ title }) {
   return (
     <div className={styles.sectionTitle}>

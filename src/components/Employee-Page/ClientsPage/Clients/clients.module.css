@@ -1,13 +1,13 @@
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  margin-bottom: 45px;
+.clients {
+  width: 100%;
 }
 
-.clients > :nth-child(2) {
-  margin-bottom: 25px;
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 28px;
 }
 
 .addClient {
@@ -22,9 +22,30 @@
   font-size: 11px;
   letter-spacing: 1.5px;
 
+  white-space: nowrap;
+
   cursor: pointer;
 }
 
 .addClient:hover {
   background-color: #3a2b20;
+}
+
+.clients {
+  width: 100%;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 28px;
+}
+
+.search {
+  width: 100%;
+  max-width: 620px;
+
+  margin-bottom: 24px;
 }

@@ -1,6 +1,10 @@
 import styles from "./orderPopupTableView.module.css";
 import OrderPopupRowView from "../OrderPopupRowView/OrderPopupRowView.jsx";
-
+/**
+ *
+ * @param {products} products of the current order
+ * @returns OrderPopupTableView
+ */
 function OrderPopupTableView({ products }) {
   return (
     <div className={styles.orderPopupTable}>
@@ -11,8 +15,9 @@ function OrderPopupTableView({ products }) {
         <span>TOTAL</span>
       </div>
 
+      {/*building the rows of the products table, gets the product  */}
       {products.map((product) => (
-        <OrderPopupRowView key={product.id} order={product} />
+        <OrderPopupRowView key={product.id} product={product} />
       ))}
     </div>
   );

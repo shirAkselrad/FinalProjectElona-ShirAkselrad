@@ -1,5 +1,5 @@
 .row {
-  height: 52px;
+  height: 48px;
 
   border-bottom: 1px solid #e8ddd3;
 
@@ -9,7 +9,7 @@
 }
 
 .row td {
-  padding: 0 18px;
+  padding: 8px 18px;
 
   vertical-align: middle;
 }
@@ -29,4 +29,42 @@
   color: #81756c;
 
   font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 14px;
+
+  min-width: 140px;
+}
+
+.editBtn {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+}
+
+.editBtn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.actions button:last-child {
+  width: 90px;
+  height: 32px;
+
+  padding: 0;
+}
+
+/* make the edit icon a little bigger */
+.editBtn {
+  font-size: 22px;
 }

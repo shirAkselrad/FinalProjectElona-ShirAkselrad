@@ -1,12 +1,17 @@
 import styles from "./orderPopupRowView.module.css";
 
-function OrderPopupRowView({ order }) {
+/**
+ *
+ * @param {product} current product of the order which viewed right now
+ * @returns  OrderPopupRowView
+ */
+function OrderPopupRowView({ product }) {
   return (
     <div className={styles.row}>
-      <span className={styles.name}>{order.name}</span>
-      <span>{order.quantity}</span>
-      <span className={styles.price}>${order.price}</span>
-      <span className={styles.total}>${order.price * order.quantity}</span>
+      <span className={styles.name}>{product.name}</span>
+      <span>{product.quantity}</span>
+      <span className={styles.price}>${product.price}</span>
+      <span className={styles.total}>${product.price * product.quantity}</span>
     </div>
   );
 }

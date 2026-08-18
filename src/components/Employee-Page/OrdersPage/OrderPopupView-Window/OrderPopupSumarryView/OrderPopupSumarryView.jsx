@@ -1,5 +1,10 @@
 import styles from "./orderPopupSumarryView.module.css";
 
+/**
+ *
+ * @param {total} total price for all the current order
+ * @returns
+ */
 function OrderPopupSumarryView({ total }) {
   return (
     <div className={styles.orderPopupSumarry}>

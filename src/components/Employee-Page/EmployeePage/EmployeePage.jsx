@@ -14,7 +14,12 @@ import { FaUser } from "react-icons/fa";
 import { FaBoxesStacked } from "react-icons/fa6";
 import { FaBox } from "react-icons/fa";
 
+/**
+ *
+ * @returns EmployeePage
+ */
 function EmployeePage() {
+  //just for now the infomation is given staticly
   const employeeMenu = [
     {
       text: "Edit Clients",
@@ -133,6 +138,7 @@ function EmployeePage() {
     },
   ];
 
+  //activePage responsible to change the page which will be shown according to what the user choose in the menu
   const [activePage, setActivePage] = useState("Clients");
   return (
     <main className={styles.employeePage}>
@@ -140,6 +146,8 @@ function EmployeePage() {
         {activePage === "Clients" && <Clients clients={clients} />}
         {activePage === "Inventory" && <Inventory inventory={inventory} />}
         {activePage === "Orders" && <Orders orders={orders} />}
+
+        {/*The menu gets the items- the optional sections according to the user role and the setActivePage which gets the function to operate */}
         <Menu items={employeeMenu} setActivePage={setActivePage} />
       </div>
     </main>

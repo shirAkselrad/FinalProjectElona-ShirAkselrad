@@ -1,5 +1,11 @@
 import styles from "./orderPopupTitleView.module.css";
-
+/**
+ *
+ * @param {orderNumber} orderNumber
+ * @param {customerName} customerName
+ * @param {date} date the ordering date
+ * @returns OrderPopupTitleView
+ */
 function OrderPopupTitleView({ orderNumber, customerName, date }) {
   return (
     <div className={styles.orderPopupTitle}>
