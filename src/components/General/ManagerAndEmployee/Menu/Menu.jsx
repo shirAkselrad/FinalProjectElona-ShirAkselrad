@@ -2,7 +2,20 @@ import MenuLine from "../../MenuLine/MenuLine.jsx";
 import styles from "./menu.module.css";
 import { useState } from "react";
 
+/**
+ *
+ * @param {Object} props
+ * @param {Array} props.items the sections which will be present in the menu, according to the role (manager/employee)
+ *  @param {Function} props.setActivePage The function to operate from Menu
+ * @returns
+ */
 function Menu({ items, setActivePage }) {
+  /**
+   *
+   *
+   */
+
+  //which page will be active now, by default the first section in the item array
   const [activeMenu, setActiveMenu] = useState(items[0].value);
 
   return (
@@ -18,6 +31,7 @@ function Menu({ items, setActivePage }) {
       </div>
 
       <div className={styles.menuLines}>
+        {/*Building the menu lines, the functions: setActiveMenu and setActivePage are passed with a parameters to the MenuLine component  */}
         {items.map((item) => (
           <MenuLine
             key={item.value}

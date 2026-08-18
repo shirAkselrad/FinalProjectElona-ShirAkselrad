@@ -1,6 +1,6 @@
 import styles from "./shopPage.module.css";
 
-import SearchBar from "../SearchBar/SearchBar.jsx";
+import SearchBar from "../../General/SearchBar/SearchBar.jsx"
 import CategoryBtn from "../CategoryBtn/CategoryBtn.jsx";
 import ProductsGrid from "../ProductsGrid/ProductsGrid.jsx";
 

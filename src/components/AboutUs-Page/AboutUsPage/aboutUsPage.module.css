@@ -1,0 +1,12 @@
+.aboutUs {
+  width: 100%;
+}
+
+.main {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  align-items: stretch;
+}
