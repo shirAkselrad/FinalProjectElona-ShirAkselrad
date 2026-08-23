@@ -1,8 +1,13 @@
 import styles from "./generalBtn.module.css";
 
-function GeneralBtn({ text, onClick, className = "" }) {
+function GeneralBtn({ text, onClick, className = "", type, disabled }) {
   return (
-    <button className={`${styles.button} ${className}`} onClick={onClick}>
+    <button
+      type={type}
+      className={`${styles.button} ${className}`}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {text}
     </button>
   );

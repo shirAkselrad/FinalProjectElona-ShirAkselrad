@@ -1,11 +1,11 @@
 import styles from "./backLink.module.css";
-
-function BackLink({ text, onClick }) {
+import { Link } from "react-router-dom";
+function BackLink({ text, path }) {
   return (
-    <button className={styles.backLink} onClick={onClick}>
+    <Link className={styles.backLink} to={path}>
       <span className={styles.arrow}>←</span>
       <span>{text}</span>
-    </button>
+    </Link>
   );
 }
 

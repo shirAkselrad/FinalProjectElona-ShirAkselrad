@@ -12,7 +12,7 @@ function LoginForm() {
   return (
     <div className={styles.loginForm}>
       <div className={styles.back}>
-        <BackLink text="BACK TO SHOP" />
+        <BackLink text="BACK TO SHOP" path="/" />
       </div>
 
       <PageIntro

@@ -1,7 +1,7 @@
 import styles from "./aboutUsPage.module.css";
 
 import Text from "../Text/Text.jsx";
-import ElonaPhoto from "../Elona/Elona.jsx";
+import Elona from "../Elona/Elona.jsx";
 import Sentence from "../Sentence/Sentence.jsx";
 
 function AboutUs() {

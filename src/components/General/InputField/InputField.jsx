@@ -1,12 +1,28 @@
-import styles from "./inputField.module.css"
-function InputField({ label, placeholder, type = "text" }) {
+import styles from "./inputField.module.css";
+
+function InputField({
+  label,
+  placeholder,
+  type = "text",
+  onChange,
+  onBlur,
+  error,
+}) {
   return (
     <div className={styles.field}>
       <label className={styles.label}>{label}</label>
 
-      <input className={styles.input} type={type} placeholder={placeholder} />
+      <input
+        onChange={onChange}
+        onBlur={onBlur}
+        className={`${styles.input} ${error ? styles.inputError : ""}`}
+        type={type}
+        placeholder={placeholder}
+      />
+
+      {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
 }
 
-export default InputField; 
+export default InputField;
