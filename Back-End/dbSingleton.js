@@ -11,7 +11,7 @@ const dbSingleton = {
         host: "localhost",
         user: "root",
         password: "",
-        database: "store",
+        database: "elona",
       });
 
       // Connect to the database

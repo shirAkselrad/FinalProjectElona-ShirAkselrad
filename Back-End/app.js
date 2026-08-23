@@ -8,12 +8,12 @@ const port = process.env.PORT || 3000;
 const registerPageRoutes = require("./routes/register");
 const loginPageRoutes = require("./routes/login");
 const shopPageRoutes = require("./routes/shop");
-const employeePageRoutes = require("./routers/employee");
-const managerPageRoutes = require("./routers/manager");
+const employeePageRoutes = require("./routes/employee");
+const managerPageRoutes = require("./routes/manager");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "..", "FE")));
+app.use(express.static(path.join(__dirname, "..", "Front-End")));
 //for the session
 app.use(
   session({
@@ -28,10 +28,10 @@ app.use("/register", registerPageRoutes);
 app.use("/login", loginPageRoutes);
 app.use("/shop", shopPageRoutes);
 app.use("/employee", employeePageRoutes);
-app.use("manager", managerPageRoutes);
+app.use("/manager", managerPageRoutes);
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "FE", "index.html"));
+  res.sendFile(path.join(__dirname, "..", "Front-End", "index.html"));
 });
 
 app.listen(port, () => {
