@@ -5,6 +5,7 @@ import PageIntro from "../../General/PageIntro/PageIntro.jsx";
 import InputField from "../../General/InputField/InputField.jsx";
 import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
+import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import { useState } from "react";
 
 //The function gets str and check that the str includes ONLY letters or spaces
@@ -59,22 +60,23 @@ function checkPassword(str) {
   return capital && special;
 }
 
+//The function checks if str is a valid phone number pattern
+function checkPhoneNum(str) {
+  const phoneRegex = /0\d{1,2}-?\d{7}/;
+  return phoneRegex.test(str);
+}
 //The function check that both passwords are equal
 function checkVerificationPassword(password, str) {
   if (password === str) return true;
   return false;
 }
 
-//The function check if the form is valid if it does, call the createUser function
-
 //The function sends all the inputs values to backend for creating a new user
 async function createUser(userData) {
   try {
     const response = await fetch("/register", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -115,6 +117,11 @@ function RegisterForm() {
     verifyPassword: "",
   });
 
+  const [displayMessagePopup, setDisplayMessagePopup] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
   const allUserFieldsFilled = Object.values(user).every(
     (value) => value !== "",
   );
@@ -123,6 +130,7 @@ function RegisterForm() {
 
   const isFormValid = allUserFieldsFilled && noErrors;
 
+  //The function check if the form is valid if it does, call the createUser function
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -142,7 +150,19 @@ function RegisterForm() {
 
     const data = await createUser(userData);
 
-    console.log(data);
+    if (data?.success) {
+      setDisplayMessagePopup({
+        show: true,
+        message: data.message,
+        type: "success",
+      });
+    } else {
+      setDisplayMessagePopup({
+        show: true,
+        message: data?.message || "This User already exists",
+        type: "error",
+      });
+    }
   }
 
   return (
@@ -391,11 +411,11 @@ function RegisterForm() {
 
           <InputField
             label="PHONE NUMBER"
-            placeholder="+972 00 000 0000"
+            placeholder="Your phone number"
             type="tel"
             error={errors.phoneNum}
             onChange={(e) => {
-              if (onlyNumbers(e.target.value)) {
+              if (checkPhoneNum(e.target.value)) {
                 setErrors({
                   ...errors,
                   phoneNum: "",
@@ -407,10 +427,10 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!onlyNumbers(e.target.value)) {
+              if (!checkPhoneNum(e.target.value)) {
                 setErrors({
                   ...errors,
-                  phoneNum: "Only numbers allowed",
+                  phoneNum: "Invalid phone number",
                 });
               } else {
                 setErrors({
@@ -536,6 +556,20 @@ function RegisterForm() {
           <AlreadyHave text="Already have an account?" linkText="Log in" />
         </div>
       </form>
+
+      {displayMessagePopup.show && (
+        <MessagePopup
+          message={displayMessagePopup.message}
+          type={displayMessagePopup.type}
+          onClose={() =>
+            setDisplayMessagePopup({
+              show: false,
+              message: "",
+              type: "",
+            })
+          }
+        />
+      )}
     </div>
   );
 }
