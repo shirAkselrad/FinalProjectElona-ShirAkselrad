@@ -1,8 +1,9 @@
 const path = require("path");
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const session = require("express-session");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 //This routes is for each page in the front end
 const registerPageRoutes = require("./routes/register");
@@ -29,10 +30,6 @@ app.use("/login", loginPageRoutes);
 app.use("/shop", shopPageRoutes);
 app.use("/employee", employeePageRoutes);
 app.use("/manager", managerPageRoutes);
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "Front-End", "index.html"));
-});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
