@@ -1,0 +1,60 @@
+.recoveryForm {
+  width: 100%;
+  max-width: 480px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.back {
+  margin-bottom: 35px;
+}
+
+.description {
+  margin-top: 35px;
+  margin-bottom: 30px;
+
+  color: #6d5b50;
+  font-size: 14px;
+}
+
+.description p {
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  margin-bottom: 18px;
+
+  color: #b17f65;
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+
+.codeInput {
+  width: 100%;
+
+  padding: 0 0 16px;
+
+  border: none;
+  border-bottom: 1px solid #ded2ca;
+
+  outline: none;
+  background: transparent;
+
+  color: #827b76;
+  font-size: 30px;
+  letter-spacing: 12px;
+}
+
+.codeInput::placeholder {
+  color: #8e8884;
+}
+
+.verify {
+  margin-top: 32px;
+}

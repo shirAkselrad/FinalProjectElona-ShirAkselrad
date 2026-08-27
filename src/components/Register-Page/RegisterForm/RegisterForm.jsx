@@ -6,6 +6,7 @@ import InputField from "../../General/InputField/InputField.jsx";
 import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
 import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 //The function gets str and check that the str includes ONLY letters or spaces
@@ -89,6 +90,9 @@ async function createUser(userData) {
 }
 
 function RegisterForm() {
+  const navigate = useNavigate();
+
+  //keeps the user inputs
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -103,6 +107,7 @@ function RegisterForm() {
     verifyPassword: "",
   });
 
+  //keeps the errors accroding the input type
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
@@ -117,15 +122,19 @@ function RegisterForm() {
     verifyPassword: "",
   });
 
+  //This state is for the popup message after an attempt to sign in
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
     show: false,
     message: "",
     type: "",
   });
+
+  //checking that the user doesn't have any empty inputs before sending to info to backend
   const allUserFieldsFilled = Object.values(user).every(
     (value) => value !== "",
   );
 
+  //checking there is no errors in the inputs before sending it to backend
   const noErrors = Object.values(errors).every((error) => error === "");
 
   const isFormValid = allUserFieldsFilled && noErrors;
@@ -150,6 +159,7 @@ function RegisterForm() {
 
     const data = await createUser(userData);
 
+    //This part check if the user created and sent texts to the popup according to the success state
     if (data?.success) {
       setDisplayMessagePopup({
         show: true,
@@ -553,21 +563,28 @@ function RegisterForm() {
         </div>
 
         <div className={styles.account}>
-          <AlreadyHave text="Already have an account?" linkText="Log in" />
+          <AlreadyHave path={"/loginPage"} text="Already have an account?" linkText="Log in" />
         </div>
       </form>
 
+      {/*This popup will be displayed ONLY after all the user inputs are valid.
+      will display different kind of messages according to what the success status.
+      if the user was created then the user will be leaded to the login page  */}
       {displayMessagePopup.show && (
         <MessagePopup
           message={displayMessagePopup.message}
           type={displayMessagePopup.type}
-          onClose={() =>
-            setDisplayMessagePopup({
-              show: false,
-              message: "",
-              type: "",
-            })
-          }
+          onClose={() => {
+            if (displayMessagePopup.type === "success") {
+              navigate("/loginPage");
+            } else {
+              setDisplayMessagePopup({
+                show: false,
+                message: "",
+                type: "",
+              });
+            }
+          }}
         />
       )}
     </div>
