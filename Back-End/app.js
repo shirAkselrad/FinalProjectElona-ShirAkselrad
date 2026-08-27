@@ -11,6 +11,9 @@ const loginPageRoutes = require("./routes/login");
 const shopPageRoutes = require("./routes/shop");
 const employeePageRoutes = require("./routes/employee");
 const managerPageRoutes = require("./routes/manager");
+const forgotPasswordPageRoutes = require("./routes/forgotPassword");
+const recoveryPageRoutes = require("./routes/recoveryPage");
+const resetPasswordRoutes = require("./routes/resetPassword");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -30,6 +33,9 @@ app.use("/login", loginPageRoutes);
 app.use("/shop", shopPageRoutes);
 app.use("/employee", employeePageRoutes);
 app.use("/manager", managerPageRoutes);
+app.use("/forgotPassword", forgotPasswordPageRoutes);
+app.use("/recoveryPage", recoveryPageRoutes);
+app.use("/resetPassword", resetPasswordRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

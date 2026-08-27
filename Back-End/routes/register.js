@@ -8,6 +8,7 @@ const { transporter } = require("../services/mailer");
 const dbSingleton = require("../dbSingleton");
 const db = dbSingleton.getConnection();
 
+//This function gets an email address and a full name and send a registeration comfirm mail to the new user's email address
 async function sendRegisterationMail(email, fullName) {
   await transporter.sendMail({
     from: process.env.EMAIL_USER,
@@ -71,7 +72,7 @@ router.post("/", (req, res) => {
     ID,
     city,
     street,
-    houseNum,
+    houseNum, 
     email,
     phoneNum,
     userName,
@@ -118,6 +119,7 @@ router.post("/", (req, res) => {
             .catch((err) => {
               console.error("Error sending registration email:", err);
             });
+
           return res.status(201).json({
             success: true,
             message: "user added!",
