@@ -7,75 +7,13 @@ import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
 import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-
-//The function gets str and check that the str includes ONLY letters or spaces
-function checkStr(str) {
-  if (str.length == 0) return false;
-  for (let i = 0; i < str.length; i++)
-    if (
-      (str[i] < "a" || str[i] > "z") &&
-      (str[i] < "A" || str[i] > "Z") &&
-      str[i] !== " "
-    )
-      return false;
-  return true;
-}
-
-//The function check that str contains ONLY char numbers
-function onlyNumbers(str) {
-  if (str.length == 0) return false;
-  for (let i = 0; i < str.length; i++)
-    if (str[i] < "0" || str[i] > "9") return false;
-  return true;
-}
-
-//The function check that str is an email address
-function checkEmail(str) {
-  const emailRegex = /^[\w.-]+@[\w.-]+\.\w{2,}$/;
-  return emailRegex.test(str);
-}
-
-//The function check that str is a valid username (must include 8-12 chars and 2 capital letters)
-function checkUsername(str) {
-  if (str.length < 8 || str.length > 12) return false;
-  let count = 0;
-  for (let i = 0; i < str.length; i++)
-    if (str[i] >= "A" && str[i] <= "Z") count++;
-
-  if (count >= 2) return true;
-  return false;
-}
-
-//The function check if str is a valid password
-function checkPassword(str) {
-  if (str.length < 8 || str.length > 12) return false;
-  const specialChars = "!@#$%^&*?";
-  let special = false;
-  let capital = false;
-  for (let i = 0; i < str.length; i++) {
-    if (specialChars.includes(str[i])) special = true;
-    if (str[i] >= "A" && str[i] <= "Z") capital = true;
-  }
-
-  return capital && special;
-}
-
-//The function checks if str is a valid phone number pattern
-function checkPhoneNum(str) {
-  const phoneRegex = /0\d{1,2}-?\d{7}/;
-  return phoneRegex.test(str);
-}
-//The function check that both passwords are equal
-function checkVerificationPassword(password, str) {
-  if (password === str) return true;
-  return false;
-}
+import { useState, useEffect } from "react";
+import * as Validation from "../../../utils/inputValidation.js";
 
 //The function sends all the inputs values to backend for creating a new user
 async function createUser(userData) {
   try {
-    const response = await fetch("/register", {
+    const response = await fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
@@ -91,6 +29,9 @@ async function createUser(userData) {
 
 function RegisterForm() {
   const navigate = useNavigate();
+
+  //keeps all the cities from the given cities list
+  const [cities, setCities] = useState([]);
 
   //keeps the user inputs
   const [user, setUser] = useState({
@@ -139,17 +80,41 @@ function RegisterForm() {
 
   const isFormValid = allUserFieldsFilled && noErrors;
 
+  useEffect(() => {
+    async function getCities() {
+      try {
+        const response = await fetch(
+          "https://data.gov.il/api/3/action/datastore_search?resource_id=8f714b6f-c35c-4b40-a0e7-547b675eee0e&limit=2000",
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error, status:  ${response.status}`);
+        }
+        const data = await response.json();
+
+        //taking all the cities and setting them into the cities state
+        const englishCities = data.result.records
+          .map((city) => city.city_name_en?.trim())
+          .filter((cityName) => cityName);
+
+        setCities(englishCities);
+      } catch (error) {
+        console.error("Error getting cities list: ", error);
+      }
+    }
+    getCities();
+  }, []);
+
   //The function check if the form is valid if it does, call the createUser function
   async function handleSubmit(e) {
     e.preventDefault();
 
     if (!isFormValid) return;
     const userData = {
-      firstName: user.firstName,
-      lastName: user.lastName,
+      firstName: Validation.onlyFirstLetterCapital(user.firstName),
+      lastName: Validation.onlyFirstLetterCapital(user.lastName),
       ID: user.ID,
-      city: user.city,
-      street: user.street,
+      city: Validation.onlyFirstLetterCapital(user.city),
+      street: Validation.onlyFirstLetterCapital(user.street),
       houseNum: user.houseNum,
       email: user.email,
       phoneNum: user.phoneNum,
@@ -175,6 +140,11 @@ function RegisterForm() {
     }
   }
 
+  const filteredCities = user.city
+    ? cities.filter((city) =>
+        city.toLowerCase().startsWith(user.city.toLowerCase()),
+      )
+    : [];
   return (
     <div className={styles.registerForm}>
       <div className={styles.back}>
@@ -193,9 +163,10 @@ function RegisterForm() {
             label="FIRST NAME"
             placeholder="Your first name"
             type="text"
+            maxLength={30}
             error={errors.firstName}
             onChange={(e) => {
-              if (checkStr(e.target.value)) {
+              if (Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   firstName: "",
@@ -207,7 +178,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkStr(e.target.value)) {
+              if (!Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   firstName: "Only letters and spaces are allowed",
@@ -225,9 +196,10 @@ function RegisterForm() {
             label="LAST NAME"
             placeholder="Your last name"
             type="text"
+            maxLength={30}
             error={errors.lastName}
             onChange={(e) => {
-              if (checkStr(e.target.value)) {
+              if (Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   lastName: "",
@@ -239,7 +211,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkStr(e.target.value)) {
+              if (!Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   lastName: "Only letters and spaces are allowed",
@@ -259,9 +231,10 @@ function RegisterForm() {
             label="ID"
             placeholder="Your ID"
             type="text"
+            maxLength={9}
             error={errors.ID}
             onChange={(e) => {
-              if (onlyNumbers(e.target.value)) {
+              if (Validation.onlyNumbers(e.target.value)) {
                 setErrors({
                   ...errors,
                   ID: "",
@@ -273,7 +246,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!onlyNumbers(e.target.value)) {
+              if (!Validation.onlyNumbers(e.target.value)) {
                 setErrors({
                   ...errors,
                   ID: "Only numbers allowed",
@@ -291,9 +264,10 @@ function RegisterForm() {
             label="CITY"
             placeholder="Your city"
             type="text"
+            maxLength={50}
             error={errors.city}
             onChange={(e) => {
-              if (checkStr(e.target.value)) {
+              if (Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   city: "",
@@ -305,7 +279,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkStr(e.target.value)) {
+              if (!Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   city: "Only letters and spaces are allowed",
@@ -325,9 +299,10 @@ function RegisterForm() {
             label="STREET"
             placeholder="Your street"
             type="text"
+            maxLength={50}
             error={errors.street}
             onChange={(e) => {
-              if (checkStr(e.target.value)) {
+              if (Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   street: "",
@@ -339,7 +314,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkStr(e.target.value)) {
+              if (!Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   street: "Only letters and spaces are allowed",
@@ -356,10 +331,11 @@ function RegisterForm() {
           <InputField
             label="HOUSE NUMBER"
             placeholder="House number"
+            maxLength={5}
             type="text"
             error={errors.houseNum}
             onChange={(e) => {
-              if (onlyNumbers(e.target.value)) {
+              if (Validation.onlyNumbers(e.target.value)) {
                 setErrors({
                   ...errors,
                   houseNum: "",
@@ -371,7 +347,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!onlyNumbers(e.target.value)) {
+              if (!Validation.onlyNumbers(e.target.value)) {
                 setErrors({
                   ...errors,
                   houseNum: "Only numbers allowed",
@@ -390,10 +366,11 @@ function RegisterForm() {
           <InputField
             label="EMAIL ADDRESS"
             placeholder="your@email.com"
+            maxLength={100}
             type="email"
             error={errors.email}
             onChange={(e) => {
-              if (checkEmail(e.target.value)) {
+              if (Validation.checkEmail(e.target.value)) {
                 setErrors({
                   ...errors,
                   email: "",
@@ -405,7 +382,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkEmail(e.target.value)) {
+              if (!Validation.checkEmail(e.target.value)) {
                 setErrors({
                   ...errors,
                   email: "Invalid email",
@@ -423,9 +400,10 @@ function RegisterForm() {
             label="PHONE NUMBER"
             placeholder="Your phone number"
             type="tel"
+            maxLength={10}
             error={errors.phoneNum}
             onChange={(e) => {
-              if (checkPhoneNum(e.target.value)) {
+              if (Validation.checkPhoneNum(e.target.value)) {
                 setErrors({
                   ...errors,
                   phoneNum: "",
@@ -437,7 +415,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkPhoneNum(e.target.value)) {
+              if (!Validation.checkPhoneNum(e.target.value)) {
                 setErrors({
                   ...errors,
                   phoneNum: "Invalid phone number",
@@ -456,10 +434,11 @@ function RegisterForm() {
           <InputField
             label="USERNAME"
             placeholder="Choose a username"
+            maxLength={12}
             type="text"
             error={errors.userName}
             onChange={(e) => {
-              if (checkUsername(e.target.value)) {
+              if (Validation.checkUsername(e.target.value)) {
                 setErrors({
                   ...errors,
                   userName: "",
@@ -471,7 +450,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkUsername(e.target.value)) {
+              if (!Validation.checkUsername(e.target.value)) {
                 setErrors({
                   ...errors,
                   userName:
@@ -489,10 +468,11 @@ function RegisterForm() {
           <InputField
             label="PASSWORD"
             placeholder="Your password"
+            maxLength={12}
             type="password"
             error={errors.password}
             onChange={(e) => {
-              if (checkPassword(e.target.value)) {
+              if (Validation.checkPassword(e.target.value)) {
                 setErrors({
                   ...errors,
                   password: "",
@@ -504,7 +484,7 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkPassword(e.target.value)) {
+              if (!Validation.checkPassword(e.target.value)) {
                 setErrors({
                   ...errors,
                   password:
@@ -524,10 +504,16 @@ function RegisterForm() {
           <InputField
             label="VERIFY PASSWORD"
             placeholder="Repeat your password"
+            maxLength={12}
             type="password"
             error={errors.verifyPassword}
             onChange={(e) => {
-              if (checkVerificationPassword(user.password, e.target.value)) {
+              if (
+                Validation.checkVerificationPassword(
+                  user.password,
+                  e.target.value,
+                )
+              ) {
                 setErrors({
                   ...errors,
                   verifyPassword: "",
@@ -539,7 +525,12 @@ function RegisterForm() {
               });
             }}
             onBlur={(e) => {
-              if (!checkVerificationPassword(user.password, e.target.value)) {
+              if (
+                !Validation.checkVerificationPassword(
+                  user.password,
+                  e.target.value,
+                )
+              ) {
                 setErrors({
                   ...errors,
                   verifyPassword: "Passwords don't match",
@@ -563,7 +554,11 @@ function RegisterForm() {
         </div>
 
         <div className={styles.account}>
-          <AlreadyHave path={"/loginPage"} text="Already have an account?" linkText="Log in" />
+          <AlreadyHave
+            path={"/loginPage"}
+            text="Already have an account?"
+            linkText="Log in"
+          />
         </div>
       </form>
 

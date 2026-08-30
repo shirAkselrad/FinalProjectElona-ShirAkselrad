@@ -21,7 +21,7 @@ function RecoveryForm() {
   //The function send to backend the recovery code which has been entered by the user
   async function recoveryCode(code) {
     try {
-      const response = await fetch("/recoveryPage", {
+      const response = await fetch("/api/recoveryPage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
