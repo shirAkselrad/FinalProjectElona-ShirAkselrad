@@ -1,19 +1,16 @@
 import MenuLine from "../../MenuLine/MenuLine.jsx";
 import styles from "./menu.module.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 /**
  *
  * @param {Object} props
  * @param {Array} props.items the sections which will be present in the menu, according to the role (manager/employee)
- *  @param {Function} props.setActivePage The function to operate from Menu
  * @returns
  */
-function Menu({ items, setActivePage }) {
-  /**
-   *
-   *
-   */
+function Menu({ items }) {
+  const navigate = useNavigate();
 
   //which page will be active now, by default the first section in the item array
   const [activeMenu, setActiveMenu] = useState(items[0].value);
@@ -40,7 +37,7 @@ function Menu({ items, setActivePage }) {
             active={activeMenu === item.value}
             onClick={() => {
               setActiveMenu(item.value);
-              setActivePage(item.value);
+              navigate(item.path);
             }}
           />
         ))}

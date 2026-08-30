@@ -1,12 +1,13 @@
 import styles from "./logout.module.css";
 import { FiLogOut } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
-function Logout() {
+function Logout({ out }) {
   return (
-    <button className={styles.logout}>
+    <Link to="/" className={styles.logout} onClick={out}>
       <FiLogOut className={styles.icon} />
       <span>Logout</span>
-    </button>
+    </Link>
   );
 }
 

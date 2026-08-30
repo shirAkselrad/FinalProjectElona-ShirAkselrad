@@ -1,19 +1,7 @@
 import styles from "./welcome.module.css";
 
-function Welcome({ welcome, text }) {
-  return (
-    <div className={styles.container}>
-      <p className={styles.welcome}>{welcome}</p>
-
-      <h1 className={styles.text}>{text}</h1>
-
-      <div className={styles.decoration}>
-        <span className={styles.line}></span>
-        <span className={styles.diamond}></span>
-        <span className={styles.line}></span>
-      </div>
-    </div>
-  );
+function Welcome({ name }) {
+  return <div className={styles.welcome}>WELCOME, {name || "HOST"}</div>;
 }
 
 export default Welcome;

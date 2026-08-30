@@ -7,6 +7,7 @@ function InputField({
   onChange,
   onBlur,
   error,
+  maxLength,
 }) {
   return (
     <div className={styles.field}>
@@ -18,6 +19,7 @@ function InputField({
         className={`${styles.input} ${error ? styles.inputError : ""}`}
         type={type}
         placeholder={placeholder}
+        maxLength={maxLength}
       />
 
       {error && <span className={styles.errorText}>{error}</span>}

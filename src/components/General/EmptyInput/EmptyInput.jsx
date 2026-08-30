@@ -6,14 +6,21 @@ import styles from "./emptyInput.module.css";
  * @param {onChange} onChange the event which accure when the user changes the input value
  * @returns EmptyInput
  */
-function EmptyInput({ value, onChange }) {
+function EmptyInput({ value, onChange, onBlur, error, maxLength }) {
   return (
-    <input
-      className={styles.input}
-      type="text"
-      value={value}
-      onChange={onChange}
-    />
+    <div className={styles.inputWrapper}>
+      <input
+        className={`${styles.input} ${error ? styles.inputError : ""}`}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        maxLength={maxLength}
+      />
+
+      <div className={styles.errorArea}>
+        {error && <span className={styles.errorText}>{error}</span>}
+      </div>
+    </div>
   );
 }
 

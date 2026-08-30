@@ -14,26 +14,31 @@ function ManagerPage() {
     {
       text: "Overview",
       value: "overview",
+      path: "managerPage/overview",
       icon: <FaRegDotCircle />,
     },
     {
       text: "Edit Users",
       value: "users",
+      path: "managerPage/users",
       icon: <FaUser />,
     },
     {
       text: "Edit Inventory",
       value: "inventory",
+      path: "managerPage/inventory",
       icon: <FaBoxesStacked />,
     },
     {
       text: "Orders",
       value: "orders",
+      path: "managerPage/orders",
       icon: <FaBox />,
     },
     {
       text: "Issuing Reports",
       value: "reports",
+      path: "managerPage/reports",
       icon: <FiClipboard />,
     },
   ];

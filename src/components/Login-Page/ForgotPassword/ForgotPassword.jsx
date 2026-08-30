@@ -1,7 +1,11 @@
 import styles from "./forgotPassword.module.css";
-
+import { Link } from "react-router-dom";
 function ForgotPassword() {
-  return <button className={styles.forgotPassword}>FORGOT PASSWORD?</button>;
+  return (
+    <Link to="/ForgotPasswordPage" className={styles.forgotPassword}>
+      Forgot password?
+    </Link>
+  );
 }
 
 export default ForgotPassword;

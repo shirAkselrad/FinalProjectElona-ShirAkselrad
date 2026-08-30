@@ -1,13 +1,14 @@
 import styles from "./alreadyHave.module.css";
+import { Link } from "react-router-dom";
 
-function AlreadyHave({ text, linkText }) {
+function AlreadyHave({ path, text, linkText }) {
   return (
     <div className={styles.container}>
       <span className={styles.text}>{text}</span>
 
-      <button type="button" className={styles.link}>
+      <Link className={styles.link} to={path}>
         {linkText}
-      </button>
+      </Link>
     </div>
   );
 }
