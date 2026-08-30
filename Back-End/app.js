@@ -14,6 +14,7 @@ const managerPageRoutes = require("./routes/manager");
 const forgotPasswordPageRoutes = require("./routes/forgotPassword");
 const recoveryPageRoutes = require("./routes/recoveryPage");
 const resetPasswordRoutes = require("./routes/resetPassword");
+const headerRoutes = require("./routes/header");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,14 +29,15 @@ app.use(
   }),
 );
 
-app.use("/register", registerPageRoutes);
-app.use("/login", loginPageRoutes);
-app.use("/shop", shopPageRoutes);
-app.use("/employee", employeePageRoutes);
-app.use("/manager", managerPageRoutes);
-app.use("/forgotPassword", forgotPasswordPageRoutes);
-app.use("/recoveryPage", recoveryPageRoutes);
-app.use("/resetPassword", resetPasswordRoutes);
+app.use("/api/register", registerPageRoutes);
+app.use("/api/login", loginPageRoutes);
+app.use("/api/shop", shopPageRoutes);
+app.use("/api/employee", employeePageRoutes);
+app.use("/api/manager", managerPageRoutes);
+app.use("/api/forgotPassword", forgotPasswordPageRoutes);
+app.use("/api/recoveryPage", recoveryPageRoutes);
+app.use("/api/resetPassword", resetPasswordRoutes);
+app.use("/api/header", headerRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

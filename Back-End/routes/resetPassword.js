@@ -8,7 +8,7 @@ const { transporter } = require("../services/mailer");
 const dbSingleton = require("../dbSingleton");
 const db = dbSingleton.getConnection();
 
-//This function gets an email address and a full name and send a registeration comfirm mail to the new user's email address
+//This middle ware is for sending the user a mail after updating the password
 const sendMailNewPassword = async (req, res, next) => {
   const email = req.session.email;
   const query = "select first_name, last_name from users where email=?";

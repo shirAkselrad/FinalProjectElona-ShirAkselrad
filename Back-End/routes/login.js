@@ -10,7 +10,7 @@ const db = dbSingleton.getConnection();
 //This path is for getting the first name from the sesssion after the login
 router.get("/firstName", (req, res) => {
   if (!req.session.user) {
-    return res.status(401).json({ success: false });
+    return res.status(200).json({ success: false });
   }
 
   return res.json({
@@ -54,6 +54,7 @@ router.post("/", (req, res) => {
           return res.status(200).json({
             success: true,
             message: "Login successful",
+            role: results[0].role,
           });
         }
 
