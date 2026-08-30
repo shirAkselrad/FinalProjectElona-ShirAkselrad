@@ -8,42 +8,7 @@ export default defineConfig({
     port: 3000,
 
     proxy: {
-      "/register": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-
-      "/login": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-
-      "/shop": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-
-      "/employee": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-
-      "/manager": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-
-      "/forgotPassword": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-
-      "/recoveryPage": {
-        target: "http://localhost:3001",
-        changeOrigin: true,
-      },
-
-      "/resetPassword": {
+      "/api": {
         target: "http://localhost:3001",
         changeOrigin: true,
       },
