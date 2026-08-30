@@ -5,13 +5,15 @@ import styles from "./inventory.module.css";
 import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
 import InventoryTable from "../InventoryTable/InventoryTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
+import { useOutletContext } from "react-router-dom";
 
 /**
  *
  * @param {inventory} inventory array
  * @returns Inventory
  */
-function Inventory({ inventory }) {
+function Inventory() {
+  const { inventory } = useOutletContext();
   // This part is responsible for the search filter in the inventory table begins empty as default
   const [searchValue, setSearchValue] = useState("");
 

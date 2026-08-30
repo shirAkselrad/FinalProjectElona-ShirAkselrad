@@ -16,11 +16,15 @@ function ClientRow({ client, onEdit, onRemove }) {
    */
   return (
     <tr className={styles.row}>
-      <td>{client.name}</td>
-      <td>{client.phone}</td>
-      <td>{client.address}</td>
+      <td>{client.user_id}</td>
+      <td>{client.first_name}</td>
+      <td>{client.last_name}</td>
+      <td>{client.phone_num}</td>
+      <td>{client.city}</td>
+      <td>{client.street}</td>
+      <td>{client.house_num}</td>
       <td>{client.email}</td>
-      <td>{client.role}</td>
+      <td>{client.status}</td>
 
       <td>
         <div className={styles.actions}>
