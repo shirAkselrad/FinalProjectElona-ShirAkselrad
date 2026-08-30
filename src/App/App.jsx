@@ -10,8 +10,10 @@ import RegisterPage from "../components/Register-Page/RegisterPage/RegisterPage.
 import ForgotPasswordPage from "../components/ForgotPassword-Page/ForgotPasswordPage/ForgotPasswordPage.jsx";
 import RecoveryPage from "../components/Recovery-Page/RecoveryPage/RecoveryPage.jsx";
 import ResetPasswordPage from "../components/ResetPassword-Page/ResetPasswordPage/ResetPasswordPage.jsx";
-import { Routes, Route, useLocation } from "react-router-dom";
-
+import Clients from "../components/Employee-Page/ClientsPage/Clients/Clients.jsx";
+import Inventory from "../components/Employee-Page/InventoryPage/Inventory/Inventory.jsx";
+import Orders from "../components/Employee-Page/OrdersPage/Orders/Orders.jsx";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 function App() {
   const location = useLocation();
 
@@ -31,8 +33,13 @@ function App() {
         <Route path="/aboutUs" element={<AboutUsPage />} />
         {/*Manager Page*/}
         <Route path="managerPage" element={<ManagerPage />} />
-        {/*Employee Page*/}
-        <Route path="employeePage" element={<EmployeePage />} />
+        {/* Employee Page */}
+        <Route path="employeePage" element={<EmployeePage />}>
+          <Route index element={<Navigate to="clients" replace />} />
+          <Route path="clients" element={<Clients />} />
+          <Route path="inventory" element={<Inventory />} />
+          <Route path="orders" element={<Orders />} />
+        </Route>
         {/*Login Page*/}
         <Route path="/loginPage" element={<LoginPage />} />
         {/*Register Page*/}
