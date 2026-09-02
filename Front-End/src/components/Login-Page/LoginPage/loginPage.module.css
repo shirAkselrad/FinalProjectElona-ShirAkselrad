@@ -1,0 +1,31 @@
+.loginPage {
+  width: 100%;
+  flex: 1;
+
+  display: grid;
+  grid-template-columns: 65% 35%;
+}
+
+.imageSide {
+  min-height: 0;
+}
+
+.formSide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 60px;
+
+  background-color: #fbf8f5;
+}
+
+.formSide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 40px 60px;
+
+  background-color: #fbf8f5;
+}

@@ -1,0 +1,54 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.smallTitle {
+  margin: 0 0 14px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 4px;
+
+  color: #c28d5f;
+}
+
+.title {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1.2;
+
+  color: #2f2723;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.decoration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+  margin-top: 18px;
+}
+
+.line {
+  width: 28px;
+  height: 1px;
+  background-color: #d0a65f;
+}
+
+.diamond {
+  width: 4px;
+  height: 4px;
+
+  background-color: #d0a65f;
+  transform: rotate(45deg);
+}

@@ -1,0 +1,38 @@
+.cartTotal {
+  width: 100%;
+
+  padding: 28px 24px 24px;
+
+  background-color: #ffffff;
+
+  border-top: 1px solid #eadfd7;
+}
+
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 22px;
+}
+
+.totalText {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+
+  letter-spacing: 2px;
+
+  color: #8a756a;
+}
+
+.price {
+  font-family: Georgia, serif;
+  font-size: 16px;
+  font-weight: 400;
+
+  color: #51453e;
+}
+
+.cartTotal button {
+  width: 100%;
+}

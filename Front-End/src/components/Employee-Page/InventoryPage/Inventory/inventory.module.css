@@ -1,0 +1,99 @@
+.inventory {
+  width: 100%;
+}
+
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+
+  margin-bottom: 28px;
+}
+
+
+.topActions {
+  display: flex;
+  align-items: center;
+
+
+  gap: 12px;
+}
+
+
+.saveBtn {
+  width: 110px;
+  height: 42px;
+
+
+  padding: 0;
+}
+
+
+.addProduct {
+  width: 165px;
+  height: 42px;
+
+
+  border: none;
+
+
+  background-color: #21170f;
+  color: white;
+
+
+  font-size: 11px;
+  letter-spacing: 1.5px;
+
+
+  white-space: nowrap;
+
+
+  cursor: pointer;
+}
+
+
+.addProduct:hover {
+  background-color: #3a2b20;
+}
+
+
+.search {
+  margin-bottom: 24px;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.saveBtn,
+.addProduct {
+  height: 42px;
+
+  border: none;
+
+  background-color: #21170f;
+  color: white;
+
+  font-size: 11px;
+  letter-spacing: 1.5px;
+
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.saveBtn {
+  width: 110px;
+}
+
+.addProduct {
+  width: 165px;
+}
+
+.saveBtn:hover,
+.addProduct:hover {
+  background-color: #3a2b20;
+}

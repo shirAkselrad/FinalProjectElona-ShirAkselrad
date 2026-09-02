@@ -1,0 +1,79 @@
+.row {
+  height: 48px;
+
+  border-bottom: 1px solid #e8ddd3;
+
+  color: #6f655e;
+
+  font-size: 14px;
+}
+
+.row td {
+  padding: 8px 18px;
+
+  vertical-align: middle;
+}
+
+.row:nth-child(even) {
+  background-color: #fbf8f5;
+}
+
+.role {
+  display: inline-block;
+
+  padding: 4px 12px;
+
+  background-color: #f2ebe4;
+  border-radius: 2px;
+
+  color: #81756c;
+
+  font-size: 13px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 14px;
+
+  min-width: 140px;
+}
+
+.editBtn {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+}
+
+.editBtn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.actions button:last-child {
+  width: 90px;
+  height: 32px;
+
+  padding: 0;
+}
+
+/* make the edit icon a little bigger */
+.editBtn {
+  font-size: 22px;
+}
+
+.removedRow {
+  opacity: 0.45;
+}
+
+.removedRow td:not(:last-child) {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}

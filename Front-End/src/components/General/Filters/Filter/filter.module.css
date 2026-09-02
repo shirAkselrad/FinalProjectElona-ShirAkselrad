@@ -1,0 +1,40 @@
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.filter label {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  color: #8d776c;
+}
+
+.filter select {
+  width: 175px;
+  height: 42px;
+
+  padding: 0 12px;
+
+  background-color: #fff;
+  color: #4a3b34;
+
+  border: 1px solid #d9cec7;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  outline: none;
+  cursor: pointer;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.filter select:hover {
+  border-color: #bda89d;
+}
+
+.filter select:focus {
+  border-color: #9d7d6f;
+  box-shadow: 0 0 0 2px rgba(157, 125, 111, 0.08);
+}

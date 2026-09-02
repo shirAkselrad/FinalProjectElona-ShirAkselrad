@@ -1,0 +1,29 @@
+.minusOrPlus {
+  width: 24px;
+  height: 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  background-color: transparent;
+
+  border: 1px solid #e2d4ca;
+
+  color: #a98d7c;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.minusOrPlus:hover {
+  background-color: #f5eee9;
+  border-color: #c9ad98;
+}

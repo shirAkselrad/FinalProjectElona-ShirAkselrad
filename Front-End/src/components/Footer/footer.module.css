@@ -1,0 +1,79 @@
+.footer {
+  width: 100%;
+  min-height: 145px;
+
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+
+  padding: 35px 55px;
+  box-sizing: border-box;
+
+  background-color: #765947;
+
+  border-top: 2px solid #d2ad69;
+}
+
+/* צד שמאל */
+
+.brand h2 {
+  margin: 0 0 10px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 25px;
+  font-weight: 400;
+
+  letter-spacing: 8px;
+
+  color: #ffffff;
+}
+
+.brand p {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+
+  letter-spacing: 2px;
+
+  color: #d6b26e;
+}
+
+/* אמצע */
+
+.links {
+  display: flex;
+  align-items: center;
+
+  gap: 38px;
+}
+
+.links a {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+
+  letter-spacing: 2px;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  transition: opacity 0.2s ease;
+}
+
+.links a:hover {
+  opacity: 0.6;
+}
+
+/* צד ימין */
+
+.copyright {
+  justify-self: end;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+
+  letter-spacing: 0.5px;
+
+  color: #d2c0b5;
+}

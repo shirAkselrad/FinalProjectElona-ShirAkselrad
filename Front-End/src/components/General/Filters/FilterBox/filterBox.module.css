@@ -1,0 +1,42 @@
+
+
+.filterBox label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: #6f625b;
+}
+
+.filterBox select {
+  min-width: 160px;
+  height: 40px;
+  padding: 0 12px;
+
+  background-color: #fbf8f5;
+  color: #3f332d;
+
+  border: 1px solid #d8cec7;
+
+  font-size: 13px;
+  letter-spacing: 0.5px;
+
+  cursor: pointer;
+  outline: none;
+}
+
+.filterBox select:focus {
+  border-color: #9b8175;
+}
+
+
+.filterBox {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+.reset {
+  min-width: 90px;
+}
+
+.reset button {
+  width: 100%;
+}

@@ -26,7 +26,7 @@ router.post("/", (req, res) => {
   const { userName, password } = req.body;
   console.log("body:", req.body);
   const query =
-    "select username, password, first_name, role from users where username=?";
+    "select username, password, first_name, role, status from users where username=?";
 
   db.query(query, [userName], (err, results) => {
     console.log("results:", results);
@@ -38,13 +38,19 @@ router.post("/", (req, res) => {
 
     if (results.length != 0) {
       return bcrypt.compare(password, results[0].password, (err, isMatch) => {
-        console.log("password:", password);
-        console.log("hash:", results[0]?.password);
+
         if (err) {
           return res.status(500).send(err);
         }
 
         if (isMatch) {
+          if (results[0].status === "Not Active") {
+            return res.status(403).json({
+              success: false,
+              message:
+                "The user is not active anymore, please call ELONA for changing the status",
+            });
+          }
           req.session.user = {
             userName: userName,
             firstName: results[0].first_name,

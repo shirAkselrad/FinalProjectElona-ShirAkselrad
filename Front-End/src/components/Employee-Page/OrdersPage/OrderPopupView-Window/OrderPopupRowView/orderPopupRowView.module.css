@@ -1,0 +1,27 @@
+.row {
+  display: grid;
+  grid-template-columns: 2fr 0.55fr 1.1fr 0.8fr;
+
+  align-items: center;
+
+  padding: 14px 0;
+
+  border-bottom: 1px solid #eee4dc;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+
+  color: #574b44;
+}
+
+.name {
+  font-size: 16px;
+}
+
+.price {
+  color: #a9978c;
+}
+
+.total {
+  color: #c29a58;
+}

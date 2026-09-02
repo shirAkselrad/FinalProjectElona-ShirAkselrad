@@ -1,0 +1,20 @@
+.remove {
+  border: none;
+  background: transparent;
+
+  padding: 0;
+
+  font-size: 24px;
+  font-weight: 200;
+  line-height: 1;
+
+  color: #c9ad98;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.remove:hover {
+  color: #8a6f60;
+}

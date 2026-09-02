@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  margin-top: 25px;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.text {
+  color: #9a7a68;
+}
+
+.link {
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+
+  color: #b8784f;
+
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #7a4f35;
+}

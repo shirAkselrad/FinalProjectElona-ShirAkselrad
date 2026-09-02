@@ -1,0 +1,22 @@
+.employeePage {
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: #fbf8f5;
+
+  padding: 35px 0;
+}
+
+.content {
+  width: 92%;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 35px;
+}
+
+.content > :first-child {
+  flex: 1;
+}

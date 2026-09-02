@@ -1,0 +1,62 @@
+.productTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.category {
+  margin: 0 0 30px;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+
+  letter-spacing: 3px;
+
+  color: #c49a5a;
+}
+
+.name {
+  margin: 0 0 12px;
+
+  font-family: Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+
+  color: #3f332d;
+}
+
+.description {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+
+  letter-spacing: 0.5px;
+
+  color: #b59a89;
+}
+
+.decoration {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 26px;
+}
+
+.line {
+  width: 42px;
+  height: 1px;
+
+  background-color: #d8b87a;
+}
+
+.diamond {
+  width: 5px;
+  height: 5px;
+
+  background-color: #c9a15f;
+
+  transform: rotate(45deg);
+}

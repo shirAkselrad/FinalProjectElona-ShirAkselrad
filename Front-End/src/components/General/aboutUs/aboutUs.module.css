@@ -1,0 +1,18 @@
+.aboutUs {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 16px;
+  font-weight: 400;
+
+  color: #78675d;
+  letter-spacing: 4px;
+
+  padding: 10px;
+}
+
+.aboutUs:hover {
+  opacity: 0.6;
+}
