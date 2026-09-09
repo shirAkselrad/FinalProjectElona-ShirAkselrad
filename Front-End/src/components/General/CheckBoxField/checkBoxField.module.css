@@ -1,0 +1,42 @@
+.checkboxField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 14px;
+  color: #4a2f24;
+
+  cursor: pointer;
+}
+
+.checkboxField input {
+  appearance: none;
+
+  width: 15px;
+  height: 15px;
+
+  border: 1px solid #bda99d;
+  border-radius: 2px;
+
+  background-color: transparent;
+
+  cursor: pointer;
+
+  position: relative;
+}
+
+.checkboxField input:checked {
+  background-color: #4a2f24;
+  border-color: #4a2f24;
+}
+
+.checkboxField input:checked::after {
+  content: "✓";
+
+  position: absolute;
+  top: -3px;
+  left: 2px;
+
+  color: white;
+  font-size: 12px;
+}

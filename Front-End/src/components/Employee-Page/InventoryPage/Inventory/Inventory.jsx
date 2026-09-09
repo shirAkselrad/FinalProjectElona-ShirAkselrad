@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import styles from "./inventory.module.css";
-
+import AddProductPopup from "../AddProductPopup/AddProductPopup.jsx";
 import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
 import InventoryTable from "../InventoryTable/InventoryTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
@@ -13,7 +13,18 @@ import { useOutletContext } from "react-router-dom";
  * @returns Inventory
  */
 function Inventory() {
-  const { inventory } = useOutletContext();
+  const { inventory, setInventory } = useOutletContext();
+
+  const [showPopup, setShowPopup] = useState(false);
+
+  function handleOpenPopup() {
+    setShowPopup(true);
+  }
+
+  function handleClosePopup() {
+    setShowPopup(false);
+  }
+
   // This part is responsible for the search filter in the inventory table begins empty as default
   const [searchValue, setSearchValue] = useState("");
 
@@ -50,7 +61,9 @@ function Inventory() {
         <div className={styles.topActions}>
           <button className={styles.saveBtn}>SAVE</button>
 
-          <button className={styles.addProduct}>+ ADD PRODUCT</button>
+          <button onClick={handleOpenPopup} className={styles.addProduct}>
+            + ADD PRODUCT
+          </button>
         </div>
       </div>
 
@@ -65,6 +78,7 @@ function Inventory() {
         onRemove={onRemove}
         inventory={filterInventory}
       />
+      {showPopup && <AddProductPopup onClose={handleClosePopup} />}
     </div>
   );
 }

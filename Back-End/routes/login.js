@@ -9,6 +9,7 @@ const db = dbSingleton.getConnection();
 
 //This path is for getting the first name from the sesssion after the login
 router.get("/firstName", (req, res) => {
+  console.log("SESSION:", req.session);
   if (!req.session.user) {
     return res.status(200).json({ success: false });
   }
@@ -38,7 +39,6 @@ router.post("/", (req, res) => {
 
     if (results.length != 0) {
       return bcrypt.compare(password, results[0].password, (err, isMatch) => {
-
         if (err) {
           return res.status(500).send(err);
         }

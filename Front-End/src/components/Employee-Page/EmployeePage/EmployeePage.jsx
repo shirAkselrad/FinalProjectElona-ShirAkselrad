@@ -1,8 +1,4 @@
 import styles from "./employeePage.module.css";
-
-import brownBagImg from "../../../assets/brownBagImg.png";
-import cloverBroochImg from "../../../assets/cloverBroochImg.png";
-import creamHatImg from "../../../assets/creamHatImg.png";
 import Menu from "../../General/ManagerAndEmployee/Menu/Menu.jsx";
 import { FaUser } from "react-icons/fa";
 import { FaBoxesStacked } from "react-icons/fa6";
@@ -15,7 +11,36 @@ import { useEffect, useState } from "react";
  * @returns EmployeePage
  */
 function EmployeePage() {
+  //getting the clients for the clients page
   const [clients, setClients] = useState([]);
+  const [inventory, setInventory] = useState([]);
+
+  //The function gets all the inventory details
+  async function getInventory() {
+    try {
+      const response = await fetch("/api/employee/inventory", {
+        method: "GET",
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      const data = await response.json();
+      setInventory(data.inventory);
+    } catch (error) {
+      console.error("Error getting inventory: ", error);
+    }
+  }
+
+  useEffect(() => {
+    getInventory();
+  }, []);
+
+
+
+
+
+
+
 
   //The function gets all the clients details
   async function getClients() {
@@ -58,41 +83,6 @@ function EmployeePage() {
       icon: <FaBox />,
     },
   ];
-
-  // const clients = [
-  //   {
-  //     id: 1,
-  //     name: "Noa Azulay",
-  //     phone: "050-1234567",
-  //     address: "Haifa",
-  //     email: "noa@email.com",
-  //     role: "Client",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Roni Peretz",
-  //     phone: "052-2345678",
-  //     address: "Tel Aviv",
-  //     email: "roni@email.com",
-  //     role: "Client",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Yael Mor",
-  //     phone: "054-3456789",
-  //     address: "Jerusalem",
-  //     email: "yael@email.com",
-  //     role: "Client",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Adi Cohen",
-  //     phone: "053-4567890",
-  //     address: "Netanya",
-  //     email: "adi@email.com",
-  //     role: "Client",
-  //   },
-  // ];
 
   const orders = [
     {
@@ -148,40 +138,40 @@ function EmployeePage() {
     },
   ];
 
-  const inventory = [
-    {
-      id: 1,
-      name: "Clover Brooch",
-      category: "Brooch",
-      stock: 12,
-      price: 168,
-      status: "In Stock",
-      image: cloverBroochImg,
-    },
-    {
-      id: 2,
-      name: "Brown Bag",
-      category: "Bag",
-      stock: 4,
-      price: 295,
-      status: "Low Stock",
-      image: brownBagImg,
-    },
-    {
-      id: 3,
-      name: "Cream Hat",
-      category: "Hat",
-      stock: 0,
-      price: 120,
-      status: "Out of Stock",
-      image: creamHatImg,
-    },
-  ];
+  // const inventory = [
+  //   {
+  //     id: 1,
+  //     name: "Clover Brooch",
+  //     category: "Brooch",
+  //     stock: 12,
+  //     price: 168,
+  //     status: "In Stock",
+  //     image: cloverBroochImg,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Brown Bag",
+  //     category: "Bag",
+  //     stock: 4,
+  //     price: 295,
+  //     status: "Low Stock",
+  //     image: brownBagImg,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Cream Hat",
+  //     category: "Hat",
+  //     stock: 0,
+  //     price: 120,
+  //     status: "Out of Stock",
+  //     image: creamHatImg,
+  //   },
+  // ];
 
   return (
     <main className={styles.employeePage}>
       <div className={styles.content}>
-        <Outlet context={{ clients, setClients, inventory, orders }} />
+        <Outlet context={{ clients, setClients, inventory, setInventory, orders }} />
         {/*The menu gets the items- the optional sections according to the user role and the setActivePage which gets the function to operate */}
         <Menu items={employeeMenu} />
       </div>

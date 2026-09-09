@@ -1,0 +1,89 @@
+.colorSelect {
+  width: 100%;
+  position: relative;
+}
+
+/* COLOR label */
+.label {
+  display: block;
+  margin-bottom: 8px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 3px;
+
+  color: #9a7868;
+}
+
+/* Selected color area */
+.selected {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 0 0 10px;
+
+  border-bottom: 1px solid #e5d8cf;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #6f625b;
+}
+
+.placeholder {
+  color: #9a8b82;
+}
+
+.arrow {
+  color: #9a7868;
+  font-size: 16px;
+}
+
+/* Colors list */
+.dropdown {
+  width: 100%;
+  max-height: 200px;
+
+  box-sizing: border-box;
+
+  margin-top: 4px;
+
+  background-color: #fbf8f5;
+  border: 1px solid #e5d8cf;
+
+  overflow-y: auto;
+}
+
+/* Single color */
+.colorOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 9px 12px;
+
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #6f625b;
+}
+
+/* Small color square */
+.colorSquare {
+  width: 14px;
+  height: 14px;
+
+  flex-shrink: 0;
+
+  border: 1px solid #cdbbb0;
+  border-radius: 2px;
+}
+
+.selectedColor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

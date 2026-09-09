@@ -11,7 +11,7 @@ function Clients() {
   //This popup will be displayed only in case there is no results of the filtering action
   const [showNoMatchesPopup, setShowNoMatchesPopup] = useState(false);
 
-  //filters
+  //This state variable keeps all the cities in the clients table with no repeats
   const [cities, setCities] = useState([]);
 
   //The function gets all the cities names with no repeats
@@ -31,6 +31,7 @@ function Clients() {
     }
   }
 
+  //getting an updated cities list
   useEffect(() => {
     getCitiesNoRepeat();
   }, []);
@@ -40,18 +41,19 @@ function Clients() {
   //for the city's filter
   const [selectedCity, setSelectedCity] = useState("All Cities");
 
+  //hold all the first types
   const filters = [
     {
       title: "STATUS",
       options: ["All Statuses", "Active", "Not Active"],
       selected: selectedStatus,
-      setSelected: handleStatusChange,
+      setSelected: handleStatusChange, //only when the filter changed the list will chanage as well
     },
     {
       title: "CITY",
       options: ["All Cities", ...cities],
       selected: selectedCity,
-      setSelected: handleCityChange,
+      setSelected: handleCityChange, //only when the filter changed the list will chanage as well
     },
   ];
 
@@ -60,46 +62,62 @@ function Clients() {
   //This part is resposible to the search filter in the clients table
   const [searchValue, setSearchValue] = useState("");
 
+  //this state variable is for those clients that will be presented after filtering
   const [filteredClients, setFilteredClients] = useState(clients);
 
-  function applyFilters(status, city) {
+  //This function operates the filtering action, update the client's list and displays the popup if needs
+  function applyFilters(status, city, search) {
     const result = clients.filter((client) => {
       const matchedSearch = Object.entries(client).some(([key, value]) => {
         const currentValue = String(value).toLowerCase();
-        const search = searchValue.toLowerCase();
+        const currentSearch = search.toLowerCase();
 
-        if (key === "status") return currentValue === search;
-        return currentValue.includes(search);
+        if (key === "status") return currentValue === currentSearch;
+
+        return currentValue.includes(currentSearch);
       });
+
       const matchesStatus =
         client.status === status || status === "All Statuses";
+
       const matchesCity = client.city === city || city === "All Cities";
+
       return matchedSearch && matchesCity && matchesStatus;
     });
-    if (result.length == 0) {
+
+    if (result.length === 0) {
       setShowNoMatchesPopup(true);
       return;
     }
+
     setFilteredClients(result);
   }
 
+  //This function gets a status value and change the status state variable, also calls the applyFilters function for an operating the filtering
   function handleStatusChange(value) {
     setSelectedStatus(value);
-    applyFilters(value, selectedCity);
+    applyFilters(value, selectedCity, searchValue);
   }
 
+  //This function gets a city value and change the city's value filter (option) in the state variable, aslo calls the applyFilters function for operating the filtering
   function handleCityChange(value) {
-    console.log("NEW CITY:", value);
     setSelectedCity(value);
-    applyFilters(selectedStatus, value);
+    applyFilters(selectedStatus, value, searchValue);
   }
 
+  //This function gets a search value and pass it to the searchValue state variable and call the applyFilters function for operating the function
+  function handleSearchChange(value) {
+    setSearchValue(value);
+    applyFilters(selectedStatus, selectedCity, value);
+  }
+
+  //This function reset all the filters value so all the clients in the database will be displayed
   function resetFilters() {
     setSelectedStatus("All Statuses");
     setSelectedCity("All Cities");
+    setSearchValue("");
     setFilteredClients(clients);
   }
-
   //the function which update the clients array after updating a client
   function handleUpdateClient(updateClient) {
     setClients((prevClients) =>
@@ -125,7 +143,7 @@ function Clients() {
         <div className={styles.search}>
           <SearchBar
             searchValue={searchValue}
-            setSearchValue={setSearchValue}
+            setSearchValue={handleSearchChange}
           />
         </div>
 
