@@ -171,7 +171,7 @@ function EmployeePage() {
   return (
     <main className={styles.employeePage}>
       <div className={styles.content}>
-        <Outlet context={{ clients, setClients, inventory, setInventory, orders }} />
+        <Outlet context={{ clients, setClients, orders }} />
         {/*The menu gets the items- the optional sections according to the user role and the setActivePage which gets the function to operate */}
         <Menu items={employeeMenu} />
       </div>

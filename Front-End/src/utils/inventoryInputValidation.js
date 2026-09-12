@@ -1,9 +1,17 @@
 //The function gets str, returns true if all the chars in it are only letters, else false
 export function checkStr(str) {
-  if (str.length == 0) return false;
-  for (let i = 0; i < str.length; i++)
-    if ((str[i] < "A" || str[i] < "Z") && (str[i] < "a" || str[i] > "z"))
+  if (str.length === 0) return false;
+
+  for (let i = 0; i < str.length; i++) {
+    if (
+      str[i] !== " " &&
+      (str[i] < "A" || str[i] > "Z") &&
+      (str[i] < "a" || str[i] > "z")
+    ) {
       return false;
+    }
+  }
+
   return true;
 }
 

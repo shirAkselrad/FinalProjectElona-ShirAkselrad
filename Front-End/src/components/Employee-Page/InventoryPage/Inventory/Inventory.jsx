@@ -1,11 +1,9 @@
-import { useState } from "react";
-
 import styles from "./inventory.module.css";
 import AddProductPopup from "../AddProductPopup/AddProductPopup.jsx";
 import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
 import InventoryTable from "../InventoryTable/InventoryTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
-import { useOutletContext } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 /**
  *
@@ -13,7 +11,15 @@ import { useOutletContext } from "react-router-dom";
  * @returns Inventory
  */
 function Inventory() {
-  const { inventory, setInventory } = useOutletContext();
+  const [inventory, setInventory] = useState([]);
+  async function getInventory() {
+    const response = await fetch("/api/employee/inventory");
+    const data = await response.json();
+    if (data.success) setInventory(data.inventory);
+  }
+  useEffect(() => {
+    getInventory();
+  }, []);
 
   const [showPopup, setShowPopup] = useState(false);
 
@@ -28,31 +34,30 @@ function Inventory() {
   // This part is responsible for the search filter in the inventory table begins empty as default
   const [searchValue, setSearchValue] = useState("");
 
-  //resposible to update the inventory
-  const [inventoryToUpdate, setInventoryToUpdate] = useState(inventory);
+ 
 
   //for the search bar
-  const filterInventory = inventoryToUpdate.filter((inv) =>
-    inv.name.includes(searchValue),
-  );
+const filterInventory = inventory.filter((inv) =>
+  inv.name.includes(searchValue),
+);
 
   //This function save all the changes while clicking on the SAVE button
-  const onSave = (editedInv) => {
-    const updatedInventory = inventoryToUpdate.map((inv) =>
-      inv.id === editedInv.id ? editedInv : inv,
-    );
+const onSave = (editedInv) => {
+  const updatedInventory = inventory.map((inv) =>
+    inv.product_id === editedInv.product_id ? editedInv : inv,
+  );
 
-    setInventoryToUpdate(updatedInventory);
-  };
+  setInventory(updatedInventory);
+};
 
   //This function removes the inv which it's remove btn was pressed
-  const onRemove = (invToRemove) => {
-    const updatedInventory = inventoryToUpdate.map((inv) =>
-      inv.id === invToRemove.id ? { ...inv, removed: !inv.removed } : inv,
-    );
+const onRemove = (invToRemove) => {
+  const updatedInventory = inventory.map((inv) =>
+    inv.product_id === invToRemove.product_id? { ...inv, removed: !inv.removed } : inv,
+  );
 
-    setInventoryToUpdate(updatedInventory);
-  };
+  setInventory(updatedInventory);
+};
   return (
     <div className={styles.inventory}>
       <div className={styles.top}>

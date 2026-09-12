@@ -1,16 +1,12 @@
 .overlay {
   position: fixed;
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   background-color: rgba(0, 0, 0, 0.35);
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 1000;
 }
 
@@ -20,14 +16,11 @@
   max-height: 94vh;
   box-sizing: border-box;
   background-color: #fbf8f5;
-
   padding: 36px 50px;
-
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   gap: 18px;
-
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
   overflow-y: auto;
 }
@@ -44,7 +37,13 @@
   gap: 40px;
 }
 
+.half {
+  flex: 1;
+  min-width: 0;
+}
+
 /* X button */
+
 .removeBtn {
   position: absolute;
   top: 16px;
@@ -52,62 +51,37 @@
 }
 
 /* Title */
+
 .title {
   margin: 4px 0 14px;
-
   text-align: center;
-
   color: #5f4638;
-
   font-size: 24px;
   font-weight: 400;
   letter-spacing: 2px;
 }
 
-
-.half {
-  flex: 1;
-  min-width: 0;
-}
-.checkboxField {
-  min-height: 42px;
-
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  border-bottom: 1px solid #e5d8cf;
-}
-
 /* Description */
+
 .description {
   width: 100%;
-
   display: flex;
   flex-direction: column;
   gap: 8px;
-
   margin-top: 3px;
 }
 
 .textarea {
   width: 100%;
   min-height: 60px;
-
   box-sizing: border-box;
-
   padding: 10px 12px;
-
   border: 1px solid #d6c8bf;
   background-color: transparent;
-
   color: #4a3b34;
-
   font-family: inherit;
   font-size: 14px;
-
   resize: vertical;
-
   outline: none;
 }
 
@@ -119,51 +93,59 @@
   border-color: #8b6f60;
 }
 
-/* Product image */
+/* Product images */
+
 .image {
   width: 100%;
-
   display: flex;
   flex-direction: column;
   gap: 8px;
-
   margin-top: 2px;
 }
 
-.fileButton {
-  width: fit-content;
+/* ADD IMAGE + REMOVE ALL */
 
-  padding: 7px 12px;
-
-  border: 1px solid #cdbbb0;
-
-  background-color: transparent;
-  color: #5f4638;
-
-  font-size: 12px;
-  letter-spacing: 1px;
-
-  cursor: pointer;
+.imageButtons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.fileButton input {
-  display: none;
+.imageButtons > * {
+  width: 113px;
+  height: 34px;
+  box-sizing: border-box;
 }
 
-.fileButton:hover {
-  background-color: #f3ebe6;
+/* Image previews */
+
+.imagesPreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Restock */
+
+.checkboxField {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #e5d8cf;
 }
 
 /* Add product button */
+
 .addBtn {
   width: 100%;
-
   margin-top: 8px;
-
   min-height: 42px;
 }
 
 /* Remove arrows from number inputs */
+
 .popup input[type="number"]::-webkit-inner-spin-button,
 .popup input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -172,4 +154,27 @@
 
 .popup input[type="number"] {
   -moz-appearance: textfield;
+}
+
+.imageButtons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.imageButtons > * {
+  width: 125px;
+  height: 34px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.popup {
+  max-height: 94vh;
+  overflow-y: auto;
+}
+
+.fileInfo {
+  font-size: 11px;
+  color: #8f817a;
 }

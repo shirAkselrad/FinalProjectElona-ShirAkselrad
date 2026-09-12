@@ -15,22 +15,38 @@ function InventoryTable({ inventory, onSave, onRemove }) {
   const [selectedInv, setSelectedInv] = useState(null);
 
   return (
-    <div>
+    <div className={styles.tableWrapper}>
       <table className={styles.table}>
         <colgroup>
-          <col className={styles.productCol} />
+          <col className={styles.productIdCol} />
+          <col className={styles.nameCol} />
           <col className={styles.categoryCol} />
+          <col className={styles.colorCol} />
+          <col className={styles.sizeCol} />
           <col className={styles.priceCol} />
-          <col className={styles.stockCol} />
-          <col className={styles.editCol} />
+          <col className={styles.costPriceCol} />
+          <col className={styles.discountCol} />
+          <col className={styles.quantityCol} />
+          <col className={styles.minStockCol} />
+          <col className={styles.statusCol} />
+          <col className={styles.restockCol} />
+          <col className={styles.actionsCol} />
         </colgroup>
 
         <thead>
           <tr>
-            <th>Product</th>
+            <th>Product ID</th>
+            <th>Name</th>
             <th>Category</th>
+            <th>Color</th>
+            <th>Size</th>
             <th>Price</th>
-            <th>Stock</th>
+            <th>Cost Price</th>
+            <th>Discount</th>
+            <th>Quantity</th>
+            <th>Min Stock</th>
+            <th>Status</th>
+            <th>Restock Required</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -41,7 +57,7 @@ function InventoryTable({ inventory, onSave, onRemove }) {
             <InventoryRow
               onRemove={() => onRemove(inv)}
               onEdit={() => setSelectedInv(inv)}
-              key={inv.id}
+              key={inv.product_id}
               inv={inv}
             />
           ))}

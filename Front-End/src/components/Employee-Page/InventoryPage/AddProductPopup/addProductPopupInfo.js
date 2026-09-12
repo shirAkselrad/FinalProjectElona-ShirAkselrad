@@ -1,5 +1,6 @@
 import { useState } from "react";
 import * as InventoryInputValidation from "../../../../utils/inventoryInputValidation.js";
+
 import {
   ProductCategory,
   ProductSize,
@@ -12,7 +13,6 @@ function useProductForm() {
     name: "",
     category: ProductCategory.NONE,
     color: "",
-    material: "",
     country_origin: "None",
     size: ProductSize.NONE,
     description: "",
@@ -25,7 +25,7 @@ function useProductForm() {
     restock_required: true,
     sales_check_date: "",
     min_sales: "",
-    image: "",
+    files: [],
   });
 
   const [errors, setErrors] = useState({
@@ -33,7 +33,6 @@ function useProductForm() {
     name: "",
     category: "",
     color: "",
-    material: "",
     country_origin: "",
     size: "",
     description: "",
@@ -45,9 +44,12 @@ function useProductForm() {
     restock_required: "",
     sales_check_date: "",
     min_sales: "",
-    image: "",
+    files: "",
   });
 
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".mp4", ".mov"];
+
+  const [displayPopup, setDisplayPopup] = useState(false);
   function handleProductNameChange(value) {
     setProduct({
       ...product,
@@ -63,6 +65,24 @@ function useProductForm() {
       setErrors({
         ...errors,
         name: "",
+      });
+    }
+  }
+
+  function handleProductIdChange(value) {
+    setProduct({
+      ...product,
+      product_id: value,
+    });
+    if (value.length != 9) {
+      setErrors({
+        ...errors,
+        product_id: "Invalid product ID",
+      });
+    } else {
+      setErrors({
+        ...errors,
+        product_id: "",
       });
     }
   }
@@ -126,7 +146,7 @@ function useProductForm() {
       ...product,
       price: value,
     });
-    if (!InventoryInputValidation.checkPrice(value) || Number(value)<=0) {
+    if (!InventoryInputValidation.checkPrice(value) || Number(value) <= 0) {
       setErrors({
         ...errors,
         price: "Invalid price value",
@@ -139,12 +159,35 @@ function useProductForm() {
     }
   }
 
+  function handleProductCostPriceChange(value) {
+    setProduct({
+      ...product,
+      cost_price: value,
+    });
+    if (!InventoryInputValidation.checkPrice(value) || Number(value) <= 0) {
+      setErrors({
+        ...errors,
+        cost_price: "Invalid cost price value",
+      });
+    } else if (Number(product.price) < Number(value)) {
+      setErrors({
+        ...errors,
+        cost_price: "Cost price cannot be higher than the selling price ",
+      });
+    } else {
+      setErrors({
+        ...errors,
+        cost_price: "",
+      });
+    }
+  }
+
   function handleProductQuantityChange(value) {
     setProduct({
       ...product,
       quantity: value,
     });
-    if (!InventoryInputValidation.onlyNumbers(value) || Number(value)<=0) {
+    if (!InventoryInputValidation.onlyNumbers(value) || Number(value) <= 0) {
       setErrors({
         ...errors,
         quantity: "Invalid quantity value",
@@ -180,7 +223,7 @@ function useProductForm() {
       ...product,
       discount: value,
     });
-    if (!InventoryInputValidation.checkDiscount(value)|| Number(value)<=0) {
+    if (!InventoryInputValidation.checkDiscount(value) || Number(value) < 0) {
       setErrors({
         ...errors,
         discount: "Invalid discount value",
@@ -198,7 +241,7 @@ function useProductForm() {
       ...product,
       min_sales: value,
     });
-    if (!InventoryInputValidation.onlyNumbers(value) || value<=0) {
+    if (!InventoryInputValidation.onlyNumbers(value) || value <= 0) {
       setErrors({
         ...errors,
         min_sales: "Invalid min sales value",
@@ -257,14 +300,61 @@ function useProductForm() {
       color: value,
     }));
   }
+
+  //The function gets a filesList from multiple and add it to the previous values of product (check if the images not already exsits )
+  function handleProductFilesChange(files) {
+    const filesToAdd = Array.from(files);
+
+    const allowedFilesToAdd = filesToAdd.filter((file) =>
+      allowedExtensions.some((ext) => file.name.toLowerCase().endsWith(ext)),
+    );
+
+    const newFiles = allowedFilesToAdd.filter(
+      (newFile) =>
+        !product.files.some(
+          (existingFile) =>
+            existingFile.name === newFile.name &&
+            existingFile.size === newFile.size &&
+            existingFile.lastModified === newFile.lastModified,
+        ),
+    );
+
+    const duplicateFlag = newFiles.length < allowedFilesToAdd.length;
+
+    if (duplicateFlag) {
+      setDisplayPopup(true);
+    }
+
+    setProduct((prev) => ({
+      ...prev,
+      files: [...prev.files, ...newFiles],
+    }));
+  }
+
+  function handleRemoveFile(indexToRemove) {
+    setProduct((prev) => ({
+      ...prev,
+      files: prev.files.filter((file, index) => index !== indexToRemove),
+    }));
+  }
+
+  function handleRemoveAllFiles() {
+    setProduct((prev) => ({
+      ...prev,
+      files: [],
+    }));
+  }
+
   return {
     product,
     errors,
     handleProductNameChange,
+    handleProductIdChange,
     handleProductCategoryChange,
     handleProductSizeChange,
     handleProductCountryChange,
     handleProductPriceChange,
+    handleProductCostPriceChange,
     handleProductQuantityChange,
     handleProductMinStockChange,
     handleProductDiscountChange,
@@ -274,6 +364,11 @@ function useProductForm() {
     handleRestockRequiredChange,
     handleSalesCheckDateChange,
     handleColorChange,
+    handleProductFilesChange,
+    handleRemoveFile,
+    handleRemoveAllFiles,
+    displayPopup,
+    setDisplayPopup,
   };
 }
 

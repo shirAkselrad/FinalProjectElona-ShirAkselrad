@@ -1,0 +1,51 @@
+.container {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.imageBox {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border: 1px solid #9d918b;
+  background-color: #fbf8f5;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.name {
+  width: 100%;
+  font-size: 11px;
+  color: #51453f;
+  text-align: center;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.removeBtn {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+
+  width: 18px;
+  height: 18px;
+
+  border: none;
+  border-radius: 50%;
+  background-color: white;
+
+  font-size: 14px;
+  line-height: 18px;
+  cursor: pointer;
+
+  z-index: 2;
+}

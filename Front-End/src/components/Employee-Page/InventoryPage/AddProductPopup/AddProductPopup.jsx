@@ -5,7 +5,6 @@ import InputLabel from "../../../General/InputLabel/InputLabel.jsx";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
 import CheckBoxField from "../../../General/CheckBoxField/CheckBoxField.jsx";
 import Remove from "../../../General/Remove/Remove.jsx";
-import * as InventoryValidation from "../../../../utils/inventoryInputValidation.js";
 import GeneralSelection from "../../../General/GeneralSelection/GeneralSelection.jsx";
 import DateInput from "../../../General/DateInput/DateInput.jsx";
 import {
@@ -14,17 +13,47 @@ import {
   ProductStatus,
 } from "../../../../Enums/products.js";
 import { countries } from "../../../../data/countries.js";
-import useProductForm from "./addProductPopupInfo.js"; 
-import TextAreaField from "../../../General/TextAreaField/TextAreaField.jsx"
+import useProductForm from "./addProductPopupInfo.js";
+import TextAreaField from "../../../General/TextAreaField/TextAreaField.jsx";
+import ImageUploadBtn from "../../../General/ImageUploadBtn/ImageUploadBtn.jsx";
+import { useEffect } from "react";
+import BrightGeneralBtn from "../../../General/BrightGeneralBtn/BrightGeneralBtn.jsx";
+import ImagesPreviewList from "../../../General/ImagesPreviewList/ImagesPreviewList.jsx";
+import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
+import * as inputValidation from "../../../../utils/inputValidation.js";
 function AddProductPopup({ onClose }) {
+  async function createProduct(formData) {
+    try {
+      const response = await fetch("/api/employee/createProduct", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("error ucreating new product, error: ", error);
+    }
+  }
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const {
     product,
     errors,
     handleProductNameChange,
+    handleProductIdChange,
     handleProductCategoryChange,
     handleProductSizeChange,
     handleProductCountryChange,
     handleProductPriceChange,
+    handleProductCostPriceChange,
     handleProductQuantityChange,
     handleProductMinStockChange,
     handleProductDiscountChange,
@@ -34,54 +63,58 @@ function AddProductPopup({ onClose }) {
     handleRestockRequiredChange,
     handleSalesCheckDateChange,
     handleColorChange,
+    handleProductFilesChange,
+    handleRemoveFile,
+    handleRemoveAllFiles,
+    displayPopup,
+    setDisplayPopup,
   } = useProductForm();
 
   //The function check if the form is valid if it does, call the createUser function
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (!isFormValid) return;
-    const productData = {
-      product_id: InventoryValidation.checkStr(product.product_id),
-      name: InventoryValidation.checkStr(product.name),
-      category: product.category,
-      color: product.color,
-      material: product.material,
-      country_origin: product.country_origin,
-      size: product.size,
-      description: InventoryValidation.checkStr(product.description),
-      price: InventoryValidation.checkPrice(product.price),
-      cost_price: InventoryValidation.checkPrice(product.cost_price),
-      discount: product.discount,
-      quantity: InventoryValidation.onlyNumbers(product.quantity),
-      min_stock: InventoryValidation.onlyNumbers(product.min_stock),
-      status: product.status,
-      restock_required: product.restock_required,
-      sales_days: InventoryValidation.onlyNumbers(product.sales_days),
-      min_sales: InventoryValidation.onlyNumbers(product.min_sales),
-      image: InventoryValidation.onlyNumbers(product.image),
-    };
+    if (noErrors && !noEmptyInputs) return;
+    const formData = new FormData();
 
-    // const data = await createUser(userData);
-
-    // //This part check if the user created and sent texts to the popup according to the success state
-    // if (data?.success) {
-    //   setDisplayMessagePopup({
-    //     show: true,
-    //     message: data.message,
-    //     type: "success",
-    //   });
-    // } else {
-    //   setDisplayMessagePopup({
-    //     show: true,
-    //     message: data?.message || "This User already exists",
-    //     type: "error",
-    //   });
-    // }
+    formData.append("product_id", product.product_id.trim());
+    formData.append("name", product.name.trim());
+    formData.append("category", product.category);
+    formData.append("color", product.color);
+    formData.append("country_origin", product.country_origin);
+    formData.append("size", product.size);
+    formData.append("description", product.description.trim());
+    formData.append("price", product.price.trim());
+    formData.append("cost_price", product.cost_price.trim());
+    formData.append("discount", product.discount.trim());
+    formData.append("quantity", product.quantity.trim());
+    formData.append("min_stock", product.min_stock.trim());
+    formData.append("status", product.status);
+    formData.append("restock_required", product.restock_required);
+    formData.append("sales_check_date", product.sales_check_date);
+    formData.append("min_sales", product.min_sales.trim());
+    product.files.forEach((file) => {
+      formData.append("uploading-files", file);
+    });
+    const data = await createProduct(formData);
   }
+
+  //checking there is no errors in the inputs before sending it to backend
+  const noErrors = Object.values(errors).every((error) => error === "");
+
+  const noEmptyInputs =
+    Object.values(product).every((input) => input !== "" && input !== "None") &&
+    product.files.length > 0;
 
   return (
     <div className={styles.overlay}>
+      {displayPopup && (
+        <MessagePopup
+          message={"Some images were already added and were skipped"}
+          type={"info"}
+          onClose={() => setDisplayPopup(false)}
+        />
+      )}
       <div className={styles.popup}>
         <div className={styles.removeBtn}>
           <Remove onClick={onClose} />
@@ -95,6 +128,14 @@ function AddProductPopup({ onClose }) {
             error={errors.name}
             onChange={(e) => handleProductNameChange(e.target.value)}
             onBlur={(e) => handleProductNameChange(e.target.value)}
+          />
+
+          <InputField
+            label="Product ID"
+            placeholder="Enter product ID"
+            error={errors.product_id}
+            onChange={(e) => handleProductIdChange(e.target.value)}
+            onBlur={(e) => handleProductIdChange(e.target.value)}
           />
 
           <div>
@@ -140,6 +181,7 @@ function AddProductPopup({ onClose }) {
                 label="Price"
                 placeholder="0.00"
                 type="number"
+                step="0.01"
                 error={errors.price}
                 onChange={(e) => {
                   handleProductPriceChange(e.target.value);
@@ -155,12 +197,13 @@ function AddProductPopup({ onClose }) {
                 label="Cost Price"
                 placeholder="0.00"
                 type="number"
+                step="0.01"
                 error={errors.cost_price}
                 onChange={(e) => {
-                  handleProductPriceChange(e.target.value);
+                  handleProductCostPriceChange(e.target.value);
                 }}
                 onBlur={(e) => {
-                  handleProductPriceChange(e.target.value);
+                  handleProductCostPriceChange(e.target.value);
                 }}
               />
             </div>
@@ -238,12 +281,28 @@ function AddProductPopup({ onClose }) {
           </div>
 
           <div className={styles.image}>
-            <InputLabel text="Product Image" />
+            <InputLabel text="Product Files" />
+            <span className={styles.fileInfo}>
+              Allowed files: JPG, JPEG, PNG, WEBP, MP4, MOV
+            </span>
+            <div className={styles.imageButtons}>
+              <ImageUploadBtn
+                text="ADD FILES"
+                multiple
+                onChange={(e) => handleProductFilesChange(e.target.files)}
+              />
 
-            <label className={styles.fileButton}>
-              CHOOSE IMAGE
-              <input type="file" />
-            </label>
+              {product.files.length > 0 && (
+                <BrightGeneralBtn
+                  text="REMOVE ALL"
+                  onClick={handleRemoveAllFiles}
+                />
+              )}
+            </div>
+            <ImagesPreviewList
+              images={product.files}
+              onRemove={handleRemoveFile}
+            />
           </div>
 
           <div>
@@ -266,8 +325,10 @@ function AddProductPopup({ onClose }) {
 
           <GeneralBtn
             text="ADD PRODUCT"
-            type="button"
+            type="submit"
             className={styles.addBtn}
+            disabled={noErrors && !noEmptyInputs}
+            onClick={onClose}
           />
         </form>
       </div>
