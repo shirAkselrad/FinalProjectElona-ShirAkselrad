@@ -81,7 +81,7 @@ router.post("/updateClient", (req, res) => {
 });
 
 //This path is for chaning the chosen client's status by clicking the "remove" btn
-router.post("/changeStatus", (req, res) => {
+router.post("/changeClientStatus", (req, res) => {
   const { email, status } = req.body;
   const query = "update users set status=? where email=?";
   db.query(query, [status, email], (err, results) => {

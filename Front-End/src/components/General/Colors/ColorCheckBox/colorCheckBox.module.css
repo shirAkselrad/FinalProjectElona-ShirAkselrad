@@ -1,0 +1,30 @@
+.colorCheckBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-family: Georgia, serif;
+  font-size: 13px;
+  color: #5f4638;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.colorCheckBox input {
+  width: 15px;
+  height: 15px;
+
+  accent-color: #5f4638;
+  cursor: pointer;
+}
+
+.colorSquare {
+  width: 16px;
+  height: 16px;
+
+  border: 1px solid #cfc5bd;
+  border-radius: 3px;
+
+  flex-shrink: 0;
+}

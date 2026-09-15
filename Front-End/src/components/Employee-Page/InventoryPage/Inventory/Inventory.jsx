@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
  */
 function Inventory() {
   const [inventory, setInventory] = useState([]);
+
   async function getInventory() {
     const response = await fetch("/api/employee/inventory");
     const data = await response.json();
@@ -21,52 +22,49 @@ function Inventory() {
     getInventory();
   }, []);
 
-  const [showPopup, setShowPopup] = useState(false);
+  const [showPopupAdd, setShowPopupAdd] = useState(false);
 
-  function handleOpenPopup() {
-    setShowPopup(true);
+  function handleOpenPopupAdd() {
+    setShowPopupAdd(true);
   }
 
-  function handleClosePopup() {
-    setShowPopup(false);
+  function handleClosePopupAdd() {
+    setShowPopupAdd(false);
   }
 
   // This part is responsible for the search filter in the inventory table begins empty as default
   const [searchValue, setSearchValue] = useState("");
 
- 
-
   //for the search bar
-const filterInventory = inventory.filter((inv) =>
-  inv.name.includes(searchValue),
-);
+  const filterInventory = inventory.filter((inv) =>
+    inv.name.includes(searchValue),
+  );
 
   //This function save all the changes while clicking on the SAVE button
-const onSave = (editedInv) => {
-  const updatedInventory = inventory.map((inv) =>
-    inv.product_id === editedInv.product_id ? editedInv : inv,
-  );
-
-  setInventory(updatedInventory);
-};
+  const onSave = (editedInv) => {
+    const updatedInventory = inventory.map((inv) =>
+      inv.product_id === editedInv.product_id ? editedInv : inv,
+    );
+    setInventory(updatedInventory);
+  };
 
   //This function removes the inv which it's remove btn was pressed
-const onRemove = (invToRemove) => {
-  const updatedInventory = inventory.map((inv) =>
-    inv.product_id === invToRemove.product_id? { ...inv, removed: !inv.removed } : inv,
-  );
+  const onRemove = (invToRemove) => {
+    const updatedInventory = inventory.map((inv) =>
+      inv.product_id === invToRemove.product_id
+        ? { ...inv, status: invToRemove.status }
+        : inv,
+    );
 
-  setInventory(updatedInventory);
-};
+    setInventory(updatedInventory);
+  };
   return (
     <div className={styles.inventory}>
       <div className={styles.top}>
         <SectionTitle title="Inventory" />
 
         <div className={styles.topActions}>
-          <button className={styles.saveBtn}>SAVE</button>
-
-          <button onClick={handleOpenPopup} className={styles.addProduct}>
+          <button onClick={handleOpenPopupAdd} className={styles.addProduct}>
             + ADD PRODUCT
           </button>
         </div>
@@ -83,7 +81,12 @@ const onRemove = (invToRemove) => {
         onRemove={onRemove}
         inventory={filterInventory}
       />
-      {showPopup && <AddProductPopup onClose={handleClosePopup} />}
+      {showPopupAdd && (
+        <AddProductPopup
+          onClose={handleClosePopupAdd}
+          onProductAdded={getInventory}
+        />
+      )}
     </div>
   );
 }

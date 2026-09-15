@@ -23,4 +23,12 @@
 
 .removed {
   opacity: 0.45;
+    
+}
+
+
+.removed td:not(:last-child) {
+  color: #aaa;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
 }

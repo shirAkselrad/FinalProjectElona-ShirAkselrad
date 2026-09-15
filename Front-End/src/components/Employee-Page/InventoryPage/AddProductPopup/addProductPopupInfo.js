@@ -1,18 +1,16 @@
 import { useState } from "react";
 import * as InventoryInputValidation from "../../../../utils/inventoryInputValidation.js";
-
-import {
-  ProductCategory,
-  ProductSize,
-  ProductStatus,
-} from "../../../../Enums/products.js";
+import * as inputValidation from "../../../../utils/inputValidation.js";
+import { ProductCategory, ProductSize } from "../../../../Enums/products.js";
 
 function useProductForm() {
+  const [frontImg, setFrontImg] = useState("");
+
   const [product, setProduct] = useState({
     product_id: "",
     name: "",
     category: ProductCategory.NONE,
-    color: "",
+    colors: [],
     country_origin: "None",
     size: ProductSize.NONE,
     description: "",
@@ -21,7 +19,6 @@ function useProductForm() {
     discount: "",
     quantity: "",
     min_stock: "",
-    status: ProductStatus.ACTIVE,
     restock_required: true,
     sales_check_date: "",
     min_sales: "",
@@ -32,7 +29,7 @@ function useProductForm() {
     product_id: "",
     name: "",
     category: "",
-    color: "",
+    colors: "",
     country_origin: "",
     size: "",
     description: "",
@@ -47,13 +44,18 @@ function useProductForm() {
     files: "",
   });
 
-  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".mp4", ".mov"];
+  const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp"];
 
-  const [displayPopup, setDisplayPopup] = useState(false);
+  const [popup, setPopup] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+
   function handleProductNameChange(value) {
     setProduct({
       ...product,
-      name: value,
+      name: InventoryInputValidation.everyWordWithCapitalLetter(value),
     });
 
     if (!InventoryInputValidation.checkStr(value)) {
@@ -210,6 +212,11 @@ function useProductForm() {
         ...errors,
         min_stock: "Invalid min stock value",
       });
+    } else if (Number(product.quantity) < Number(value)) {
+      setErrors({
+        ...errors,
+        min_stock: "Minimum stock cannot be bigger than product's quantity.",
+      });
     } else {
       setErrors({
         ...errors,
@@ -246,6 +253,11 @@ function useProductForm() {
         ...errors,
         min_sales: "Invalid min sales value",
       });
+    } else if (Number(product.quantity) < Number(value)) {
+      setErrors({
+        ...errors,
+        min_sales: "Minimum sales cannot be bigger than product's quantity.",
+      });
     } else {
       setErrors({
         ...errors,
@@ -258,7 +270,7 @@ function useProductForm() {
   function handleProductDescriptionChange(value) {
     setProduct({
       ...product,
-      description: value,
+      description: inputValidation.onlyFirstLetterCapital(value),
     });
     if (value == "") {
       setErrors({
@@ -271,13 +283,6 @@ function useProductForm() {
         description: "",
       });
     }
-  }
-
-  function handleProductStatusChange(value) {
-    setProduct({
-      ...product,
-      status: value,
-    });
   }
 
   function handleRestockRequiredChange(value) {
@@ -294,11 +299,28 @@ function useProductForm() {
     });
   }
 
-  function handleColorChange(value) {
-    setProduct((prev) => ({
-      ...prev,
-      color: value,
-    }));
+  function handleColorsChange(value) {
+    const updatedColors = product.colors.includes(value)
+      ? product.colors.filter((c) => c !== value)
+      : [...product.colors, value];
+
+    setProduct({
+      ...product,
+      colors: updatedColors,
+    });
+
+    if (updatedColors.length === 0) {
+      setErrors({
+        ...errors,
+        colors:
+          "Colors field cannot stay empty. Please choose at least one color.",
+      });
+    } else {
+      setErrors({
+        ...errors,
+        colors: "",
+      });
+    }
   }
 
   //The function gets a filesList from multiple and add it to the previous values of product (check if the images not already exsits )
@@ -313,22 +335,44 @@ function useProductForm() {
       (newFile) =>
         !product.files.some(
           (existingFile) =>
-            existingFile.name === newFile.name &&
-            existingFile.size === newFile.size &&
-            existingFile.lastModified === newFile.lastModified,
+            existingFile.file.name === newFile.name &&
+            existingFile.file.size === newFile.size &&
+            existingFile.file.lastModified === newFile.lastModified,
         ),
     );
 
-    const duplicateFlag = newFiles.length < allowedFilesToAdd.length;
+    const newFilesWithId = newFiles.map((file, i) => {
+      return {
+        file: file,
+        id: product.files.length + i,
+      };
+    });
+    const duplicateFlag = newFilesWithId.length < allowedFilesToAdd.length;
 
     if (duplicateFlag) {
-      setDisplayPopup(true);
+      setPopup({
+        show: true,
+        message: "Some images were already added and were skipped",
+        type: "info",
+      });
     }
 
     setProduct((prev) => ({
       ...prev,
-      files: [...prev.files, ...newFiles],
+      files: [...prev.files, ...newFilesWithId],
     }));
+
+    if (frontImg === "" && newFilesWithId.length > 0) {
+      setFrontImg(newFilesWithId[0].id);
+    }
+
+    if (newFilesWithId.length == 1) {
+      setPopup({
+        show: true,
+        message: `${newFilesWithId[0].file.name} will be the front image of the product`,
+        type: "info",
+      });
+    }
   }
 
   function handleRemoveFile(indexToRemove) {
@@ -360,15 +404,15 @@ function useProductForm() {
     handleProductDiscountChange,
     handleProductMinSalesChange,
     handleProductDescriptionChange,
-    handleProductStatusChange,
     handleRestockRequiredChange,
     handleSalesCheckDateChange,
-    handleColorChange,
+    handleColorsChange,
     handleProductFilesChange,
     handleRemoveFile,
     handleRemoveAllFiles,
-    displayPopup,
-    setDisplayPopup,
+    popup,
+    setPopup,
+    setFrontImg,
   };
 }
 

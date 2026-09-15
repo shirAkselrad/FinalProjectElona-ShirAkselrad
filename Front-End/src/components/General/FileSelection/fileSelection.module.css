@@ -1,0 +1,29 @@
+.selection {
+  width: 100%;
+  padding: 10px 12px;
+
+  font-family: Georgia, serif;
+  font-size: 14px;
+  color: #5f4638;
+
+  background-color: #fbf8f5;
+
+  border: 1px solid #cfc5bd;
+  border-radius: 4px;
+
+  outline: none;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.selection:hover {
+  border-color: #9d887a;
+}
+
+.selection:focus {
+  border-color: #5f4638;
+  box-shadow: 0 0 0 2px rgba(95, 70, 56, 0.1);
+}

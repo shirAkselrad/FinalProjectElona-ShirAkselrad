@@ -49,3 +49,66 @@
 
   z-index: 2;
 }
+
+
+.frontImgOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  margin-top: 7px;
+
+  font-family: Georgia, serif;
+  font-size: 13px;
+  color: #5f4638;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.frontImgOption input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 14px;
+  height: 14px;
+
+  border: 1.5px solid #8b7365;
+  border-radius: 50%;
+
+  background-color: #fbf8f5;
+
+  cursor: pointer;
+  position: relative;
+
+  transition: all 0.2s ease;
+}
+
+.frontImgOption input[type="radio"]:checked {
+  border-color: #5f4638;
+}
+
+.frontImgOption input[type="radio"]:checked::after {
+  content: "";
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+  background-color: #5f4638;
+
+  transform: translate(-50%, -50%);
+}
+
+.frontImgOption:hover {
+  color: #3f2f27;
+}
+
+.frontImgOption:hover input[type="radio"] {
+  border-color: #5f4638;
+}

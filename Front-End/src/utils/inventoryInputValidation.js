@@ -38,6 +38,15 @@ export function checkPrice(str) {
   return true;
 }
 
+//The function gets a sentence and for each word change the first letter to be a capital letter
+export function everyWordWithCapitalLetter(sentence) {
+  let words = sentence.split(" ");
+  for (let i = 0; i < words.length; i++)
+    words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+
+  return words.join(" ");
+}
+
 //The function gets str, return true if str contains only numbers, else, false
 export function onlyNumbers(str) {
   if (str.length == 0) return false;

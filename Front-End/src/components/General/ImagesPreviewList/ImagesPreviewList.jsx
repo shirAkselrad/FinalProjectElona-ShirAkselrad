@@ -7,8 +7,8 @@ function ImagesPreviewList({ images, onRemove }) {
       {images.map((image, index) => (
         <ImagePreview
           key={index}
-          src={URL.createObjectURL(image)}
-          name={image.name}
+          src={URL.createObjectURL(image.file)}
+          name={image.file.name}
           onRemove={() => onRemove(index)}
         />
       ))}

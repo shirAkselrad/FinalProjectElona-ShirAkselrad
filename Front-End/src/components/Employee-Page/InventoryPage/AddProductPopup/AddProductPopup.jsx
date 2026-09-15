@@ -1,5 +1,4 @@
 import styles from "./addProductPopup.module.css";
-import ColorSelect from "../../../General/ColorSelect/ColorSelect.jsx";
 import InputField from "../../../General/InputField/InputField.jsx";
 import InputLabel from "../../../General/InputLabel/InputLabel.jsx";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
@@ -7,11 +6,7 @@ import CheckBoxField from "../../../General/CheckBoxField/CheckBoxField.jsx";
 import Remove from "../../../General/Remove/Remove.jsx";
 import GeneralSelection from "../../../General/GeneralSelection/GeneralSelection.jsx";
 import DateInput from "../../../General/DateInput/DateInput.jsx";
-import {
-  ProductCategory,
-  ProductSize,
-  ProductStatus,
-} from "../../../../Enums/products.js";
+import { ProductCategory, ProductSize } from "../../../../Enums/products.js";
 import { countries } from "../../../../data/countries.js";
 import useProductForm from "./addProductPopupInfo.js";
 import TextAreaField from "../../../General/TextAreaField/TextAreaField.jsx";
@@ -20,8 +15,10 @@ import { useEffect } from "react";
 import BrightGeneralBtn from "../../../General/BrightGeneralBtn/BrightGeneralBtn.jsx";
 import ImagesPreviewList from "../../../General/ImagesPreviewList/ImagesPreviewList.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
-import * as inputValidation from "../../../../utils/inputValidation.js";
-function AddProductPopup({ onClose }) {
+import FileSelection from "../../../General/FileSelection/FileSelection.jsx";
+import ColorsCheckBoxList from "../../../General/Colors/ColorsCheckBoxList/ColorsCheckBoxList.jsx";
+import { colors } from "../../../../data/colors.js";
+function AddProductPopup({ onClose, onProductAdded }) {
   async function createProduct(formData) {
     try {
       const response = await fetch("/api/employee/createProduct", {
@@ -59,15 +56,16 @@ function AddProductPopup({ onClose }) {
     handleProductDiscountChange,
     handleProductMinSalesChange,
     handleProductDescriptionChange,
-    handleProductStatusChange,
     handleRestockRequiredChange,
     handleSalesCheckDateChange,
-    handleColorChange,
+    handleColorsChange,
     handleProductFilesChange,
     handleRemoveFile,
     handleRemoveAllFiles,
-    displayPopup,
-    setDisplayPopup,
+    popup,
+    setPopup,
+    frontImg,
+    setFrontImg,
   } = useProductForm();
 
   //The function check if the form is valid if it does, call the createUser function
@@ -80,7 +78,7 @@ function AddProductPopup({ onClose }) {
     formData.append("product_id", product.product_id.trim());
     formData.append("name", product.name.trim());
     formData.append("category", product.category);
-    formData.append("color", product.color);
+    formData.append("colors", product.colors.join("-"));
     formData.append("country_origin", product.country_origin);
     formData.append("size", product.size);
     formData.append("description", product.description.trim());
@@ -89,14 +87,30 @@ function AddProductPopup({ onClose }) {
     formData.append("discount", product.discount.trim());
     formData.append("quantity", product.quantity.trim());
     formData.append("min_stock", product.min_stock.trim());
-    formData.append("status", product.status);
     formData.append("restock_required", product.restock_required);
     formData.append("sales_check_date", product.sales_check_date);
     formData.append("min_sales", product.min_sales.trim());
     product.files.forEach((file) => {
-      formData.append("uploading-files", file);
+      formData.append("uploading-files", file.file);
+      formData.append("filesId", file.id);
     });
+    formData.append("frontImg", frontImg);
     const data = await createProduct(formData);
+    if (data?.success) {
+      await onProductAdded();
+
+      setPopup({
+        show: true,
+        message: "Product added successfully",
+        type: "success",
+      });
+    } else {
+      setPopup({
+        show: true,
+        message: "Couldn't add product",
+        type: "error",
+      });
+    }
   }
 
   //checking there is no errors in the inputs before sending it to backend
@@ -108,11 +122,23 @@ function AddProductPopup({ onClose }) {
 
   return (
     <div className={styles.overlay}>
-      {displayPopup && (
+      {popup.show && (
         <MessagePopup
-          message={"Some images were already added and were skipped"}
-          type={"info"}
-          onClose={() => setDisplayPopup(false)}
+          message={popup.message}
+          type={popup.type}
+          onClose={() => {
+            const isSuccess = popup.type === "success";
+
+            setPopup({
+              show: false,
+              message: "",
+              type: "",
+            });
+
+            if (isSuccess) {
+              onClose();
+            }
+          }}
         />
       )}
       <div className={styles.popup}>
@@ -129,7 +155,6 @@ function AddProductPopup({ onClose }) {
             onChange={(e) => handleProductNameChange(e.target.value)}
             onBlur={(e) => handleProductNameChange(e.target.value)}
           />
-
           <InputField
             label="Product ID"
             placeholder="Enter product ID"
@@ -137,7 +162,6 @@ function AddProductPopup({ onClose }) {
             onChange={(e) => handleProductIdChange(e.target.value)}
             onBlur={(e) => handleProductIdChange(e.target.value)}
           />
-
           <div>
             <InputLabel text="Category" />
             <GeneralSelection
@@ -149,7 +173,6 @@ function AddProductPopup({ onClose }) {
               }}
             />
           </div>
-
           <div>
             <InputLabel text="Size" />
             <GeneralSelection
@@ -161,7 +184,6 @@ function AddProductPopup({ onClose }) {
               }}
             />
           </div>
-
           <div>
             <InputLabel text="Country of Origin" />
             <GeneralSelection
@@ -173,8 +195,14 @@ function AddProductPopup({ onClose }) {
               }}
             />
           </div>
-          <ColorSelect onChange={handleColorChange} value={product.color} />
 
+          <InputLabel text="Product's colors" />
+          <ColorsCheckBoxList
+            colors={colors}
+            selectedColors={product.colors}
+            onChange={handleColorsChange}
+            error={errors.colors}
+          />
           <div className={styles.row}>
             <div className={styles.half}>
               <InputField
@@ -208,7 +236,6 @@ function AddProductPopup({ onClose }) {
               />
             </div>
           </div>
-
           <div className={styles.row}>
             <div className={styles.half}>
               <InputField
@@ -232,7 +259,6 @@ function AddProductPopup({ onClose }) {
               />
             </div>
           </div>
-
           <div className={styles.row}>
             <div className={styles.half}>
               <InputField
@@ -256,7 +282,6 @@ function AddProductPopup({ onClose }) {
               />
             </div>
           </div>
-
           <div className={styles.row}>
             <div className={styles.half}>
               <DateInput
@@ -268,7 +293,6 @@ function AddProductPopup({ onClose }) {
               />
             </div>
           </div>
-
           <div className={styles.description}>
             <TextAreaField
               label="Description"
@@ -279,11 +303,10 @@ function AddProductPopup({ onClose }) {
               error={errors.description}
             />
           </div>
-
           <div className={styles.image}>
             <InputLabel text="Product Files" />
             <span className={styles.fileInfo}>
-              Allowed files: JPG, JPEG, PNG, WEBP, MP4, MOV
+              Allowed files: JPG, JPEG, PNG, WEBP
             </span>
             <div className={styles.imageButtons}>
               <ImageUploadBtn
@@ -303,17 +326,13 @@ function AddProductPopup({ onClose }) {
               images={product.files}
               onRemove={handleRemoveFile}
             />
-          </div>
-
-          <div>
-            <InputLabel text="Status" />
-            <GeneralSelection
-              value={product.status}
-              options={Object.values(ProductStatus)}
-              onChange={(e) => handleProductStatusChange(e.target.value)}
+            <InputLabel text="Front Image" />
+            <FileSelection
+              files={product.files}
+              value={frontImg}
+              onChange={setFrontImg}
             />
           </div>
-
           <div className={styles.checkboxField}>
             <InputLabel text="Restock Reminder" />
             <CheckBoxField
@@ -322,13 +341,11 @@ function AddProductPopup({ onClose }) {
               onChange={(e) => handleRestockRequiredChange(e.target.checked)}
             />
           </div>
-
           <GeneralBtn
             text="ADD PRODUCT"
             type="submit"
             className={styles.addBtn}
             disabled={noErrors && !noEmptyInputs}
-            onClick={onClose}
           />
         </form>
       </div>

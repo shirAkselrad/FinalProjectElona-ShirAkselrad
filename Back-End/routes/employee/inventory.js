@@ -35,7 +35,7 @@ const createProduct = (req, res, next) => {
     product_id,
     name,
     category,
-    color,
+    colors,
     country_origin,
     size,
     description,
@@ -44,13 +44,13 @@ const createProduct = (req, res, next) => {
     discount,
     quantity,
     min_stock,
-    status,
     restock_required,
     sales_check_date,
     min_sales,
   } = req.body;
+
   const query =
-    "insert into inventory (product_id,name, category, color, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, updated_at, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?) ";
+    "insert into inventory (product_id, name, category, colors, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, updated_at, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', NOW(), NOW(), ?, ?, ?)";
 
   db.query(
     query,
@@ -58,7 +58,7 @@ const createProduct = (req, res, next) => {
       product_id,
       name,
       category,
-      color,
+      colors,
       country_origin,
       size,
       description,
@@ -67,7 +67,6 @@ const createProduct = (req, res, next) => {
       discount,
       quantity,
       min_stock,
-      status,
       restock_required,
       sales_check_date,
       min_sales,
@@ -82,6 +81,24 @@ const createProduct = (req, res, next) => {
     },
   );
 };
+
+router.post("/changeProductStatus", (req, res) => {
+  const { product_id, status } = req.body;
+  const query = "update inventory set status=? where product_id=?";
+  db.query(query, [status, product_id], (err, results) => {
+    if (err) {
+      console.error("Couldn't change product's status");
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't update product's status",
+      });
+    }
+    console.log("update results: ", results);
+    return res.status(200).json({
+      success: true,
+    });
+  });
+});
 
 const uploadPath = path.join(
   __dirname,
@@ -105,18 +122,19 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 const addFiles = (req, res, next) => {
+  //frontImg is only the index of frontImg
   const { product_id } = req.body;
-  const files = req.files;
 
-  const values = files.map((file) => [
-    file.originalname,
-    file.filename,
+  const values = req.filesAndIdsArray.map((item) => [
+    item.file.originalname,
+    item.file.filename,
     product_id,
-    file.path,
-    file.mimetype,
+    item.file.path,
+    item.file.mimetype,
+    item.frontImg,
   ]);
   const query =
-    "insert into files (file_name, auto_file_name, product_id, path, file_type) values ?";
+    "insert into files (file_name, auto_file_name, product_id, path, file_type, frontImg) values ?";
 
   db.query(query, [values], (err, results) => {
     if (err)
@@ -131,6 +149,32 @@ const addFiles = (req, res, next) => {
     });
   });
 };
+
+const matchFilesWithIds = (req, res, next) => {
+  const { filesId } = req.body;
+  //converting from string to array
+  const filesIdArr = Array.isArray(filesId) ? filesId : [filesId];
+
+  req.filesAndIdsArray = req.files.map((file, index) => {
+    return {
+      file: file,
+      id: filesIdArr[index],
+    };
+  });
+  next();
+};
+
+const markingFrontImg = (req, res, next) => {
+  const { frontImg } = req.body;
+  req.filesAndIdsArray = req.filesAndIdsArray.map((item) => {
+    return {
+      ...item,
+      frontImg: item.id === frontImg,
+    };
+  });
+  next();
+};
+
 //This path returns all the inventory details from back-end to front-end
 router.get("/inventory", (req, res) => {
   const query = "select  * from inventory";
@@ -155,6 +199,9 @@ router.post(
   upload.array("uploading-files"),
   checkProductId,
   createProduct,
+  matchFilesWithIds,
+  markingFrontImg,
   addFiles,
 );
+
 module.exports = router;

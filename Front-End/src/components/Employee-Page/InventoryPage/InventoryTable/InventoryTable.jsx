@@ -2,6 +2,7 @@ import styles from "./inventoryTable.module.css";
 import InventoryRow from "../InventoryRow/InventoryRow.jsx";
 import { useState } from "react";
 import EditInventoryPopup from "../EditInventoryPopup/EditInventoryPopup.jsx";
+import ProductImagesPopup from "../ProductImagesPopup/ProductImagesPopup.jsx";
 
 /**
  *
@@ -10,9 +11,10 @@ import EditInventoryPopup from "../EditInventoryPopup/EditInventoryPopup.jsx";
  * @param {onRemove} onRemove an even which will happen when the user click on the remove btn
  * @returns InventoryTable
  */
-function InventoryTable({ inventory, onSave, onRemove }) {
+function InventoryTable({ inventory, onRemove, onSave }) {
   //state which give info about which inv in the inventory table is getting change
   const [selectedInv, setSelectedInv] = useState(null);
+  const [showPopupImg, setShowPopupImg] = useState(false);
 
   return (
     <div className={styles.tableWrapper}>
@@ -28,7 +30,6 @@ function InventoryTable({ inventory, onSave, onRemove }) {
           <col className={styles.discountCol} />
           <col className={styles.quantityCol} />
           <col className={styles.minStockCol} />
-          <col className={styles.statusCol} />
           <col className={styles.restockCol} />
           <col className={styles.actionsCol} />
         </colgroup>
@@ -38,14 +39,13 @@ function InventoryTable({ inventory, onSave, onRemove }) {
             <th>Product ID</th>
             <th>Name</th>
             <th>Category</th>
-            <th>Color</th>
+            <th>Color/s</th>
             <th>Size</th>
             <th>Price</th>
             <th>Cost Price</th>
             <th>Discount</th>
             <th>Quantity</th>
             <th>Min Stock</th>
-            <th>Status</th>
             <th>Restock Required</th>
             <th>Actions</th>
           </tr>
@@ -55,8 +55,12 @@ function InventoryTable({ inventory, onSave, onRemove }) {
         <tbody>
           {inventory.map((inv) => (
             <InventoryRow
-              onRemove={() => onRemove(inv)}
+              onRemove={onRemove}
               onEdit={() => setSelectedInv(inv)}
+              onImages={() => {
+                setSelectedInv(inv);
+                setShowPopupImg(true);
+              }}
               key={inv.product_id}
               inv={inv}
             />
@@ -71,6 +75,16 @@ function InventoryTable({ inventory, onSave, onRemove }) {
           onSave={onSave}
           onClose={() => {
             setSelectedInv(null);
+          }}
+        />
+      )}
+
+      {showPopupImg && (
+        <ProductImagesPopup
+          product={selectedInv}
+          onClose={() => {
+            setSelectedInv(null);
+            setShowPopupImg(false);
           }}
         />
       )}

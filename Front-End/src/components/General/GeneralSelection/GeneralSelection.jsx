@@ -9,11 +9,15 @@ function GeneralSelection({ value, options, onChange, onBlur, error }) {
         onChange={onChange}
         onBlur={onBlur}
       >
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
+        {options.length === 0 ? (
+          <option value="">None</option>
+        ) : (
+          options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))
+        )}
       </select>
 
       {error && <span className={styles.error}>{error}</span>}

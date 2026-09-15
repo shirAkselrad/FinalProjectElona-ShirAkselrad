@@ -26,7 +26,7 @@ function ClientRow({ client, onEdit, onRemove }) {
   //The function send the new status to backend
   async function updateClientStatus(clientData) {
     try {
-      const response = await fetch("/api/employee/changeStatus", {
+      const response = await fetch("/api/employee/changeClientStatus", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(clientData),
