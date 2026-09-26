@@ -11,10 +11,11 @@ import ProductImagesPopup from "../ProductImagesPopup/ProductImagesPopup.jsx";
  * @param {onRemove} onRemove an even which will happen when the user click on the remove btn
  * @returns InventoryTable
  */
-function InventoryTable({ inventory, onRemove, onSave }) {
+function InventoryTable({ inventory, onRemove, onSave, onSaveImgs }) {
   //state which give info about which inv in the inventory table is getting change
   const [selectedInv, setSelectedInv] = useState(null);
   const [showPopupImg, setShowPopupImg] = useState(false);
+  const [showPopupEdit, setShowPopupEdit] = useState(false);
 
   return (
     <div className={styles.tableWrapper}>
@@ -56,7 +57,10 @@ function InventoryTable({ inventory, onRemove, onSave }) {
           {inventory.map((inv) => (
             <InventoryRow
               onRemove={onRemove}
-              onEdit={() => setSelectedInv(inv)}
+              onEdit={() => {
+                setSelectedInv(inv);
+                setShowPopupEdit(true);
+              }}
               onImages={() => {
                 setSelectedInv(inv);
                 setShowPopupImg(true);
@@ -69,12 +73,13 @@ function InventoryTable({ inventory, onRemove, onSave }) {
       </table>
 
       {/*if selectedInv is not null it means the edit btn was clicked, so the editInventoryPopup will be present, gets the selectedInv to edit, the onSave event and the onClose event which will be oprate after and will return the selectedInv to null  */}
-      {selectedInv && (
+      {showPopupEdit && (
         <EditInventoryPopup
           inv={selectedInv}
           onSave={onSave}
           onClose={() => {
             setSelectedInv(null);
+            setShowPopupEdit(false);
           }}
         />
       )}
@@ -82,6 +87,7 @@ function InventoryTable({ inventory, onRemove, onSave }) {
       {showPopupImg && (
         <ProductImagesPopup
           product={selectedInv}
+          onSave={onSaveImgs}
           onClose={() => {
             setSelectedInv(null);
             setShowPopupImg(false);

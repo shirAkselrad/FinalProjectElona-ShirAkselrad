@@ -1,6 +1,11 @@
 import styles from "./elona.module.css";
 import elonaPhoto from "../../../assets/Photo-Elona.png";
 
+
+/**
+ * 
+ * @returns {JSX.Element} Elona
+ */
 function Elona() {
   return (
     <div className={styles.container}>

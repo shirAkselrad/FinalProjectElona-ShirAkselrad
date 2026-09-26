@@ -1,5 +1,9 @@
 import styles from "./text.module.css";
 
+/**
+ *
+ * @returns {JSX.Element} Text
+ */
 function Text() {
   return (
     <main className={styles.aboutPage}>

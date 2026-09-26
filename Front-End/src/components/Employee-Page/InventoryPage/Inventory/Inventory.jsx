@@ -3,6 +3,7 @@ import AddProductPopup from "../AddProductPopup/AddProductPopup.jsx";
 import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
 import InventoryTable from "../InventoryTable/InventoryTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
+import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import { useState, useEffect } from "react";
 
 /**
@@ -12,6 +13,11 @@ import { useState, useEffect } from "react";
  */
 function Inventory() {
   const [inventory, setInventory] = useState([]);
+  const [popup, setPopup] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
 
   async function getInventory() {
     const response = await fetch("/api/employee/inventory");
@@ -48,6 +54,49 @@ function Inventory() {
     setInventory(updatedInventory);
   };
 
+  //This function update the product images after pressing the save btn at the images popup
+  async function onSaveImgs(product_id, images) {
+    const imgs = images.map((image) => image.auto_file_name);
+    try {
+      const response = await fetch(
+        `/api/employee/deleteProductImgs/${product_id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            imgs: imgs,
+          }),
+        },
+      );
+      const data = await response.json();
+      if (data?.success) {
+        //displaying a popup according to the success status
+        setPopup({
+          show: true,
+          message: "Product images deleted successfully",
+          type: "success",
+        });
+        return true;
+      } else {
+        setPopup({
+          show: true,
+          message: "Couldn't delete product's images",
+          type: "error",
+        });
+        return false;
+      }
+    } catch (error) {
+      setPopup({
+        show: true,
+        message: "Couldn't delete product's images",
+        type: "error",
+      });
+      return false;
+    }
+  }
+
   //This function removes the inv which it's remove btn was pressed
   const onRemove = (invToRemove) => {
     const updatedInventory = inventory.map((inv) =>
@@ -60,6 +109,20 @@ function Inventory() {
   };
   return (
     <div className={styles.inventory}>
+      {/**opening a popup according to the success status  */}
+      {popup.show && (
+        <MessagePopup
+          message={popup.message}
+          type={popup.type}
+          onClose={() => {
+            setPopup({
+              show: false,
+              message: "",
+              type: "",
+            });
+          }}
+        />
+      )}
       <div className={styles.top}>
         <SectionTitle title="Inventory" />
 
@@ -78,6 +141,7 @@ function Inventory() {
       {/*The onSave and onRemove will operate only when the save and remove btns will be click */}
       <InventoryTable
         onSave={onSave}
+        onSaveImgs={onSaveImgs}
         onRemove={onRemove}
         inventory={filterInventory}
       />

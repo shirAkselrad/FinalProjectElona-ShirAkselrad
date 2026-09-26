@@ -18,7 +18,15 @@ import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import FileSelection from "../../../General/FileSelection/FileSelection.jsx";
 import ColorsCheckBoxList from "../../../General/Colors/ColorsCheckBoxList/ColorsCheckBoxList.jsx";
 import { colors } from "../../../../data/colors.js";
+
+/**
+ *
+ * @param {function} onClose this function closes the AddProductPopup
+ * @param {function} onProductAdded returns the info about the new product back to the inventory page for refreshing the front-end inventory
+ * @returns
+ */
 function AddProductPopup({ onClose, onProductAdded }) {
+  //This function adds a new product to the backend
   async function createProduct(formData) {
     try {
       const response = await fetch("/api/employee/createProduct", {
@@ -41,6 +49,7 @@ function AddProductPopup({ onClose, onProductAdded }) {
     };
   }, []);
 
+  //all the full functions exists on the "addProductPopupInfo"- useProductForm
   const {
     product,
     errors,
@@ -72,8 +81,12 @@ function AddProductPopup({ onClose, onProductAdded }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (noErrors && !noEmptyInputs) return;
+    //if the are no errors or any empty inputs beggining to prepering the new product info to backend
+    if (!noErrors || !noEmptyInputs) return;
     const formData = new FormData();
+
+    console.log("FRONT IMG SENT:", frontImg);
+    console.log("FILES:", product.files);
 
     formData.append("product_id", product.product_id.trim());
     formData.append("name", product.name.trim());
@@ -87,18 +100,23 @@ function AddProductPopup({ onClose, onProductAdded }) {
     formData.append("discount", product.discount.trim());
     formData.append("quantity", product.quantity.trim());
     formData.append("min_stock", product.min_stock.trim());
-    formData.append("restock_required", product.restock_required);
+    formData.append("restock_required", product.restock_required ? 1 : 0);
     formData.append("sales_check_date", product.sales_check_date);
     formData.append("min_sales", product.min_sales.trim());
+
+    //uploading all the files array
     product.files.forEach((file) => {
       formData.append("uploading-files", file.file);
       formData.append("filesId", file.id);
     });
     formData.append("frontImg", frontImg);
     const data = await createProduct(formData);
+
+    //if the adding operation successed so front-end will be refreshed
     if (data?.success) {
       await onProductAdded();
 
+      //displaying a popup according to the success status
       setPopup({
         show: true,
         message: "Product added successfully",
@@ -119,9 +137,9 @@ function AddProductPopup({ onClose, onProductAdded }) {
   const noEmptyInputs =
     Object.values(product).every((input) => input !== "" && input !== "None") &&
     product.files.length > 0;
-
   return (
     <div className={styles.overlay}>
+      {/**opening a popup according to the success status  */}
       {popup.show && (
         <MessagePopup
           message={popup.message}
@@ -345,7 +363,7 @@ function AddProductPopup({ onClose, onProductAdded }) {
             text="ADD PRODUCT"
             type="submit"
             className={styles.addBtn}
-            disabled={noErrors && !noEmptyInputs}
+            disabled={!noErrors || !noEmptyInputs}
           />
         </form>
       </div>

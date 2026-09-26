@@ -1,5 +1,9 @@
 import styles from "./sentence.module.css";
 
+/**
+ *
+ * @returns {JSX.Element} Sentence
+ */
 function Sentence() {
   return (
     <section className={styles.sentence}>

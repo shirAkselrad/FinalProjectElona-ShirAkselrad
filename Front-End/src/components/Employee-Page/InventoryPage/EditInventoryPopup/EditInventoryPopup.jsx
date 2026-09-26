@@ -8,10 +8,10 @@ import { useState } from "react";
 
 /**
  *
- * @param {inv} inv the current inv to be edit
- * @param {onSave} onSave the event which will accure when the user will click on the save btn
- * @param {onClose} onClose the even which will accure when the use will click on the x btn
- * @returns EditInventoryPopup
+ * @param {object} inv the current product which is being editing
+ * @param {function} onSave the function which save all the changes to back-end
+ * @param {function} onClose the function which close the editing popup without saving the changes
+ * @returns {JSX.Element} EditInventoryPopup
  */
 function EditInventoryPopup({ inv, onSave, onClose }) {
   //state which will save the inv after the update

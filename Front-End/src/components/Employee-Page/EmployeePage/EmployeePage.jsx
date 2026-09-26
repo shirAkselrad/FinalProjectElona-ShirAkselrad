@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 /**
  *
- * @returns EmployeePage
+ * @returns {JSX.Element} EmployeePage
  */
 function EmployeePage() {
   //getting the clients for the clients page

@@ -1,7 +1,6 @@
 const path = require("path");
 const express = require("express");
 const multer = require("multer");
-
 const router = express.Router();
 
 const dbSingleton = require("../../dbSingleton");
@@ -12,6 +11,8 @@ const checkProductId = (req, res, next) => {
   const newProductId = req.body.product_id;
   const query = "select product_id from inventory";
   db.query(query, (err, results) => {
+    console.log("FILES RESULTS:", results);
+
     if (err) {
       console.error("Couldn't get all products ids, error: ", err);
       return res.status(500).json({
@@ -166,6 +167,10 @@ const matchFilesWithIds = (req, res, next) => {
 
 const markingFrontImg = (req, res, next) => {
   const { frontImg } = req.body;
+
+  console.log("frontImg:", frontImg, typeof frontImg);
+  console.log("files:", req.filesAndIdsArray);
+
   req.filesAndIdsArray = req.filesAndIdsArray.map((item) => {
     return {
       ...item,
@@ -174,6 +179,27 @@ const markingFrontImg = (req, res, next) => {
   });
   next();
 };
+
+//This path updates the images on an existing product
+router.put("/deleteProductImgs/:product_id", (req, res) => {
+  const { imgs } = req.body;
+  const { product_id } = req.params;
+  const query =
+    "delete from files where product_id=? and auto_file_name not in (?)";
+  db.query(query, [product_id, imgs], (err, results) => {
+    if (err) {
+      console.log("Couldn't delete the proudct's imgs");
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't delete product's images",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Product's images have been deleted successfully!",
+    });
+  });
+});
 
 //This path returns all the inventory details from back-end to front-end
 router.get("/inventory", (req, res) => {
@@ -190,6 +216,32 @@ router.get("/inventory", (req, res) => {
       success: true,
       inventory: results,
     });
+  });
+});
+
+router.get("/getProductImages/:product_id", (req, res) => {
+  const { product_id } = req.params;
+  const query = "select * from files where product_id=?";
+  db.query(query, [product_id], (err, results) => {
+    if (err) {
+      res.status(500).json({
+        success: false,
+        message: "Couldn't get the files",
+      });
+    } else {
+      if (results.length == 0) {
+        res.status(404).json({
+          success: false,
+          message: "Product not found",
+        });
+      } else {
+        res.status(201).json({
+          success: true,
+          message: "Product's files found successfully",
+          files: results,
+        });
+      }
+    }
   });
 });
 

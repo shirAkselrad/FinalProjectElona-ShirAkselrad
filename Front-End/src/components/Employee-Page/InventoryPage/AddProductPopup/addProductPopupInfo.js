@@ -412,6 +412,7 @@ function useProductForm() {
     handleRemoveAllFiles,
     popup,
     setPopup,
+    frontImg,
     setFrontImg,
   };
 }
