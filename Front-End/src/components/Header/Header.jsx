@@ -8,58 +8,45 @@ import Logout from "../General/Logout/Logout.jsx";
 import Logo from "../General/Logo/Logo.jsx";
 import ShopBtn from "../General/ShopBtn/ShopBtn.jsx";
 import UserBtn from "../General/UserBtn/UserBtn.jsx";
-import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function Header() {
-  const [firstName, setFirstName] = useState(null);
+  const { user, logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isShopPage = location.pathname === "/";
 
-  //The function sends all the inputs values to backend for validation the login inputs
-  async function logout() {
-    try {
-      const response = await fetch("/api/header/logout", {
-        method: "GET",
-      });
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+  const showBackToSystem =
+    isShopPage && (user?.role === "Manager" || user?.role === "Employee");
 
-      const data = await response.json();
-      if (data.success) setFirstName(null);
-      return data;
-    } catch (error) {
-      console.error("error logging out user: ", error);
-    }
+  function backToSystem() {
+    if (user?.role === "Manager") navigate("/managerPage");
+    else if (user?.role === "Employee") navigate("/employeePage");
   }
-
-  useEffect(() => {
-    async function getFirstName() {
-      try {
-        const res = await fetch("/api/login/firstName");
-        const data = await res.json();
-
-        if (!res.ok) {
-          console.error("res error", res.status);
-          return;
-        }
-
-        if (data.success) {
-          setFirstName(data.firstName);
-        } else {
-          setFirstName(null);
-        }
-      } catch (error) {
-        console.error("The error is:", error);
-      }
-    }
-
-    getFirstName();
-  }, []);
 
   return (
     <header className={styles.header}>
       <div className={styles.left}>
         <AboutUs />
+
         <span className={styles.diamond}></span>
+
         <ShopBtn />
+
+        {showBackToSystem && (
+          <div>
+            <span className={styles.diamond}></span>
+
+            <button
+              type="button"
+              onClick={backToSystem}
+              className={styles.systemBtn}
+            >
+              {user.role === "Manager" ? "Manager" : "Employee"}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className={styles.center}>
@@ -71,19 +58,23 @@ function Header() {
 
         <span className={styles.diamond}></span>
 
-        <Welcome name={firstName} />
+        <Welcome name={user?.firstName} />
 
         <span className={styles.diamond}></span>
 
         <UserBtn />
 
-        {!firstName && <Login />}
+        {!user && (
+          <div>
+            <Login />
 
-        {!firstName && <span className={styles.diamond}></span>}
+            <span className={styles.diamond}></span>
 
-        {!firstName && <SignIn />}
+            <SignIn />
+          </div>
+        )}
 
-        {firstName && <Logout out={logout} />}
+        {user && <Logout out={logout} />}
       </div>
     </header>
   );

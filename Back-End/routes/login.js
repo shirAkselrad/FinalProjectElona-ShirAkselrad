@@ -7,16 +7,16 @@ const router = express.Router();
 const dbSingleton = require("../dbSingleton");
 const db = dbSingleton.getConnection();
 
-//This path is for getting the first name from the sesssion after the login
-router.get("/firstName", (req, res) => {
+//This path gets the logged-in user info from the session
+router.get("/user", (req, res) => {
   console.log("SESSION:", req.session);
   if (!req.session.user) {
-    return res.status(200).json({ success: false });
+    return res.status(200).json({ success: false, user: null });
   }
 
   return res.json({
     success: true,
-    firstName: req.session.user.firstName,
+    user: req.session.user,
   });
 });
 
@@ -60,7 +60,7 @@ router.post("/", (req, res) => {
           return res.status(200).json({
             success: true,
             message: "Login successful",
-            role: results[0].role,
+            user: req.session.user,
           });
         }
 

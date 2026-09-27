@@ -1,7 +1,5 @@
 import "../App/app.module.css";
-import Header from "../components/Header/Header.jsx";
 import EmployeePage from "../components/Employee-Page/EmployeePage/EmployeePage.jsx";
-import Footer from "../components/Footer/Footer.jsx";
 import ShopPage from "../components/Shop-Page/ShopPage/ShopPage.jsx";
 import AboutUsPage from "../components/AboutUs-Page/AboutUsPage/AboutUsPage.jsx";
 import ManagerPage from "../components/Manager-Page/ManagerPage/ManagerPage.jsx";
@@ -13,46 +11,48 @@ import ResetPasswordPage from "../components/ResetPassword-Page/ResetPasswordPag
 import Clients from "../components/Employee-Page/ClientsPage/Clients/Clients.jsx";
 import Inventory from "../components/Employee-Page/InventoryPage/Inventory/Inventory.jsx";
 import Orders from "../components/Employee-Page/OrdersPage/Orders/Orders.jsx";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
+import ProtectedRoute from "../routes/ProtectedRoute.jsx";
+import AuthLayout from "../layouts/AuthLayout/AuthLayout.jsx";
 function App() {
-  const location = useLocation();
-
-  const hideHeader =
-    location.pathname === "/loginPage" ||
-    location.pathname === "/registerPage" ||
-    location.pathname === "/ForgotPasswordPage" ||
-    location.pathname === "/recoveryPage" ||
-    location.pathname === "/ResetPasswordPage";
   return (
-    <div>
-      {!hideHeader && <Header />}
-      <Routes>
-        {/*Shop page */}
+    <Routes>
+      {/*pages which includes header*/}
+      <Route element={<MainLayout />}>
         <Route path="/" element={<ShopPage />} />
-        {/*About us*/}
         <Route path="/aboutUs" element={<AboutUsPage />} />
-        {/*Manager Page*/}
-        <Route path="managerPage" element={<ManagerPage />} />
-        {/* Employee Page */}
-        <Route path="employeePage" element={<EmployeePage />}>
+        <Route
+          path="/managerPage"
+          element={
+            <ProtectedRoute allowedRoles={["Manager"]}>
+              <ManagerPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/employeePage"
+          element={
+            <ProtectedRoute allowedRoles={["Employee", "Manager"]}>
+              <EmployeePage />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<Navigate to="clients" replace />} />
           <Route path="clients" element={<Clients />} />
           <Route path="inventory" element={<Inventory />} />
           <Route path="orders" element={<Orders />} />
         </Route>
-        {/*Login Page*/}
+      </Route>
+      {/*Pages which do not include header*/}
+      <Route element={<AuthLayout />}>
         <Route path="/loginPage" element={<LoginPage />} />
-        {/*Register Page*/}
         <Route path="/registerPage" element={<RegisterPage />} />
-        {/*Forgot Password Page*/}
         <Route path="/ForgotPasswordPage" element={<ForgotPasswordPage />} />
-        {/*Recovery Page */}
         <Route path="/recoveryPage" element={<RecoveryPage />} />
-        {/**Reset Password Page */}
         <Route path="/ResetPasswordPage" element={<ResetPasswordPage />} />
-      </Routes>
-      <Footer />
-    </div>
+      </Route>
+    </Routes>
   );
 }
 export default App;

@@ -1,5 +1,5 @@
 import styles from "./loginForm.module.css";
-
+import { useAuth } from "../../../context/AuthContext.jsx";
 import BackLink from "../../General/BackLink/BackLink.jsx";
 import PageIntro from "../../General/PageIntro/PageIntro.jsx";
 import InputField from "../../General/InputField/InputField.jsx";
@@ -27,13 +27,12 @@ async function loginUser(userData) {
     return data;
   } catch (error) {
     console.error("error logging in user: ", error);
-
-  
   }
 }
 
 function LoginForm() {
   const navigate = useNavigate();
+  const { user: loggedInUser, login } = useAuth();
 
   //keeps the user inputs
   const [user, setUser] = useState({
@@ -54,7 +53,6 @@ function LoginForm() {
     type: "",
   });
 
-  const [userRole, setUserRole] = useState("");
   //checking that the user doesn't have any empty inputs before sending to info to backend
   const allUserFieldsFilled = Object.values(user).every(
     (value) => value !== "",
@@ -76,11 +74,8 @@ function LoginForm() {
     };
 
     const data = await loginUser(userData);
-    console.log("role from backend: ", data?.role);
-
-    //This part check if the user created and sent texts to the popup according to the success state
     if (data?.success) {
-      setUserRole(data.role);
+      login(data.user);
       setDisplayMessagePopup({
         show: true,
         message: data.message,
@@ -199,8 +194,8 @@ function LoginForm() {
           type={displayMessagePopup.type}
           onClose={() => {
             if (displayMessagePopup.type === "success") {
-              if (userRole === "Manager") navigate("/managerPage");
-              else if (userRole === "Employee") navigate("/employeePage");
+              if (loggedInUser?.role === "Manager") navigate("/managerPage");
+              else if (loggedInUser?.role === "Employee") navigate("/employeePage");
               else navigate("/");
             } else {
               setDisplayMessagePopup({
