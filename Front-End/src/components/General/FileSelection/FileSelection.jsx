@@ -1,4 +1,5 @@
 import styles from "./fileSelection.module.css";
+
 function FileSelection({ files, value, onChange }) {
   return (
     <select
@@ -11,7 +12,8 @@ function FileSelection({ files, value, onChange }) {
       ) : (
         files.map((image) => (
           <option key={image.id} value={image.id}>
-            {image.file.name}
+            {/**In case it's an img which have been uploaded by the user or an img which came from the data base */}
+            {image.file ? image.file.name : image.file_name}
           </option>
         ))
       )}

@@ -47,3 +47,28 @@
   margin: 0 5px;
   flex-shrink: 0;
 }
+
+/* Keeps the system button and its diamond in the same row */
+.left > div {
+  display: flex;
+  align-items: center;
+}
+
+/* Manager / Employee button */
+.systemBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: #875b43;
+
+  cursor: pointer;
+}
+
+.systemBtn:hover {
+  opacity: 0.7;
+}

@@ -8,15 +8,19 @@ function InputField({
   onBlur,
   error,
   maxLength,
-  step
+  step,
+  value,
+  disabled = false,
 }) {
   return (
     <div className={styles.field}>
       <label className={styles.label}>{label}</label>
 
       <input
+        value={value}
         onChange={onChange}
         onBlur={onBlur}
+        disabled={disabled}
         className={`${styles.input} ${error ? styles.inputError : ""}`}
         type={type}
         placeholder={placeholder}

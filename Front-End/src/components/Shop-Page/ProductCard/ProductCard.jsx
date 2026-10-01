@@ -28,3 +28,27 @@ function ProductCard({ image, category, name, description, price }) {
 }
 
 export default ProductCard;
+
+// function ProductCard({ product }) {
+//   return (
+//     <div className={styles.productCard}>
+//       <ProductImg image={image} name={name} />
+
+//       <div className={styles.content}>
+//         <DescriptionProduct
+//           category={product.category}
+//           name={product.name}
+//           description={product.description}
+//         />
+
+//         <div className={styles.bottom}>
+//           <ProductPrice price={product.price} />
+
+//           <Plus />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default ProductCard;

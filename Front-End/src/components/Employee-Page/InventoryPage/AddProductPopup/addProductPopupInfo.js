@@ -3,10 +3,8 @@ import * as InventoryInputValidation from "../../../../utils/inventoryInputValid
 import * as inputValidation from "../../../../utils/inputValidation.js";
 import { ProductCategory, ProductSize } from "../../../../Enums/products.js";
 
-function useProductForm() {
-  const [frontImg, setFrontImg] = useState("");
-
-  const [product, setProduct] = useState({
+function useProductForm(initialProduct=null) {
+  const emptyProduct = {
     product_id: "",
     name: "",
     category: ProductCategory.NONE,
@@ -23,7 +21,12 @@ function useProductForm() {
     sales_check_date: "",
     min_sales: "",
     files: [],
-  });
+  };
+
+  const [frontImg, setFrontImg] = useState("");
+
+  
+  const [product, setProduct] = useState(initialProduct || emptyProduct);
 
   const [errors, setErrors] = useState({
     product_id: "",

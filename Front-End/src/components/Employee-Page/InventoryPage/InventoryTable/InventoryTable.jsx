@@ -75,7 +75,7 @@ function InventoryTable({ inventory, onRemove, onSave, onSaveImgs }) {
       {/*if selectedInv is not null it means the edit btn was clicked, so the editInventoryPopup will be present, gets the selectedInv to edit, the onSave event and the onClose event which will be oprate after and will return the selectedInv to null  */}
       {showPopupEdit && (
         <EditInventoryPopup
-          inv={selectedInv}
+          product={selectedInv}
           onSave={onSave}
           onClose={() => {
             setSelectedInv(null);
