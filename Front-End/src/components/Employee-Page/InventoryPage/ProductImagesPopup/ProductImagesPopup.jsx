@@ -49,7 +49,12 @@ function ProductImagesPopup({ product, onClose, onSave }) {
           <GeneralBtn
             disabled={!unblockSave}
             onClick={async () => {
-              const success = await onSave(product.product_id, images);
+              const imgsData = images.map((img) => ({
+                file_name: img.file_name,
+                file_hash: img.file_hash,
+                frontImg: img.frontImg,
+              }));
+              const success = await onSave(product.product_id, imgsData);
               if (success) onClose();
             }}
             text="SAVE"

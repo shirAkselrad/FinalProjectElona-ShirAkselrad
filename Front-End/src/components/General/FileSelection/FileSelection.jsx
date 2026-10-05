@@ -5,7 +5,7 @@ function FileSelection({ files, value, onChange }) {
     <select
       className={styles.selection}
       value={value}
-      onChange={(e) => onChange(Number(e.target.value))}
+      onChange={(e) => onChange(e.target.value)}
     >
       {files.length === 0 ? (
         <option value="">None</option>

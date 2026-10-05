@@ -3,7 +3,7 @@ import * as InventoryInputValidation from "../../../../utils/inventoryInputValid
 import * as inputValidation from "../../../../utils/inputValidation.js";
 import { ProductCategory, ProductSize } from "../../../../Enums/products.js";
 
-function useProductForm(initialProduct=null) {
+function useProductForm(initialProduct = null) {
   const emptyProduct = {
     product_id: "",
     name: "",
@@ -25,7 +25,6 @@ function useProductForm(initialProduct=null) {
 
   const [frontImg, setFrontImg] = useState("");
 
-  
   const [product, setProduct] = useState(initialProduct || emptyProduct);
 
   const [errors, setErrors] = useState({
@@ -365,11 +364,12 @@ function useProductForm(initialProduct=null) {
       files: [...prev.files, ...newFilesWithId],
     }));
 
-    if (frontImg === "" && newFilesWithId.length > 0) {
+    //only if single image have been added so it will be the front image by default, also a popup message will be displayed to the user about it. anyway the user will have an option to choose which image will be the front image
+    if (product.files.length === 0 && newFilesWithId.length > 0) {
       setFrontImg(newFilesWithId[0].id);
     }
 
-    if (newFilesWithId.length == 1) {
+    if (product.files.length === 0 && newFilesWithId.length === 1) {
       setPopup({
         show: true,
         message: `${newFilesWithId[0].file.name} will be the front image of the product`,

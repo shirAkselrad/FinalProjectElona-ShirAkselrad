@@ -7,7 +7,7 @@ import ImagePreview from "../ImagePreview/ImagePreview.jsx";
  * @param {function} props.onRemove this function removes a specific image from the images array
  * @returns {JSX.Element}
  */
-function ImagesPreviewList({ images, onRemove }) {
+function ImagesPreviewList({ images, onRemove, allowRemoveFront = false }) {
   return (
     <div className={styles.container}>
       {images.map((image, index) => {
@@ -20,7 +20,7 @@ function ImagesPreviewList({ images, onRemove }) {
           src = URL.createObjectURL(image.file);
           name = image.file.name;
         } else {
-             src = `http://localhost:3001/src/assets/productsFiles/${image.auto_file_name}`;
+          src = `http://localhost:3001/src/assets/productsFiles/${image.auto_file_name}`;
           name = image.file_name;
         }
 
@@ -32,7 +32,11 @@ function ImagesPreviewList({ images, onRemove }) {
             key={index}
             src={src}
             name={name}
-            onRemove={image.frontImg === 1 ? null : () => onRemove(index)}
+            onRemove={
+              image.frontImg === 1 && !allowRemoveFront
+                ? null
+                : () => onRemove(index)
+            }
           />
         );
       })}

@@ -33,12 +33,15 @@ function AddProductPopup({ onClose, onProductAdded }) {
         method: "POST",
         body: formData,
       });
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+
       const data = await response.json();
       return data;
     } catch (error) {
       console.error("error ucreating new product, error: ", error);
+      return {
+        success: false,
+        message: "Couldn't add product",
+      };
     }
   }
   useEffect(() => {
@@ -116,7 +119,6 @@ function AddProductPopup({ onClose, onProductAdded }) {
     if (data?.success) {
       await onProductAdded();
 
-      //displaying a popup according to the success status
       setPopup({
         show: true,
         message: "Product added successfully",
@@ -125,7 +127,7 @@ function AddProductPopup({ onClose, onProductAdded }) {
     } else {
       setPopup({
         show: true,
-        message: "Couldn't add product",
+        message: data?.message || "Couldn't add product",
         type: "error",
       });
     }

@@ -16,12 +16,45 @@ import { ProductCategory, ProductSize } from "../../../../Enums/products.js";
 import { countries } from "../../../../data/countries.js";
 import { colors } from "../../../../data/colors.js";
 import { useEffect, useState } from "react";
-import useEditProductImgs from "./editProductPopup.js";
+import useEditProductImgs, { checkFormValidation } from "./editProductPopup.js";
 import useProductForm from "../AddProductPopup/addProductPopupInfo.js";
+
 function EditProductPopup({ onClose, product, onSave }) {
   const [productImgs, setProductImgs] = useState([]);
-  async function editProduct(formData) {
+  const [frontImg, setFrontImg] = useState("");
+
+  //This function send all the products inputs values after checking them. then product's info will be updated
+  async function saveEditedProduct() {
     try {
+      const formData = new FormData();
+
+      formData.append("name", editedProduct.name);
+      formData.append("category", editedProduct.category);
+      formData.append("size", editedProduct.size);
+      formData.append("country_origin", editedProduct.country_origin);
+      formData.append("colors", editedProduct.colors.join("-"));
+      formData.append("price", editedProduct.price);
+      formData.append("cost_price", editedProduct.cost_price);
+      formData.append("quantity", editedProduct.quantity);
+      formData.append("min_stock", editedProduct.min_stock);
+      formData.append("discount", editedProduct.discount);
+      formData.append("min_sales", editedProduct.min_sales);
+      formData.append("sales_check_date", editedProduct.sales_check_date);
+      formData.append("description", editedProduct.description);
+      formData.append("restock_required", editedProduct.restock_required);
+
+      //saving the final images of the product (these are the ONLY images which will be saved in the files table at back-end )- info about both old and new images
+      const imgsData = productImgs.map((img) => ({
+        file_name: img.file.name,
+        file_hash: img.file_hash,
+        frontImg: img.frontImg,
+      }));
+      formData.append("imgsData", JSON.stringify(imgsData));
+
+      //the actual data of the new images (only the new because back-end already have the data of the old images)- the actaul files
+      productImgs.forEach((img) => {
+        if (img.file instanceof File) formData.append("files", img.file);
+      });
       const response = await fetch(
         `/api/employee/editedProduct/${product.product_id}`,
         {
@@ -59,6 +92,11 @@ function EditProductPopup({ onClose, product, onSave }) {
         },
       }));
 
+      //check and apply at frontImg state the current frontImg
+      const currentFrontImg = formattedImgs.find((img) => img.frontImg === 1);
+      if (currentFrontImg) {
+        setFrontImg(currentFrontImg.id);
+      }
       setProductImgs(formattedImgs);
     } catch (error) {
       console.error("Couldn't get product's images, error: ", error);
@@ -66,16 +104,12 @@ function EditProductPopup({ onClose, product, onSave }) {
   }
 
   useEffect(() => {
-    console.log("EDIT PRODUCT USE EFFECT");
-
     document.body.style.overflow = "hidden";
     getProductImgs();
     return () => {
       document.body.style.overflow = "auto";
     };
   }, []);
-
-  const frontImg = productImgs.find((img) => img.frontImg === 1);
 
   //changing the product's formate so it will be fitted to useProductForm object formate
   const initialProduct = {
@@ -102,8 +136,13 @@ function EditProductPopup({ onClose, product, onSave }) {
     handleColorsChange,
   } = useProductForm(initialProduct);
 
-  const { handleAddFiles, popup, setPopup } =
-    useEditProductImgs(setProductImgs);
+  const {
+    handleAddFiles,
+    handleFrontImgChange,
+    handleRemoveFile,
+    popup,
+    setPopup,
+  } = useEditProductImgs(setProductImgs, frontImg, setFrontImg);
 
   return (
     <div className={styles.overlay}>
@@ -125,7 +164,7 @@ function EditProductPopup({ onClose, product, onSave }) {
           <Remove onClick={onClose} />
         </div>
 
-        <h2 className={styles.title}>EDIT PRODUCT Test</h2>
+        <h2 className={styles.title}>EDIT PRODUCT</h2>
 
         <form className={styles.form}>
           <InputField
@@ -169,6 +208,7 @@ function EditProductPopup({ onClose, product, onSave }) {
               value={editedProduct.country_origin}
               options={countries}
               onChange={(e) => handleProductCountryChange(e.target.value)}
+              error={errors.country_origin}
             />
           </div>
 
@@ -292,13 +332,18 @@ function EditProductPopup({ onClose, product, onSave }) {
                 onChange={(e) => handleAddFiles(e.target.files)}
               />
             </div>
-            <ImagesPreviewList images={productImgs} />
+            <ImagesPreviewList
+              images={productImgs}
+              onRemove={handleRemoveFile}
+              allowRemoveFront={true}
+            />
 
             <InputLabel text="Front Image" />
             <FileSelection
               files={productImgs}
               value={frontImg}
-              onChange={(e) => onChange(e.target.value)}
+              //sending the id of the chosen image
+              onChange={handleFrontImgChange}
             />
           </div>
 
@@ -316,6 +361,8 @@ function EditProductPopup({ onClose, product, onSave }) {
             text="SAVE CHANGES"
             type="button"
             className={styles.addBtn}
+            onClick={saveEditedProduct}
+            disabled={!checkFormValidation(errors, editedProduct, productImgs)}
           />
         </form>
       </div>

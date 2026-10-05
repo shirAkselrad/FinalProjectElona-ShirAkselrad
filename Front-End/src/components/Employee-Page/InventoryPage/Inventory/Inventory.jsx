@@ -55,8 +55,7 @@ function Inventory() {
   };
 
   //This function update the product images after pressing the save btn at the images popup
-  async function onSaveImgs(product_id, images) {
-    const imgs = images.map((image) => image.auto_file_name);
+  async function onSaveImgs(product_id, imgsData) {
     try {
       const response = await fetch(
         `/api/employee/deleteProductImgs/${product_id}`,
@@ -66,7 +65,7 @@ function Inventory() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            imgs: imgs,
+            imgsData: imgsData,
           }),
         },
       );
