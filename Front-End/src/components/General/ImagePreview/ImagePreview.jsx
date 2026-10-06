@@ -2,18 +2,12 @@ import styles from "./imagePreview.module.css";
 
 function ImagePreview({ src, name, onRemove }) {
   return (
-    <div className={styles.container}>
-      <div className={styles.imageBox}>
-        {onRemove && (
-          <button type="button" className={styles.removeBtn} onClick={onRemove}>
-            ×
-          </button>
-        )}
+    <div className={styles.container} onClick={onRemove}>
+      <img className={styles.image} src={src} alt={name} draggable={false} />
 
-        <img className={styles.image} src={src} alt={name} />
+      <div className={styles.removeOverlay}>
+        <span>×</span>
       </div>
-
-      <span className={styles.name}>{name}</span>
     </div>
   );
 }

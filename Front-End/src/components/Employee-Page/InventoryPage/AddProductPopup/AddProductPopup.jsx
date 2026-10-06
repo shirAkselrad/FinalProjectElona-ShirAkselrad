@@ -11,7 +11,7 @@ import { countries } from "../../../../data/countries.js";
 import useProductForm from "./addProductPopupInfo.js";
 import TextAreaField from "../../../General/TextAreaField/TextAreaField.jsx";
 import ImageUploadBtn from "../../../General/ImageUploadBtn/ImageUploadBtn.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BrightGeneralBtn from "../../../General/BrightGeneralBtn/BrightGeneralBtn.jsx";
 import ImagesPreviewList from "../../../General/ImagesPreviewList/ImagesPreviewList.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
@@ -26,6 +26,7 @@ import { colors } from "../../../../data/colors.js";
  * @returns
  */
 function AddProductPopup({ onClose, onProductAdded }) {
+  const [step, setStep] = useState(1);
   //This function adds a new product to the backend
   async function createProduct(formData) {
     try {
@@ -136,9 +137,9 @@ function AddProductPopup({ onClose, onProductAdded }) {
   //checking there is no errors in the inputs before sending it to backend
   const noErrors = Object.values(errors).every((error) => error === "");
 
-  const noEmptyInputs =
-    Object.values(product).every((input) => input !== "" && input !== "None") &&
-    product.files.length > 0;
+  const noEmptyInputs = Object.entries(product)
+    .filter(([key]) => key !== "files")
+    .every(([, input]) => input !== "" && input != "None");
   return (
     <div className={styles.overlay}>
       {/**opening a popup according to the success status  */}
@@ -362,10 +363,11 @@ function AddProductPopup({ onClose, onProductAdded }) {
             />
           </div>
           <GeneralBtn
-            text="ADD PRODUCT"
-            type="submit"
+            text="NEXT"
+            type="button"
             className={styles.addBtn}
             disabled={!noErrors || !noEmptyInputs}
+            onClick={() => setStep(2)}
           />
         </form>
       </div>

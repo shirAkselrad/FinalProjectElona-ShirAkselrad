@@ -1,114 +1,37 @@
 .container {
-  width: 80px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-}
-.imageBox {
+  width: 100%;
+  aspect-ratio: 1 / 1;
   position: relative;
-  width: 80px;
-  height: 80px;
-  border: 1px solid #9d918b;
-  background-color: #fbf8f5;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
-
-.name {
-  width: 100%;
-  font-size: 11px;
-  color: #51453f;
-  text-align: center;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.removeBtn {
+.removeOverlay {
   position: absolute;
-  top: 3px;
-  right: 3px;
+  inset: 0;
 
-  width: 18px;
-  height: 18px;
-
-  border: none;
-  border-radius: 50%;
-  background-color: white;
-
-  font-size: 14px;
-  line-height: 18px;
-  cursor: pointer;
-
-  z-index: 2;
-}
-
-
-.frontImgOption {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
 
-  margin-top: 7px;
+  background-color: rgba(45, 30, 20, 0.4);
 
-  font-family: Georgia, serif;
-  font-size: 13px;
-  color: #5f4638;
-
-  cursor: pointer;
-  user-select: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-.frontImgOption input[type="radio"] {
-  appearance: none;
-  -webkit-appearance: none;
-
-  width: 14px;
-  height: 14px;
-
-  border: 1.5px solid #8b7365;
-  border-radius: 50%;
-
-  background-color: #fbf8f5;
-
-  cursor: pointer;
-  position: relative;
-
-  transition: all 0.2s ease;
+.removeOverlay span {
+  color: white;
+  font-size: 34px;
+  font-weight: 300;
 }
 
-.frontImgOption input[type="radio"]:checked {
-  border-color: #5f4638;
-}
-
-.frontImgOption input[type="radio"]:checked::after {
-  content: "";
-
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
-  width: 7px;
-  height: 7px;
-
-  border-radius: 50%;
-  background-color: #5f4638;
-
-  transform: translate(-50%, -50%);
-}
-
-.frontImgOption:hover {
-  color: #3f2f27;
-}
-
-.frontImgOption:hover input[type="radio"] {
-  border-color: #5f4638;
+.container:hover .removeOverlay {
+  opacity: 1;
 }

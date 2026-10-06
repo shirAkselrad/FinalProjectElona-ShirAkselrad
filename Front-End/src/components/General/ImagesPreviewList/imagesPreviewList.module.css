@@ -1,5 +1,23 @@
 .container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  position: relative;
+}
+.startDropArea,
+.endDropArea {
+  position: absolute;
+  width: 30px;
+  height: 90px;
+}
+
+.startDropArea {
+  left: -30px;
+  top: 0;
+}
+
+.endDropArea {
+  right: -30px;
+  top: 0;
 }

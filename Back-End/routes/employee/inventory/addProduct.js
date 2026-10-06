@@ -2,18 +2,34 @@ const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
-const crypto = require("crypto");
-const fs = require("fs");
 const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
+/**while creating new product the values that is being send to back-end are:
+ * product- json with all the product's details
+ * images- json with file_name and number
+ * uploading-files- the acutal files
+ */
+
+//this middleware responsible for converthing the string data back to json format
+const parseProductData = (req, res, next) => {
+  try {
+    req.body.product = JSON.parse(req.body.product);
+    req.body.images = JSON.parse(req.body.images);
+    next();
+  } catch (err) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid product's data",
+    });
+  }
+};
+
 //This middleware checks rather this product already exists
 const checkProductId = (req, res, next) => {
-  const newProductId = req.body.product_id;
+  const newProductId = req.body.product.product_id;
   const query = "select product_id from inventory where product_id=?";
-  db.query(query,[newProductId], (err, results) => {
-    console.log("FILES RESULTS:", results);
-
+  db.query(query, [newProductId], (err, results) => {
     if (err) {
       console.error("Couldn't get all products ids, error: ", err);
       return res.status(500).json({
@@ -48,10 +64,10 @@ const createProduct = (req, res, next) => {
     restock_required,
     sales_check_date,
     min_sales,
-  } = req.body;
+  } = req.body.product;
 
   const query =
-    "insert into inventory (product_id, name, category, colors, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, updated_at, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', NOW(), NOW(), ?, ?, ?)";
+    "insert into inventory (product_id, name, category, colors, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', NOW(), ?, ?, ?)";
 
   db.query(
     query,
@@ -59,7 +75,7 @@ const createProduct = (req, res, next) => {
       product_id,
       name,
       category,
-      colors,
+      colors.join(", "),
       country_origin,
       size,
       description,
@@ -73,11 +89,15 @@ const createProduct = (req, res, next) => {
       min_sales,
     ],
     (err, results) => {
-      if (err)
+      if (err) {
+        console.error("Error creating new product:", err);
+
         return res.status(500).json({
           success: false,
           message: "Error creating new product",
         });
+      }
+
       next();
     },
   );
@@ -105,33 +125,28 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-//this function responsible of the file hashing
-function calculateFileHash(filePath) {
-  const fileBuffer = fs.readFileSync(filePath);
-
-  return crypto.createHash("sha256").update(fileBuffer).digest("hex");
-}
+//creating json which includes both image data and the acutal file
+const matchFilesWithData = (req, res, next) => {
+  req.filesAndData = req.files.map((file, index) => {
+    return {
+      file: file,
+      file_name: req.body.images[index].file_name,
+      number: req.body.images[index].number,
+    };
+  });
+  next();
+};
 
 const addFiles = (req, res, next) => {
   //frontImg is only the index of frontImg
-  const { product_id } = req.body;
+  const { product_id } = req.body.product;
 
   //adding all the values of the files to the file table
-  const values = req.filesAndIdsArray.map((item) => {
-    //file hashing helps recognise rather the file already exists or not
-    const fileHash = calculateFileHash(item.file.path);
-    return [
-      item.file.originalname,
-      item.file.filename,
-      product_id,
-      item.file.path,
-      item.file.mimetype,
-      fileHash,
-      item.frontImg,
-    ];
+  const values = req.filesAndData.map((item) => {
+    return [item.file_name, product_id, item.number, item.file.path];
   });
   const query =
-    "insert into files (file_name, auto_file_name, product_id, path, file_type, file_hash, frontImg) values ?";
+    "insert into files (file_name, product_id, number,path) values ?";
 
   db.query(query, [values], (err, results) => {
     if (err) {
@@ -149,43 +164,13 @@ const addFiles = (req, res, next) => {
   });
 };
 
-const matchFilesWithIds = (req, res, next) => {
-  const { filesId } = req.body;
-  //converting from string to array
-  const filesIdArr = Array.isArray(filesId) ? filesId : [filesId];
-
-  req.filesAndIdsArray = req.files.map((file, index) => {
-    return {
-      file: file,
-      id: filesIdArr[index],
-    };
-  });
-  next();
-};
-
-const markingFrontImg = (req, res, next) => {
-  const { frontImg } = req.body;
-
-  console.log("frontImg:", frontImg, typeof frontImg);
-  console.log("files:", req.filesAndIdsArray);
-
-  req.filesAndIdsArray = req.filesAndIdsArray.map((item) => {
-    return {
-      ...item,
-      frontImg: item.id === frontImg,
-    };
-  });
-  next();
-};
-
-// //This path is for creating new product
 router.post(
   "/createProduct",
   upload.array("uploading-files"),
+  parseProductData,
   checkProductId,
+  matchFilesWithData,
   createProduct,
-  matchFilesWithIds,
-  markingFrontImg,
   addFiles,
 );
 

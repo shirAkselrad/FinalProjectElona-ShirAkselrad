@@ -8,11 +8,8 @@ function ProductsGrid({ products, frontImgs }) {
       {products.map((product) => (
         <ProductCard
           key={product.product_id}
+          product={product}
           image={frontImgs.find((img) => img.product_id === product.product_id)}
-          category={product.category}
-          name={product.name}
-          description={product.description}
-          price={product.price}
         />
       ))}
     </div>

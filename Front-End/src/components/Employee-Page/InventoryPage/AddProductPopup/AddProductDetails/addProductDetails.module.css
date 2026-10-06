@@ -1,0 +1,44 @@
+.container h2 {
+  margin: 0 0 28px 0;
+  font-size: 28px;
+  color: #8b5e4b;
+  font-weight: 600;
+}
+
+.container h2 {
+  margin: 0 0 28px 0;
+  font-size: 28px;
+}
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.half {
+  flex: 1;
+  min-width: 0;
+}
+
+.description {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.checkboxField {
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+.addBtn {
+  margin-top: 20px;
+}

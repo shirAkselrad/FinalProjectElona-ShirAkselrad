@@ -1,0 +1,30 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  margin-top: 10px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: #51453f;
+}
+
+.colors {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.color {
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+  border: 1px solid #cfc6c1;
+
+  box-sizing: border-box;
+}

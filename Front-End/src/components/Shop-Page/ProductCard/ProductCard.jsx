@@ -1,25 +1,27 @@
 import styles from "./productCard.module.css";
-
+import ProductSizes from "./ProductSizes/ProductSizes.jsx";
 import ProductImg from "../ProductImg/ProductImg.jsx";
 import DescriptionProduct from "../DescriptionProduct/DescriptionProduct.jsx";
 import ProductPrice from "../ProductPrice/ProductPrice.jsx";
+import ProductColors from "./ProductColors/ProductColors.jsx";
 import Plus from "../Plus/Plus.jsx";
 
-function ProductCard({ image, category, name, description, price }) {
+function ProductCard({ product, image, editable = false, onImageClick }) {
   return (
     <div className={styles.productCard}>
-      <ProductImg image={image} name={name} />
+      <ProductImg
+        image={image}
+        name={product.name}
+        editable={editable}
+        onImageClick={onImageClick}
+      />
 
       <div className={styles.content}>
-        <DescriptionProduct
-          category={category}
-          name={name}
-          description={description}
-        />
-
+        <DescriptionProduct category={product.category} name={product.name} />
+        <ProductColors colors={product.colors} />
+        <ProductSizes selectedSize={product.size} />
         <div className={styles.bottom}>
-          <ProductPrice price={price} />
-
+          <ProductPrice price={product.price} discount={product.discount} />
           <Plus />
         </div>
       </div>
@@ -28,27 +30,3 @@ function ProductCard({ image, category, name, description, price }) {
 }
 
 export default ProductCard;
-
-// function ProductCard({ product }) {
-//   return (
-//     <div className={styles.productCard}>
-//       <ProductImg image={image} name={name} />
-
-//       <div className={styles.content}>
-//         <DescriptionProduct
-//           category={product.category}
-//           name={product.name}
-//           description={product.description}
-//         />
-
-//         <div className={styles.bottom}>
-//           <ProductPrice price={product.price} />
-
-//           <Plus />
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default ProductCard;

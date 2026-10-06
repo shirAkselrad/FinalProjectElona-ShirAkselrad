@@ -1,5 +1,5 @@
 import styles from "./inventory.module.css";
-import AddProductPopup from "../AddProductPopup/AddProductPopup.jsx";
+import AddProduct from "../AddProductPopup/AddProduct/AddProduct.jsx";
 import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
 import InventoryTable from "../InventoryTable/InventoryTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
@@ -145,7 +145,7 @@ function Inventory() {
         inventory={filterInventory}
       />
       {showPopupAdd && (
-        <AddProductPopup
+        <AddProduct
           onClose={handleClosePopupAdd}
           onProductAdded={getInventory}
         />
