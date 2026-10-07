@@ -65,6 +65,13 @@ function useProductDetails(initialDetails = null) {
     }
   }
 
+  //this function gets value and return true if all the chars are digits, else,false
+  function onlyNumbers(value) {
+    for (let i = 0; i < value.length; i++)
+      if (value[i] < "0" || value[i] > "9") return false;
+    return true;
+  }
+
   //this function check the validation of the product's id
   function handleProductIdChange(value) {
     setDetails({
@@ -75,6 +82,11 @@ function useProductDetails(initialDetails = null) {
       setErrors({
         ...errors,
         product_id: "Invalid product ID",
+      });
+    } else if (!onlyNumbers(value)) {
+      setErrors({
+        ...errors,
+        product_id: "Product ID must contain ONLY digits",
       });
     } else {
       setErrors({

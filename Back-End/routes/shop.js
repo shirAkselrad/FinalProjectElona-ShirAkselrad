@@ -28,13 +28,13 @@ router.get("/getProducts", (req, res) => {
 
 router.get("/getFrontImgs", (req, res) => {
   const query = `
-  select *
-  from files
-  where frontImg = 1
-  and product_id in (
-    select product_id
-    from inventory
-    where status = 'Active'
+  SELECT *
+  FROM files
+  WHERE file_number = 1
+  AND product_id IN (
+    SELECT product_id
+    FROM inventory
+    WHERE status = 'Active'
   )
 `;
   db.query(query, (err, results) => {
@@ -46,6 +46,23 @@ router.get("/getFrontImgs", (req, res) => {
       });
     }
     console.log("products front  images were sent successfully to front-end");
+    return res.status(200).json({
+      success: true,
+      imgs: results,
+    });
+  });
+});
+
+router.get("/getProductImgs/:product_id", (req, res) => {
+  const product_id = req.params.product_id;
+  const query = "select * from files where product_id=? order by file_number";
+  db.query(query, [product_id], (err, results) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get product's images",
+      });
+    }
     return res.status(200).json({
       success: true,
       imgs: results,

@@ -8,6 +8,8 @@ import { useState, useEffect } from "react";
 function ShopPage() {
   const [products, setProducts] = useState([]);
   const [frontImgs, setFrontImgs] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedProductImgs, setSelectedProductImgs] = useState([]);
   const [popup, setPopup] = useState({
     show: false,
     message: "",
@@ -31,7 +33,14 @@ function ShopPage() {
         });
         return;
       }
-      setProducts(data.products);
+      setProducts(
+        data.products.map((product) => ({
+          ...product,
+          colors: product.colors
+            ? product.colors.split(",").map((color) => color.trim())
+            : [],
+        })),
+      );
     } catch (error) {
       console.log("Error getting products, error: ", error);
       setPopup({
@@ -56,6 +65,36 @@ function ShopPage() {
     }
   }
 
+  async function getProductImgs(product_id) {
+    try {
+      const response = await fetch(`/api/shop/getProductImgs/${product_id}`, {
+        method: "GET",
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (!data.success) {
+        setPopup({
+          show: true,
+          message: data.message,
+          type: "error",
+        });
+        return;
+      }
+      setSelectedProductImgs(data.imgs);
+    } catch (error) {
+      setPopup({
+        show: true,
+        message:  "Couldn't get product images",
+        type: "error",
+      });
+    }
+  }
+  //this function gets a product and save the product as the selected product to view all of it's details in the productInfoPopup
+  async function handleViewDetails(product) {
+    setSelectedProduct(product);
+    await getProductImgs(product.product_id);
+  }
   useEffect(() => {
     getProducts();
     getFrontImgs();
@@ -91,7 +130,11 @@ function ShopPage() {
 
       {/**In case one of them is empty (the info didn't arrive yet from the back-end) */}
       {products.length > 0 && frontImgs.length > 0 && (
-        <ProductsGrid products={products} frontImgs={frontImgs} />
+        <ProductsGrid
+          products={products}
+          frontImgs={frontImgs}
+          onViewDetails={handleViewDetails}
+        />
       )}
     </main>
   );

@@ -13,7 +13,7 @@ function AddProductFrontImg({
   const fileInputRef = useRef(null);
 
   //finding the front image between all the images in the productImgs array
-  const frontImg = productImgs.find((image) => image.number === 1);
+  const frontImg = productImgs.find((image) => image.file_number === 1);
 
   //This function responsible to use Input while click on the empty image at the product card
   function handleImageClick() {
@@ -27,12 +27,12 @@ function AddProductFrontImg({
     const newFrontImg = {
       file_name: file.name,
       file: file,
-      number: 1,
+      file_number: 1,
     };
 
     setProductImgs((prev) => [
       //in case the user decided to change the front image picture, then promising there is only one image that set as 1 and the other gets removed
-      ...prev.filter((image) => image.number !== 1),
+      ...prev.filter((image) => image.file_number !== 1),
       newFrontImg,
     ]);
   }

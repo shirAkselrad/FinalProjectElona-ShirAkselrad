@@ -63,8 +63,8 @@ function InventoryRow({ inv, onEdit, onRemove, onImages }) {
       <td>{inv.category}</td>
       <td>{inv.colors}</td>
       <td>{inv.size}</td>
-      <td>${inv.price}</td>
-      <td>${inv.cost_price}</td>
+      <td>{inv.price}₪</td>
+      <td>{inv.cost_price}₪</td>
       <td>{inv.discount}%</td>
       <td>{inv.quantity}</td>
       <td>{inv.min_stock}</td>
@@ -73,10 +73,7 @@ function InventoryRow({ inv, onEdit, onRemove, onImages }) {
         <div className={styles.actions}>
           <EditBtn onClick={onEdit} />
 
-          <BrightGeneralBtn
-            text="IMAGES"
-            onClick={onImages}
-          />
+          <BrightGeneralBtn text="IMAGES" onClick={onImages} />
 
           <BrightGeneralBtn
             text={inv.status === "Active" ? "REMOVE" : "RESTORE"}

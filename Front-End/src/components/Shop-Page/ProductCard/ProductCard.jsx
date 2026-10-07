@@ -6,14 +6,21 @@ import ProductPrice from "../ProductPrice/ProductPrice.jsx";
 import ProductColors from "./ProductColors/ProductColors.jsx";
 import Plus from "../Plus/Plus.jsx";
 
-function ProductCard({ product, image, editable = false, onImageClick }) {
+function ProductCard({
+  product,
+  image,
+  editable = false,
+  onImageClick,
+  onViewDetails,
+}) {
   return (
     <div className={styles.productCard}>
       <ProductImg
         image={image}
         name={product.name}
         editable={editable}
-        onImageClick={onImageClick}
+        //in case edit mode is false, if onViewDetails doesn't exist then no error will accure (nothing will happen)
+        onImageClick={editable ? onImageClick : () => onViewDetails?.(product)}
       />
 
       <div className={styles.content}>

@@ -32,8 +32,8 @@ function AddProduct({ onClose, onProductAdded }) {
   //this function update the proudctImgs according to the user changes
   function handleImagesReorder(fromIndex, toIndex) {
     setProductImgs((prev) => {
-      const frontImg = prev.find((image) => image.number === 1);
-      const otherImgs = prev.filter((image) => image.number !== 1);
+      const frontImg = prev.find((image) => image.file_number === 1);
+      const otherImgs = prev.filter((image) => image.file_number !== 1);
       const updatedImgs = [...otherImgs];
 
       //removing the dragged image from it's current position

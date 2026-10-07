@@ -7,6 +7,7 @@ function ProductImagesGallery({
   onRemove,
   onReorder,
   onImagesChange,
+  editable=false
 }) {
   let frontImgSrc = null;
   if (frontImg)
@@ -30,9 +31,15 @@ function ProductImagesGallery({
         onRemove={onRemove}
         onReorder={onReorder}
       />
-      <div className={styles.addImage}>
-        <ImageUploadBtn text="+ADD IMAGE" multiple onChange={onImagesChange} />
-      </div>
+      {editable && (
+        <div className={styles.addImage}>
+          <ImageUploadBtn
+            text="+ADD IMAGE"
+            multiple
+            onChange={onImagesChange}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -8,7 +8,7 @@ function ProductImg({ image, name, editable = false, onImageClick }) {
   return (
     <div
       className={styles.imageContainer}
-      onClick={editable ? onImageClick : undefined}
+      onClick={onImageClick}
     >
       {image ? (
         <div className={styles.imageWrapper}>

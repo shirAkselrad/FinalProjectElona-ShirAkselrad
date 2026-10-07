@@ -18,8 +18,8 @@ function AddProductImages({
     message: "",
     type: "",
   });
-  const frontImg = productImgs.find((image) => image.number == 1);
-  const otherImgs = productImgs.filter((image) => image.number !== 1);
+  const frontImg = productImgs.find((image) => image.file_number == 1);
+  const otherImgs = productImgs.filter((image) => image.file_number !== 1);
 
   //this function update the productImgs array while adding Images
   function handleImagesChange(e) {
@@ -34,8 +34,8 @@ function AddProductImages({
   //this function removes unwanted product's image
   function handleRemoveImage(indexToRemove) {
     setProductImgs((prev) => {
-      const frontImg = prev.find((image) => image.number == 1);
-      const otherImgs = prev.filter((image) => image.number !== 1);
+      const frontImg = prev.find((image) => image.file_number == 1);
+      const otherImgs = prev.filter((image) => image.file_number !== 1);
       //keeping all the images execpt the image that is being removed
       const updatedImgs = otherImgs.filter(
         (_, index) => index !== indexToRemove,
@@ -52,7 +52,7 @@ function AddProductImages({
     formData.append("product", JSON.stringify(productData));
     const imagesData = images.map((image) => ({
       file_name: image.file_name,
-      number: image.number,
+      file_number: image.file_number,
     }));
 
     //the info of the images
@@ -83,7 +83,7 @@ function AddProductImages({
   async function handleSave() {
     const numberedImgs = productImgs.map((img, index) => ({
       ...img,
-      number: index + 1,
+      file_number: index + 1,
     }));
 
     const productToSave = {

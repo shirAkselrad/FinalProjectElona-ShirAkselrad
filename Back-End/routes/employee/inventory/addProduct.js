@@ -7,7 +7,7 @@ const db = dbSingleton.getConnection();
 
 /**while creating new product the values that is being send to back-end are:
  * product- json with all the product's details
- * images- json with file_name and number
+ * images- json with file_name and file_number
  * uploading-files- the acutal files
  */
 
@@ -131,7 +131,7 @@ const matchFilesWithData = (req, res, next) => {
     return {
       file: file,
       file_name: req.body.images[index].file_name,
-      number: req.body.images[index].number,
+      file_number: req.body.images[index].file_number,
     };
   });
   next();
@@ -143,10 +143,15 @@ const addFiles = (req, res, next) => {
 
   //adding all the values of the files to the file table
   const values = req.filesAndData.map((item) => {
-    return [item.file_name, product_id, item.number, item.file.path];
+    return [
+      item.file_name,
+      product_id,
+      item.file_number,
+      `/src/assets/productsFiles/${item.file.filename}`,
+    ];
   });
   const query =
-    "insert into files (file_name, product_id, number,path) values ?";
+    "insert into files (file_name, product_id, file_number,path) values ?";
 
   db.query(query, [values], (err, results) => {
     if (err) {

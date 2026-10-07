@@ -18,17 +18,12 @@
   letter-spacing: 1.5px;
   color: #51453f;
 }
-
 .sizes {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-
-  min-width: 0;
-  flex: 1;
+  gap: 1px;
+  flex-wrap: nowrap;
 }
-
 .size {
   min-width: 27px;
   height: 27px;
@@ -37,7 +32,7 @@
   align-items: center;
   justify-content: center;
 
-  padding: 0 5px;
+  padding: 0 3px;
   box-sizing: border-box;
 
   border: 1px solid #d8c8bf;
@@ -45,7 +40,6 @@
   font-size: 9px;
   color: #9a8b84;
 }
-
 .selected {
   background-color: #a77d6d;
   border-color: #a77d6d;

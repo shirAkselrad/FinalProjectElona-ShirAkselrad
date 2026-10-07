@@ -4,7 +4,7 @@ import ProductSizes from "../../ProductCard/ProductSizes/ProductSizes";
 import ProductPrice from "../../ProductPrice/ProductPrice";
 
 function ProductDetails({ product }) {
-  console.log("PRODUCT DETAILS:", product);
+  
   return (
     <div className={styles.container}>
       <div className={styles.header}>
