@@ -16,6 +16,7 @@ const recoveryPageRoutes = require("./routes/recoveryPage");
 const resetPasswordRoutes = require("./routes/resetPassword");
 const headerRoutes = require("./routes/header");
 const cartRoutes = require("./routes/ShopPage/cart");
+const orderSummary = require("./router/ShopPage/orderSummary");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -39,7 +40,8 @@ app.use("/api/recoveryPage", recoveryPageRoutes);
 app.use("/api/resetPassword", resetPasswordRoutes);
 app.use("/api/header", headerRoutes);
 app.use("/api/shop", shopPageRoutes);
-app.use("/api/cart", cartRoutes); 
+app.use("/api/cart", cartRoutes);
+app.use("/api/orderSummary", OrderSummaryRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

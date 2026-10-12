@@ -11,6 +11,7 @@ import ResetPasswordPage from "../components/ResetPassword-Page/ResetPasswordPag
 import Clients from "../components/Employee-Page/ClientsPage/Clients/Clients.jsx";
 import Inventory from "../components/Employee-Page/InventoryPage/Inventory/Inventory.jsx";
 import Orders from "../components/Employee-Page/OrdersPage/Orders/Orders.jsx";
+import OrderSummaryPage from "../components/Shop-Page/OrderSummary/OrderSummaryPage/OrderSummaryPage.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
 import ProtectedRoute from "../routes/ProtectedRoute.jsx";
@@ -29,6 +30,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["Manager"]}>
                 <ManagerPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orderSummary"
+            element={
+              <ProtectedRoute allowedRoles={["Client"]}>
+                <OrderSummaryPage />
               </ProtectedRoute>
             }
           />

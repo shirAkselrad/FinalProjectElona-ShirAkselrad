@@ -1,0 +1,14 @@
+.orderSummaryPage {
+  width: 90%;
+  max-width: 1300px;
+  margin: 55px auto;
+}
+
+.orderSummaryPage h1 {
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: #75513e;
+  margin-bottom: 35px;
+  text-align: center;
+}

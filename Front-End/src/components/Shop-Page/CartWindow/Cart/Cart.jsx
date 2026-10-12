@@ -92,7 +92,8 @@ function Cart({ onClose }) {
 
       <CartTotal
         total={Number(cart.total_price)}
-        disabled={Number(cart.total_items === 0)}
+        disabled={Number(cart.total_items)===0}
+        onClose={onClose}
       />
     </div>
   );
