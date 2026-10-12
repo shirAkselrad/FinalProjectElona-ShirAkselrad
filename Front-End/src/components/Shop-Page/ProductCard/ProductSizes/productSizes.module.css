@@ -1,18 +1,14 @@
 .container {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 12px;
 
-  margin-top: 10px;
   width: 100%;
   box-sizing: border-box;
 }
 
 .label {
-  flex-shrink: 0;
-
-  padding-top: 7px;
-
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.5px;
@@ -44,4 +40,20 @@
   background-color: #a77d6d;
   border-color: #a77d6d;
   color: #ffffff;
+}
+.compact {
+  grid-template-columns: 40px minmax(0, 1fr);
+  column-gap: 4px;
+  margin-top: 16px;
+}
+.compact .sizes {
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.compact .size {
+  min-width: 23px;
+  height: 23px;
+  font-size: 8px;
+  padding: 0 2px;
 }

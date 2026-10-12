@@ -18,7 +18,6 @@ function ImagesPreviewList({ images, onRemove, onReorder, editable = false }) {
     let src = null;
     if (image.file instanceof File) src = URL.createObjectURL(image.file);
     else src = image.path;
-
     return (
       //the object which is getting dragged
       <div

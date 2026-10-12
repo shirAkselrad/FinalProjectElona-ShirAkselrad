@@ -6,7 +6,7 @@ function Remove({ onClick, className = "" }) {
       className={`${styles.remove} ${className}`}
       onClick={onClick}
       type="button"
-      aria-label="Remove product"
+      aria-label="Close window"
     >
       ×
     </button>

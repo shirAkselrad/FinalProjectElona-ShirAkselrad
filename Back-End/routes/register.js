@@ -80,7 +80,7 @@ router.post("/", (req, res) => {
   } = req.body;
   console.log(firstName, lastName);
   const query =
-    "insert into users (first_name, last_name,user_id, city,street, house_num,email, phone_num, username, password,role, status) values(?,?,?,?,?,?,?,?,?,?,?,?)";
+    "insert into users (first_name, last_name,user_id, city,street, house_num,email, phone_num, username, password,role, status, points) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
   bcrypt.genSalt(10, (err, salt) => {
     if (err) throw err;
@@ -104,6 +104,7 @@ router.post("/", (req, res) => {
           hashedPassword,
           "Client",
           "Active",
+          20
         ],
         (err, results) => {
           if (err) {

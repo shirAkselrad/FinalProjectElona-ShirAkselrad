@@ -12,6 +12,7 @@ function ProductCard({
   editable = false,
   onImageClick,
   onViewDetails,
+  onAddToCart,
 }) {
   return (
     <div className={styles.productCard}>
@@ -26,10 +27,16 @@ function ProductCard({
       <div className={styles.content}>
         <DescriptionProduct category={product.category} name={product.name} />
         <ProductColors colors={product.colors} />
-        <ProductSizes selectedSize={product.size} />
+        <ProductSizes selectedSize={product.size} compact />
         <div className={styles.bottom}>
           <ProductPrice price={product.price} discount={product.discount} />
-          <Plus />
+          <Plus
+            onClick={() =>
+              //1-the amount of products to add to the cart from the same product
+              onAddToCart?.(product, 1)
+            }
+            disabled={Number(product.quantity <= 0)}
+          />
         </div>
       </div>
     </div>

@@ -15,44 +15,47 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
 import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout.jsx";
+import { CartProvider } from "../context/CartContext.jsx";
 function App() {
   return (
-    <Routes>
-      {/*pages which includes header*/}
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<ShopPage />} />
-        <Route path="/aboutUs" element={<AboutUsPage />} />
-        <Route
-          path="/managerPage"
-          element={
-            <ProtectedRoute allowedRoles={["Manager"]}>
-              <ManagerPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/employeePage"
-          element={
-            <ProtectedRoute allowedRoles={["Employee", "Manager"]}>
-              <EmployeePage />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Navigate to="clients" replace />} />
-          <Route path="clients" element={<Clients />} />
-          <Route path="inventory" element={<Inventory />} />
-          <Route path="orders" element={<Orders />} />
+    <CartProvider>
+      <Routes>
+        {/*pages which includes header*/}
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<ShopPage />} />
+          <Route path="/aboutUs" element={<AboutUsPage />} />
+          <Route
+            path="/managerPage"
+            element={
+              <ProtectedRoute allowedRoles={["Manager"]}>
+                <ManagerPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employeePage"
+            element={
+              <ProtectedRoute allowedRoles={["Employee", "Manager"]}>
+                <EmployeePage />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="clients" replace />} />
+            <Route path="clients" element={<Clients />} />
+            <Route path="inventory" element={<Inventory />} />
+            <Route path="orders" element={<Orders />} />
+          </Route>
         </Route>
-      </Route>
-      {/*Pages which do not include header*/}
-      <Route element={<AuthLayout />}>
-        <Route path="/loginPage" element={<LoginPage />} />
-        <Route path="/registerPage" element={<RegisterPage />} />
-        <Route path="/ForgotPasswordPage" element={<ForgotPasswordPage />} />
-        <Route path="/recoveryPage" element={<RecoveryPage />} />
-        <Route path="/ResetPasswordPage" element={<ResetPasswordPage />} />
-      </Route>
-    </Routes>
+        {/*Pages which do not include header*/}
+        <Route element={<AuthLayout />}>
+          <Route path="/loginPage" element={<LoginPage />} />
+          <Route path="/registerPage" element={<RegisterPage />} />
+          <Route path="/ForgotPasswordPage" element={<ForgotPasswordPage />} />
+          <Route path="/recoveryPage" element={<RecoveryPage />} />
+          <Route path="/ResetPasswordPage" element={<ResetPasswordPage />} />
+        </Route>
+      </Routes>
+    </CartProvider>
   );
 }
 export default App;

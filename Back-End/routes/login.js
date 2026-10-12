@@ -27,7 +27,7 @@ router.post("/", (req, res) => {
   const { userName, password } = req.body;
   console.log("body:", req.body);
   const query =
-    "select username, password, first_name, role, status from users where username=?";
+    "select username, password, first_name,email, role, status from users where username=?";
 
   db.query(query, [userName], (err, results) => {
     console.log("results:", results);
@@ -54,6 +54,7 @@ router.post("/", (req, res) => {
           req.session.user = {
             userName: userName,
             firstName: results[0].first_name,
+            email: results[0].email,
             role: results[0].role,
           };
 

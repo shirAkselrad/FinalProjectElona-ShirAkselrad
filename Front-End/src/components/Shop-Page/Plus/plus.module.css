@@ -25,3 +25,15 @@
   color: white;
   border-color: #8a6f60;
 }
+
+
+.plusBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.plusBtn:disabled:hover {
+  background-color: transparent;
+  color: #8a6f60;
+  border-color: #d9c4b5;
+}

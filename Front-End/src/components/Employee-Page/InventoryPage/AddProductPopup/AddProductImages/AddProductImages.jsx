@@ -138,6 +138,7 @@ function AddProductImages({
             onRemove={handleRemoveImage}
             onReorder={onReorder}
             onImagesChange={handleImagesChange}
+            editable={true}
           />
         </div>
 

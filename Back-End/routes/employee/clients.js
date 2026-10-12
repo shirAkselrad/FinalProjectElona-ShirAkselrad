@@ -10,7 +10,7 @@ const db = dbSingleton.getConnection();
 //This path returns all the clients details from back-end to front-end
 router.get("/clients", (req, res) => {
   const query =
-    "select  first_name, last_name, city, street, house_num, email, phone_num, status from users where role='client'";
+    "select  first_name, last_name, city, street, house_num, email, phone_num, status, points from users where role='client'";
   db.query(query, (err, results) => {
     if (err) {
       console.error("Could not get clients, error: ", err);

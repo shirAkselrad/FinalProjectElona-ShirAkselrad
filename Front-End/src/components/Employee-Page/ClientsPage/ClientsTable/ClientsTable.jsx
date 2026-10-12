@@ -23,6 +23,7 @@ function ClientsTable({ clients, onSave }) {
             <th>Street</th>
             <th>House Number</th>
             <th>Email</th>
+            <th>Points</th>
             <th>Actions</th>
           </tr>
         </thead>

@@ -1,8 +1,21 @@
 import styles from "./messagePopup.module.css";
+import { useEffect } from "react";
+function MessagePopup({
+  message,
+  type = "success",
+  onClose,
+  autoClose = false,
+}) {
+  useEffect(() => {
+    if (!autoClose) return;
 
-function MessagePopup({ message, type = "success", onClose }) {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [autoClose, onClose]);
   return (
-    <div className={styles.overlay}>
+    <div className={autoClose ? styles.toastOverlay : styles.overlay}>
       <div className={`${styles.popup} ${styles[type]}`}>
         <div className={styles.icon}>
           {type === "success" ? (
@@ -17,9 +30,11 @@ function MessagePopup({ message, type = "success", onClose }) {
 
         <p className={styles.message}>{message}</p>
 
-        <button className={styles.button} onClick={onClose}>
-          OK
-        </button>
+        {!autoClose && (
+          <button className={styles.button} onClick={onClose}>
+            OK
+          </button>
+        )}
       </div>
     </div>
   );

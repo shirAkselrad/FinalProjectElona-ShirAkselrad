@@ -2,7 +2,7 @@ import styles from "./productsGrid.module.css";
 
 import ProductCard from "../ProductCard/ProductCard.jsx";
 
-function ProductsGrid({ products, frontImgs, onViewDetails}) {
+function ProductsGrid({ products, frontImgs, onViewDetails, onAddToCart }) {
   return (
     <div className={styles.productsGrid}>
       {products.map((product) => (
@@ -11,6 +11,7 @@ function ProductsGrid({ products, frontImgs, onViewDetails}) {
           product={product}
           image={frontImgs.find((img) => img.product_id === product.product_id)}
           onViewDetails={onViewDetails}
+          onAddToCart={onAddToCart}
         />
       ))}
     </div>

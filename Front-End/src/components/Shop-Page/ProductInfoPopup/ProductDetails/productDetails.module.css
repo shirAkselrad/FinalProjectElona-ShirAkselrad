@@ -32,16 +32,16 @@
 .options {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 20px 0;
+  gap: 22px;
+  padding: 24px 0;
   border-bottom: 1px solid #eaded7;
 }
 
 .description {
-  margin: 18px 0 0;
+  margin: 20px 0 0;
   color: #6b554a;
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 .limitedStock {
   display: inline-block;

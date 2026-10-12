@@ -8,13 +8,14 @@ const port = process.env.PORT || 3001;
 //This routes is for each page in the front end
 const registerPageRoutes = require("./routes/register");
 const loginPageRoutes = require("./routes/login");
-const shopPageRoutes = require("./routes/shop");
+const shopPageRoutes = require("./routes/ShopPage/shop");
 const employeePageRoutes = require("./routes/employee/employee");
 const managerPageRoutes = require("./routes/manager");
 const forgotPasswordPageRoutes = require("./routes/forgotPassword");
 const recoveryPageRoutes = require("./routes/recoveryPage");
 const resetPasswordRoutes = require("./routes/resetPassword");
 const headerRoutes = require("./routes/header");
+const cartRoutes = require("./routes/ShopPage/cart");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,13 +32,14 @@ app.use(
 
 app.use("/api/register", registerPageRoutes);
 app.use("/api/login", loginPageRoutes);
-app.use("/api/shop", shopPageRoutes);
 app.use("/api/employee", employeePageRoutes);
 app.use("/api/manager", managerPageRoutes);
 app.use("/api/forgotPassword", forgotPasswordPageRoutes);
 app.use("/api/recoveryPage", recoveryPageRoutes);
 app.use("/api/resetPassword", resetPasswordRoutes);
 app.use("/api/header", headerRoutes);
+app.use("/api/shop", shopPageRoutes);
+app.use("/api/cart", cartRoutes); 
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

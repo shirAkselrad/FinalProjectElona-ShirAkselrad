@@ -122,12 +122,16 @@ function Clients() {
   function handleUpdateClient(updateClient) {
     setClients((prevClients) =>
       prevClients.map((client) =>
-        client.email === updateClient.email ? updateClient : client,
+        client.email === updateClient.email
+          ? { ...client, ...updateClient }
+          : client,
       ),
     );
     setFilteredClients((prevClients) =>
       prevClients.map((client) =>
-        client.email === updateClient.email ? updateClient : client,
+        client.email === updateClient.email
+          ? { ...client, ...updateClient }
+          : client,
       ),
     );
     getCitiesNoRepeat();

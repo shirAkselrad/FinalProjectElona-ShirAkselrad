@@ -62,7 +62,7 @@ function ClientRow({ client, onEdit, onRemove }) {
       });
     }
   }
-
+  console.log("CLIENT POINTS:", client.email, client.points);
   return (
     <tr
       className={`${styles.row} ${
@@ -76,6 +76,7 @@ function ClientRow({ client, onEdit, onRemove }) {
       <td>{client.street}</td>
       <td>{client.house_num}</td>
       <td>{client.email}</td>
+      <td>{client.points}</td>
 
       <td>
         <div className={styles.actions}>

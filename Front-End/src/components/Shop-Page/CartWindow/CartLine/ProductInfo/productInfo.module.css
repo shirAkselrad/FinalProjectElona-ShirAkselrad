@@ -1,0 +1,44 @@
+.productInfo {
+  display: flex;
+  align-items: flex-start;
+  min-width: 0;
+  gap: 16px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
+}
+
+
+.image {
+  width: 60px;
+  height: 60px;
+  min-width: 60px;
+  flex: 0 0 60px;
+  object-fit: cover;
+}
+.name {
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+
+  font-family: Georgia, serif;
+  font-size: 15px;
+  font-weight: 400;
+  color: #51453e;
+}
+
+.price {
+  margin: 0;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+
+  color: #c49a5a;
+}
