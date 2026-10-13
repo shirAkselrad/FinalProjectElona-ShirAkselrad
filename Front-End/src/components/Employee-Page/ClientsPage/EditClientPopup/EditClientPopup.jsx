@@ -1,19 +1,24 @@
 import styles from "./editClientPopup.module.css";
-
 import InputLabel from "../../../General/InputLabel/InputLabel.jsx";
 import EmptyInput from "../../../General/EmptyInput/EmptyInput.jsx";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
 import Remove from "../../../General/Remove/Remove.jsx";
-import GeneralSelection from "../../../General/GeneralSelection/GeneralSelection.jsx";
 import * as Validation from "../../../../utils/inputValidation.js";
-import { useState } from "react";
+import useClientForm from "./useClientForm.js";
 
 /**
  *
  * @returns EditClientPopup
  */
 function EditClientPopup({ client, onClose, onSave }) {
-  //The function sends all the inputs values to backend for updating an existing client
+  const {
+    client: clientData,
+    errors,
+    handleInputChange,
+    handleInputBlur,
+    isFormValid,
+  } = useClientForm(client);
+
   async function updateClient(clientData) {
     try {
       const response = await fetch("/api/employee/updateClient", {
@@ -31,54 +36,26 @@ function EditClientPopup({ client, onClose, onSave }) {
     }
   }
 
-  //state which will save the client details after the update
-  const [clientToUpdate, setClientToUpdate] = useState(client);
-
-  //state variable which holds all the errors which might accore while updating
-  const [errors, setErrors] = useState({
-    first_name: "",
-    last_name: "",
-    phone_num: "",
-    city: "",
-    street: "",
-    house_num: "",
-    email: "",
-    status: "",
-  });
-
-  //The function check if the form is valid if it does, call the createUser function
+  //The function validate the form and sends the updated clients details to back-end
   async function handleSubmit(e) {
     e.preventDefault();
-
     if (!isFormValid) return;
-    const userData = {
-      first_name: Validation.onlyFirstLetterCapital(clientToUpdate.first_name),
-      last_name: Validation.onlyFirstLetterCapital(clientToUpdate.last_name),
-      city: Validation.onlyFirstLetterCapital(clientToUpdate.city),
-      street: Validation.onlyFirstLetterCapital(clientToUpdate.street),
-      house_num: clientToUpdate.house_num,
-      email: clientToUpdate.email,
-      phone_num: clientToUpdate.phone_num,
-      status: clientToUpdate.status,
-    };
 
+    const userData = {
+      ...client,
+      first_name: Validation.onlyFirstLetterCapital(clientData.first_name),
+      last_name: Validation.onlyFirstLetterCapital(clientData.last_name),
+      phone_num: clientData.phone_num,
+      city: Validation.onlyFirstLetterCapital(clientData.city),
+      street: Validation.onlyFirstLetterCapital(clientData.street),
+      house_num: clientData.house_num,
+    };
     const data = await updateClient(userData);
     if (data?.success) {
-      onSave(clientToUpdate);
+      onSave(userData);
       onClose();
     }
   }
-
-  //checking that the user doesn't have any empty inputs before sending to info to backend
-  const allUserFieldsFilled = Object.values(clientToUpdate).every(
-    (value) => value !== "",
-  );
-
-  //checking there is no errors in the inputs before sending it to backend
-  const noErrors = Object.values(errors).every((error) => error === "");
-
-  //checks if there is no errors or empty inputs before sending to backend
-  const isFormValid = allUserFieldsFilled && noErrors;
 
   return (
     <div className={styles.overlay}>
@@ -92,222 +69,66 @@ function EditClientPopup({ client, onClose, onSave }) {
           <div className={styles.field}>
             <InputLabel text="FIRST NAME" />
             <EmptyInput
-              value={clientToUpdate.first_name}
+              value={clientData.first_name}
               error={errors.first_name}
               maxLength={30}
-              onChange={(e) => {
-                setClientToUpdate({
-                  ...clientToUpdate,
-                  first_name: e.target.value,
-                });
-                if (Validation.checkStr(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    first_name: "",
-                  });
-                }
-              }}
-              onBlur={(e) => {
-                if (!Validation.checkStr(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    first_name: "Only letters and spaces are allowed",
-                  });
-                } else {
-                  setErrors({
-                    ...errors,
-                    first_name: "",
-                  });
-                }
-              }}
+              onChange={(e) => handleInputChange("first_name", e.target.value)}
+              onBlur={(e) => handleInputBlur("first_name", e.target.value)}
             />
           </div>
 
           <div className={styles.field}>
             <InputLabel text="LAST NAME" />
             <EmptyInput
-              value={clientToUpdate.last_name}
+              value={clientData.last_name}
               error={errors.last_name}
               maxLength={30}
-              onChange={(e) => {
-                setClientToUpdate({
-                  ...clientToUpdate,
-                  last_name: e.target.value,
-                });
-                if (Validation.checkStr(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    last_name: "",
-                  });
-                }
-              }}
-              onBlur={(e) => {
-                if (!Validation.checkStr(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    last_name: "Only letters and spaces are allowed",
-                  });
-                } else {
-                  setErrors({
-                    ...errors,
-                    last_name: "",
-                  });
-                }
-              }}
+              onChange={(e) => handleInputChange("last_name", e.target.value)}
+              onBlur={(e) => handleInputBlur("last_name", e.target.value)}
             />
           </div>
 
           <div className={styles.field}>
             <InputLabel text="PHONE NUMBER" />
             <EmptyInput
-              value={clientToUpdate.phone_num}
+              value={clientData.phone_num}
               error={errors.phone_num}
               maxLength={10}
-              onChange={(e) => {
-                setClientToUpdate({
-                  ...clientToUpdate,
-                  phone_num: e.target.value,
-                });
-                if (Validation.checkPhoneNum(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    phone_num: "",
-                  });
-                }
-              }}
-              onBlur={(e) => {
-                if (!Validation.checkPhoneNum(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    phone_num: "Invalid phone number format",
-                  });
-                } else {
-                  setErrors({
-                    ...errors,
-                    phone_num: "",
-                  });
-                }
-              }}
+              onChange={(e) => handleInputChange("phone_num", e.target.value)}
+              onBlur={(e) => handleInputBlur("phone_num", e.target.value)}
             />
           </div>
 
           <div className={styles.field}>
             <InputLabel text="CITY" />
             <EmptyInput
-              value={clientToUpdate.city}
+              value={clientData.city}
               maxLength={50}
               error={errors.city}
-              onChange={(e) => {
-                if (
-                  Validation.checkStr(e.target.value) &&
-                  Validation.checkCity(e.target.value)
-                ) {
-                  setErrors({
-                    ...errors,
-                    city: "",
-                  });
-                }
-                setClientToUpdate({
-                  ...clientToUpdate,
-                  city: e.target.value,
-                });
-              }}
-              onBlur={(e) => {
-                if (!Validation.checkStr(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    city: "Only letters and spaces are allowed",
-                  });
-                } else if (!Validation.checkCity(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    city: "City doesn't exist",
-                  });
-                } else {
-                  setErrors({
-                    ...errors,
-                    city: "",
-                  });
-                }
-              }}
+              onChange={(e) => handleInputChange("city", e.target.value)}
+              onBlur={(e) => handleInputBlur("city", e.target.value)}
             />
           </div>
 
           <div className={styles.field}>
             <InputLabel text="STREET" />
             <EmptyInput
-              value={clientToUpdate.street}
+              value={clientData.street}
               error={errors.street}
               maxLength={50}
-              onChange={(e) => {
-                if (
-                  Validation.checkStr(e.target.value) &&
-                  Validation.checkStreet(clientToUpdate.city, e.target.value)
-                ) {
-                  setErrors({
-                    ...errors,
-                    street: "",
-                  });
-                }
-                setClientToUpdate({
-                  ...clientToUpdate,
-                  street: e.target.value,
-                });
-              }}
-              onBlur={(e) => {
-                if (!Validation.checkStr(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    street: "Only letters and spaces are allowed",
-                  });
-                } else if (
-                  !Validation.checkStreet(clientToUpdate.city, e.target.value)
-                ) {
-                  setErrors({
-                    ...errors,
-                    street: "Street doesn't exist in this city",
-                  });
-                } else {
-                  setErrors({
-                    ...errors,
-                    street: "",
-                  });
-                }
-              }}
+              onChange={(e) => handleInputChange("street", e.target.value)}
+              onBlur={(e) => handleInputBlur("street", e.target.value)}
             />
           </div>
 
           <div className={styles.field}>
             <InputLabel text="HOUSE NUMBER" />
             <EmptyInput
-              value={clientToUpdate.house_num}
+              value={clientData.house_num}
               error={errors.house_num}
               maxLength={5}
-              onChange={(e) => {
-                setClientToUpdate({
-                  ...clientToUpdate,
-                  house_num: e.target.value,
-                });
-                if (Validation.onlyNumbers(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    house_num: "",
-                  });
-                }
-              }}
-              onBlur={(e) => {
-                if (!Validation.onlyNumbers(e.target.value)) {
-                  setErrors({
-                    ...errors,
-                    house_num: "Only numbers allowed",
-                  });
-                } else {
-                  setErrors({
-                    ...errors,
-                    house_num: "",
-                  });
-                }
-              }}
+              onChange={(e) => handleInputChange("house_num", e.target.value)}
+              onBlur={(e) => handleInputBlur("house_num", e.target.value)}
             />
           </div>
 

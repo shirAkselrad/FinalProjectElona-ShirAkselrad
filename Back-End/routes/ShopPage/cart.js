@@ -9,6 +9,8 @@ const {
   checkExistingCartItem,
   addOrUpdateCartItem,
   calculateCartTotals,
+  deleteEmptyCart,
+  checkIfCartDeleted,
   updateCartTotals,
   getCartItems,
   getCartTotals,
@@ -19,7 +21,7 @@ const {
   getClientsPoints,
   calculateOrderSummary,
   checkProcessingOrder,
-} = require("../../middleware/cartMiddleware");
+} = require("./cartMiddleware");
 
 router.post(
   "/addToCart",
@@ -30,6 +32,7 @@ router.post(
   checkExistingCartItem,
   addOrUpdateCartItem,
   calculateCartTotals,
+  getClientsPoints,
   updateCartTotals,
   (req, res) => {
     return res.status(200).json({
@@ -66,6 +69,7 @@ router.put(
   checkCartItemForUpdate,
   updateCartItemQuantity,
   calculateCartTotals,
+  getClientsPoints,
   updateCartTotals,
   (req, res) => {
     return res.status(200).json({
@@ -83,8 +87,12 @@ router.delete(
   checkExisitingCart,
   removeCartItem,
   calculateCartTotals,
+  deleteEmptyCart,
+  checkIfCartDeleted,
+  getClientsPoints,
   updateCartTotals,
   (req, res) => {
+
     return res.status(200).json({
       success: true,
       message: "Product removed from cart successfully",
@@ -113,43 +121,31 @@ router.get(
   },
 );
 
-router.put("/startCheckout", checkingRole, checkExisitingCart, (req, res) => {
-  if (req.cartOrderId === null)
-    return res.status(404).json({
-      success: false,
-      message: "Cart not found",
-    });
-
-  const dbSingleton = require("../../dbSingleton");
-  const db = dbSingleton.getConnection();
-
-  const query = `
-      update orders
-      set status = 'PROCESSING'
-      where order_id = ?
-        and client_email = ?
-        and status = 'CART'
-        and total_items > 0
-    `;
-
-  db.query(query, [req.cartOrderId, req.session.user.email], (err, results) => {
-    if (err)
-      return res.status(500).json({
+router.put(
+  "/startCheckout",
+  checkingRole,
+  checkExisitingCart,
+  getCartTotals,
+  (req, res) => {
+    if (req.cartOrderId === null) {
+      return res.status(404).json({
         success: false,
-        message: "Couldn't update order status",
+        message: "Cart not found",
       });
+    }
 
-    if (results.affectedRows === 0)
+    if (Number(req.cartTotals.total_items) <= 0) {
       return res.status(409).json({
         success: false,
-        message: "Order cannot proceed to checkout",
+        message: "Cannot checkout with an empty cart",
       });
+    }
 
     return res.status(200).json({
       success: true,
-      message: "Order status updated successfully",
+      message: "Order ready for checkout",
+      order_id: req.cartOrderId,
     });
-  });
-});
-
+  },
+);
 module.exports = router;

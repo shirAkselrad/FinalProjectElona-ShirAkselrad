@@ -47,7 +47,7 @@ function CartTotal({ total, disabled, onClose }) {
       )}
       <div className={styles.totalRow}>
         <span className={styles.totalText}>TOTAL</span>
-        <span className={styles.price}>${total}</span>
+        <span className={styles.price}>{total}₪</span>
       </div>
 
       <GeneralBtn

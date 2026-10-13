@@ -1,4 +1,4 @@
-const dbSingleton = require("../dbSingleton");
+const dbSingleton = require("../../dbSingleton");
 const db = dbSingleton.getConnection();
 
 const checkingRole = (req, res, next) => {
@@ -22,7 +22,7 @@ const checkingRole = (req, res, next) => {
 };
 
 const checkExisitingCart = (req, res, next) => {
-  const query = `select order_id from orders where client_email=? and status="CART" limit 1`;
+  const query = `select order_id from orders where client_email=? and status="PROCESSING" limit 1`;
 
   db.query(query, [req.session.user.email], (err, results) => {
     if (err) {
@@ -40,19 +40,26 @@ const checkExisitingCart = (req, res, next) => {
 const createCartIfNeeded = (req, res, next) => {
   if (req.cartOrderId !== null) return next();
 
-  const query = `insert into orders (client_email, total_items, total_price, status) values (?,0,0, 'CART')`;
+  const shipping = 30; //WILL BE CHANGED
 
-  db.query(query, [req.session.user.email], (err, results) => {
-    if (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Couldn't create client's cart",
-      });
-    }
+  const query = `insert into orders (client_email, total_items, total_price,shipping, final_price, status) values (?,0,0,?,?, 'PROCESSING')`;
 
-    req.cartOrderId = results.insertId;
-    next();
-  });
+  //staring the order with 30 shekels payment
+  db.query(
+    query,
+    [req.session.user.email, shipping, shipping],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          message: "Couldn't create client's cart",
+        });
+      }
+
+      req.cartOrderId = results.insertId;
+      next();
+    },
+  );
 };
 
 const checkProduct = (req, res, next) => {
@@ -220,16 +227,65 @@ const calculateCartTotals = (req, res, next) => {
   });
 };
 
+const deleteEmptyCart = (req, res, next) => {
+  if (Number(req.cartTotals.total_items) > 0) return next();
+  const query =
+    "delete from orders where order_id=? and client_email=? and status='PROCESSING'";
+  db.query(query, [req.cartOrderId, req.session.user.email], (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't delete empty cart",
+      });
+    if (results.affectedRows === 0)
+      return res.status(404).json({
+        success: false,
+        message: "Cart not found",
+      });
+    req.cartOrderId = null;
+    req.cartDeleted = true;
+    next();
+  });
+};
+
+const checkIfCartDeleted = (req, res, next) => {
+  if (req.cartDeleted) {
+    return res.status(200).json({
+      success: true,
+      message: "Last product removed and empty cart deleted",
+      total_items: 0,
+      total_price: 0,
+    });
+  }
+  next();
+};
+
 const updateCartTotals = (req, res, next) => {
+  const totalAfterPromotions = Number(req.cartTotals.total_price);
+  const shipping = 30; //WILL BE CHANGED
+  const pointsUsed = Math.min(
+    Math.max(0, Number(req.clientPoints)),
+    totalAfterPromotions,
+  );
+
+  const finalPrice = Number(totalAfterPromotions - pointsUsed + shipping);
+
   const query = `
-    update orders
-    set total_items=?, total_price=?
-    where order_id=? and status='CART'
-  `;
+  update orders
+  set total_items=?,
+      total_price=?,
+      final_price=? 
+  where order_id=? and status='PROCESSING'
+`;
 
   db.query(
     query,
-    [req.cartTotals.total_items, req.cartTotals.total_price, req.cartOrderId],
+    [
+      req.cartTotals.total_items,
+      totalAfterPromotions,
+      finalPrice,
+      req.cartOrderId,
+    ],
     (err, results) => {
       if (err) {
         return res.status(500).json({
@@ -292,9 +348,9 @@ const getCartTotals = (req, res, next) => {
   }
 
   const query = `
-    SELECT total_items, total_price
-    FROM orders
-    WHERE order_id = ?
+   select total_items, total_price, shipping, final_price
+from orders
+where order_id = ?
   `;
 
   db.query(query, [req.cartOrderId], (err, results) => {
@@ -453,7 +509,7 @@ const calculateOrderSummary = (req, res, next) => {
 
   const totalAfterPromotions = Number(req.cartTotals.total_price);
   const promotionsDiscount = originalTotal - totalAfterPromotions;
-  const shipping = 30;
+  const shipping = Number(req.cartTotals.shipping);
 
   const pointUsed = Math.min(
     Math.max(0, req.clientPoints),
@@ -472,7 +528,26 @@ const calculateOrderSummary = (req, res, next) => {
     final_total: Number(finalTotal),
   };
 
-  next();
+  const query = `update orders set final_price=? where order_id=? and client_email=? and status='PROCESSING'`;
+  db.query(
+    query,
+    [finalTotal, req.cartOrderId, req.session.user.email],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({
+          success: false,
+          message: "Couldn't update final price",
+        });
+      }
+      if (results.affectedRows === 0)
+        return res.status(404).json({
+          success: false,
+          message: "Processing order not found",
+        });
+      req.cartTotals.final_price = Number(finalTotal);
+      next();
+    },
+  );
 };
 
 const checkProcessingOrder = (req, res, next) => {
@@ -505,6 +580,8 @@ module.exports = {
   checkExistingCartItem,
   addOrUpdateCartItem,
   calculateCartTotals,
+  deleteEmptyCart,
+  checkIfCartDeleted,
   updateCartTotals,
   getCartItems,
   getCartTotals,

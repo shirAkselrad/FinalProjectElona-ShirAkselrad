@@ -1,5 +1,5 @@
 import styles from "./orderSummaryTotal.module.css";
-function OrderSummaryTotal({ order, points = 0 }) {
+function OrderSummaryTotal({ order}) {
  return (
    <div className={styles.orderSummaryTotal}>
      <h2>ORDER TOTAL</h2>

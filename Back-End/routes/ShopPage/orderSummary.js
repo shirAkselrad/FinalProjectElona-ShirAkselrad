@@ -67,6 +67,9 @@ const updateClientDetails = (req, res, next) => {
   );
 };
 
+
+
+
 router.put(
   "/updateClientDetails",
   checkingRole,

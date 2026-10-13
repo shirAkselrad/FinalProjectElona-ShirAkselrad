@@ -2,8 +2,12 @@ import styles from "./orderSummaryPage.module.css";
 import { useEffect, useState } from "react";
 import OrderSummaryTable from "../OrderSummaryTable/OrderSummaryTable.jsx";
 import OrderSummaryTotal from "../OrderSummaryTotal/OrderSummaryTotal.jsx";
+import OrderSummaryClientDetails from "../OrderSummaryClientDetails/OrderSummaryClientDetails.jsx";
+import { useNavigate } from "react-router-dom";
 
 function OrderSummaryPage() {
+  const navigate = useNavigate();
+  const [client, setClient] = useState(null);
   const [order, setOrder] = useState({
     order_id: null,
     items: [],
@@ -14,7 +18,7 @@ function OrderSummaryPage() {
     available_points: 0,
     points_used: 0,
     shipping: 0,
-    final_total: 0,
+    final_price: 0,
   });
 
   //This function gets client's order from the data base
@@ -33,15 +37,46 @@ function OrderSummaryPage() {
     }
   }
 
+  async function getClientDetails() {
+    try {
+      const response = await fetch("/api/client/getDetails", {
+        method: "GET",
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      const data = await response.json();
+      if (data.success) setClient(data.client);
+    } catch (error) {
+      console.error("Error getting clients details:", error);
+    }
+  }
+
   useEffect(() => {
     getOrder();
+    getClientDetails();
   }, []);
 
+  function handleContinueToPayment() {
+    navigate("/payment");
+  }
   return (
     <div className={styles.orderSummaryPage}>
       <h1>ORDER SUMMARY</h1>
+
       <OrderSummaryTable items={order.items} />
-      <OrderSummaryTotal order={order} />
+
+      <div className={styles.bottomSection}>
+        <OrderSummaryTotal order={order} />
+
+        {client && (
+          <OrderSummaryClientDetails
+            client={client}
+            onSave={setClient}
+            onContinue={handleContinueToPayment}
+          />
+        )}
+      </div>
     </div>
   );
 }
