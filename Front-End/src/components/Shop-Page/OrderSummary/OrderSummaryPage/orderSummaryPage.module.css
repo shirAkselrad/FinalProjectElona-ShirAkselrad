@@ -22,7 +22,25 @@
 }
 
 
+.clientSection {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
 
+.backButton {
+  align-self: flex-start;
+  width: fit-content;
+  padding: 12px 24px;
+  background-color: transparent;
+  color: #5c4638;
+  border: 1px solid #5c4638;
+}
+
+.backButton:hover {
+  background-color: #f5f0eb;
+}
 @media (max-width: 900px) {
   .bottomSection {
     grid-template-columns: 1fr;

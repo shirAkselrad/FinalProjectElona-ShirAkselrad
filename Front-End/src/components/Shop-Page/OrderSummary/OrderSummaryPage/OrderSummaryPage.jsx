@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import OrderSummaryTable from "../OrderSummaryTable/OrderSummaryTable.jsx";
 import OrderSummaryTotal from "../OrderSummaryTotal/OrderSummaryTotal.jsx";
 import OrderSummaryClientDetails from "../OrderSummaryClientDetails/OrderSummaryClientDetails.jsx";
+import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
 import { useNavigate } from "react-router-dom";
 
 function OrderSummaryPage() {
@@ -60,6 +61,10 @@ function OrderSummaryPage() {
   function handleContinueToPayment() {
     navigate("/payment");
   }
+
+  function handleBackToShop() {
+    navigate("/");
+  }
   return (
     <div className={styles.orderSummaryPage}>
       <h1>ORDER SUMMARY</h1>
@@ -69,13 +74,16 @@ function OrderSummaryPage() {
       <div className={styles.bottomSection}>
         <OrderSummaryTotal order={order} />
 
-        {client && (
-          <OrderSummaryClientDetails
-            client={client}
-            onSave={setClient}
-            onContinue={handleContinueToPayment}
-          />
-        )}
+        <div className={styles.clientSection}>
+          {client && (
+            <OrderSummaryClientDetails
+              client={client}
+              onSave={setClient}
+              onContinue={handleContinueToPayment}
+              onBack={handleBackToShop}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

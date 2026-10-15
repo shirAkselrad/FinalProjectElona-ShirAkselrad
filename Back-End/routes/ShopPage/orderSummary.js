@@ -4,6 +4,8 @@ const dbSingleton = require("../../dbSingleton");
 const db = dbSingleton.getConnection();
 
 const { checkingRole } = require("../ShopPage/cartMiddleware");
+
+//this middleware gets all the clients details (first and last namae, address and contact addresses)
 const getClientDetails = (req, res, next) => {
   const query =
     "select first_name, last_name,city, street, house_num, phone_num, email from users where email=?";
@@ -31,6 +33,7 @@ router.get("/getClientDetails", checkingRole, getClientDetails, (req, res) => {
   });
 });
 
+//tthis middleware responsible for updating the client's details after the changes in FE
 const updateClientDetails = (req, res, next) => {
   const { first_name, last_name, city, street, house_num, phone_num } =
     req.body;
@@ -67,13 +70,10 @@ const updateClientDetails = (req, res, next) => {
   );
 };
 
-
-
-
 router.put(
   "/updateClientDetails",
-  checkingRole,
-  updateClientDetails,
+  checkingRole, //checking that the user's role is "Client"
+  updateClientDetails, //saving updated client's details after changing
   (req, res) => {
     return res.status(200).json({
       success: true,

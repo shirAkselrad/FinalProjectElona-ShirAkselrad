@@ -5,7 +5,7 @@ import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn";
 import useClientForm from "../../../Employee-Page/ClientsPage/EditClientPopup/useClientForm";
 import * as Validation from "../../../../utils/inputValidation.js";
 
-function OrderSummaryClientDetails({ client, onSave, onContinue }) {
+function OrderSummaryClientDetails({ client, onSave, onContinue, onBack }) {
   const {
     client: clientData,
     errors,
@@ -44,10 +44,10 @@ function OrderSummaryClientDetails({ client, onSave, onContinue }) {
     };
 
     const data = await updateClient(updatedClient);
-    if (data?.success){
+    if (data?.success) {
       onSave(updatedClient);
-      onContinue(); 
-    } 
+      onContinue();
+    }
   }
 
   return (
@@ -124,11 +124,21 @@ function OrderSummaryClientDetails({ client, onSave, onContinue }) {
         </div>
 
         <div className={styles.save}>
-          <GeneralBtn
-            type="submit"
-            text="SAVE AND COUNTINUE TO PAYMENT "
-            disabled={!isFormValid}
-          />
+          <div className={styles.actions}>
+            <GeneralBtn
+              type="button"
+              text="BACK TO SHOP"
+              onClick={onBack}
+              className={styles.backButton}
+            />
+
+            <GeneralBtn
+              type="submit"
+              text="SAVE AND CONTINUE TO PAYMENT"
+              disabled={!isFormValid}
+              className={styles.paymentButton}
+            />
+          </div>
         </div>
       </form>
     </section>

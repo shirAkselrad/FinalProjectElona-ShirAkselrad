@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
+
 const CartContext = createContext();
 
 export function CartProvider({ children }) {

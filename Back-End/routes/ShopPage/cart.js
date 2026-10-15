@@ -25,15 +25,15 @@ const {
 
 router.post(
   "/addToCart",
-  checkingRole,
-  checkProduct,
-  checkExisitingCart,
-  createCartIfNeeded,
-  checkExistingCartItem,
-  addOrUpdateCartItem,
-  calculateCartTotals,
-  getClientsPoints,
-  updateCartTotals,
+  checkingRole, //checking that the user's role is "Client"
+  checkProduct, //checking that the requested amount of product exists in stock
+  checkExisitingCart, //checking if the client already have a cart
+  createCartIfNeeded, //creating a new cart if the client doesn't have one already
+  checkExistingCartItem, //checking if the requested product already exists in the cart
+  addOrUpdateCartItem, //updating the cart with the requested product
+  calculateCartTotals, //calculating the totals order price and products amount (without points and shipping)
+  getClientsPoints, //getting the amount of points the client has
+  updateCartTotals, //calculating final price (after shipping and points)
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -45,10 +45,10 @@ router.post(
 
 router.get(
   "/getCart",
-  checkingRole,
-  checkExisitingCart,
-  getCartItems,
-  getCartTotals,
+  checkingRole, //checking that the user's role is "Client"
+  checkExisitingCart, //checking if the client already have a cart
+  getCartItems, //getting all the current cart items by cartOrderId
+  getCartTotals, //getting all the totals(order price-before points and shipping, final amount of products)
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -60,17 +60,19 @@ router.get(
   },
 );
 
+
+
 router.put(
   "/updateQuantity",
-  checkingRole,
-  checkNewQuantity,
-  checkProduct,
-  checkExisitingCart,
-  checkCartItemForUpdate,
-  updateCartItemQuantity,
-  calculateCartTotals,
-  getClientsPoints,
-  updateCartTotals,
+  checkingRole, //checking that the user's role is "Client"
+  checkNewQuantity, //saving the new requested amount of product to add to the current requested amount
+  checkProduct, //checking that the requested amount of product exists in stock
+  checkExisitingCart, //checking if the client already have a cart
+  checkCartItemForUpdate, //checking if the product already exists in the cart
+  updateCartItemQuantity, //updating the requested amount and final price of this amount (not for all the cart)
+  calculateCartTotals, //calculating the totals order price and products amount (without points and shipping)
+  getClientsPoints, //getting the amount of points the client has
+  updateCartTotals, //calculating final price (after shipping and points)
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -83,16 +85,15 @@ router.put(
 
 router.delete(
   "/removeProduct",
-  checkingRole,
-  checkExisitingCart,
-  removeCartItem,
-  calculateCartTotals,
-  deleteEmptyCart,
-  checkIfCartDeleted,
-  getClientsPoints,
-  updateCartTotals,
+  checkingRole, //checking that the user's role is "Client"
+  checkExisitingCart, //checking if the client already have a cart
+  removeCartItem, //removing the unwanted product from the cart (order_items)
+  calculateCartTotals, //calculating the totals order price and products amount
+  deleteEmptyCart, //in case there is no single product in the cart deleting the order (orders)
+  checkIfCartDeleted, //checking if the cart was deleted (if yes, resting the order req info)
+  getClientsPoints, //getting the amount of points the client has
+  updateCartTotals, //calculating final price (after shipping and points)
   (req, res) => {
-
     return res.status(200).json({
       success: true,
       message: "Product removed from cart successfully",
@@ -104,12 +105,12 @@ router.delete(
 
 router.get(
   "/getOrderSummary",
-  checkingRole,
-  checkProcessingOrder,
-  getCartItems,
-  getCartTotals,
-  getClientsPoints,
-  calculateOrderSummary,
+  checkingRole, //checking that the user's role is "Client"
+  checkProcessingOrder, //saving cartOrderId for the order which it's status is PROCESSING
+  getCartItems, //getting all the current cart items by cartOrderId
+  getCartTotals, //getting all the totals(order price-before points and shipping, final amount of products)
+  getClientsPoints, //getting the amount of points the client has
+  calculateOrderSummary,//saving all the calucaltes results for displaying in FE
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -123,9 +124,9 @@ router.get(
 
 router.put(
   "/startCheckout",
-  checkingRole,
-  checkExisitingCart,
-  getCartTotals,
+  checkingRole, //checking that the user's role is "Client"
+  checkExisitingCart, //checking if the client already have a cart
+  getCartTotals, //getting all the totals(order price-before points and shipping, final amount of products)
   (req, res) => {
     if (req.cartOrderId === null) {
       return res.status(404).json({
