@@ -9,25 +9,38 @@ import ViewBtn from "../../../General/ViewBtn/ViewBtn.jsx";
  * @param {onView} oView the event which happenes when the user click on the view btn
  * @returns OrderRow
  */
-function OrderRow({ order, onView }) {
+function OrderRow({
+  order,
+  onView,
+  onStatusChange,
+  openStatusOrderId,
+  setOpenStatusOrderId,
+}) {
   return (
     <tr className={styles.row}>
-      <td className={styles.order}>{order.id}</td>
+      <td className={styles.order}>{order.order_id}</td>
 
-      <td>{order.client}</td>
+      <td>{`${order.first_name} ${order.last_name}`}</td>
 
-      <td className={styles.items}>{order.items}</td>
+      <td>{order.client_email}</td>
 
-      <td>{order.date}</td>
+      <td className={styles.items}>{order.total_items}</td>
 
-      <td className={styles.total}>${order.total}</td>
+      <td>{new Date(order.created_at).toLocaleDateString("en-GB")}</td>
+
+      <td className={styles.total}>{Number(order.final_price).toFixed(2)}₪</td>
 
       <td>
-        <Status status={order.status} />
+        <Status
+          status={order.status}
+          order_id={order.order_id}
+          onStatusChange={onStatusChange}
+          openStatusOrderId={openStatusOrderId}
+          setOpenStatusOrderId={setOpenStatusOrderId}
+        />
       </td>
 
       <td>
-        {/*operates the onView function, which makes the OrderPopupView present */}
         <ViewBtn onClick={onView} />
       </td>
     </tr>

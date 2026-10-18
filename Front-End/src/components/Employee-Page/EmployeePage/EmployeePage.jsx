@@ -14,6 +14,22 @@ function EmployeePage() {
   //getting the clients for the clients page
   const [clients, setClients] = useState([]);
   const [inventory, setInventory] = useState([]);
+  const [orders, setOrders] = useState([]);
+
+  //The function gets all the orders details
+  async function getOrders() {
+    try {
+      const response = await fetch("/api/employee/orders", {
+        method: "GET",
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setOrders(data.orders);
+    } catch (error) {
+      console.error("Error getting orders: ", error);
+    }
+  }
 
   //The function gets all the inventory details
   async function getInventory() {
@@ -30,17 +46,6 @@ function EmployeePage() {
       console.error("Error getting inventory: ", error);
     }
   }
-
-  useEffect(() => {
-    getInventory();
-  }, []);
-
-
-
-
-
-
-
 
   //The function gets all the clients details
   async function getClients() {
@@ -60,6 +65,8 @@ function EmployeePage() {
 
   useEffect(() => {
     getClients();
+    getInventory();
+    getOrders();
   }, []);
 
   //just for now the infomation is given staticly
@@ -84,94 +91,10 @@ function EmployeePage() {
     },
   ];
 
-  const orders = [
-    {
-      id: 1,
-      client: "Noa Azulay",
-      items: 3,
-      date: "17/08/2026",
-      total: 250,
-      status: "Processing",
-
-      products: [
-        {
-          id: 1,
-          name: "Amber Oval Brooch",
-          quantity: 1,
-          price: 100,
-          removed: false,
-        },
-        {
-          id: 2,
-          name: "Brown Belt",
-          quantity: 2,
-          price: 75,
-          removed: false,
-        },
-      ],
-    },
-
-    {
-      id: 2,
-      client: "Roni Peretz",
-      items: 2,
-      date: "16/08/2026",
-      total: 180,
-      status: "Completed",
-
-      products: [
-        {
-          id: 1,
-          name: "Clover Brooch",
-          quantity: 1,
-          price: 120,
-          removed: false,
-        },
-        {
-          id: 2,
-          name: "Cream Hat",
-          quantity: 1,
-          price: 60,
-          removed: false,
-        },
-      ],
-    },
-  ];
-
-  // const inventory = [
-  //   {
-  //     id: 1,
-  //     name: "Clover Brooch",
-  //     category: "Brooch",
-  //     stock: 12,
-  //     price: 168,
-  //     status: "In Stock",
-  //     image: cloverBroochImg,
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Brown Bag",
-  //     category: "Bag",
-  //     stock: 4,
-  //     price: 295,
-  //     status: "Low Stock",
-  //     image: brownBagImg,
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Cream Hat",
-  //     category: "Hat",
-  //     stock: 0,
-  //     price: 120,
-  //     status: "Out of Stock",
-  //     image: creamHatImg,
-  //   },
-  // ];
-
   return (
     <main className={styles.employeePage}>
       <div className={styles.content}>
-        <Outlet context={{ clients, setClients, orders }} />
+        <Outlet context={{ clients, setClients, orders, setOrders }} />
         {/*The menu gets the items- the optional sections according to the user role and the setActivePage which gets the function to operate */}
         <Menu items={employeeMenu} />
       </div>

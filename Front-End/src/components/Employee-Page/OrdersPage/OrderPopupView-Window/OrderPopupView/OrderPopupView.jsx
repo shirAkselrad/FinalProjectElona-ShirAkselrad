@@ -4,7 +4,7 @@ import EditBtn from "../../../../General/EditBtn/EditBtn.jsx";
 import Remove from "../../../../General/Remove/Remove.jsx";
 import OrderPopupTableView from "../OrderPopupTableView/OrderPopupTableView.jsx";
 import OrderPopupSumarryView from "../OrderPopupSumarryView/OrderPopupSumarryView.jsx";
-
+import { useEffect, useState } from "react";
 /**
  *
  * @param {order} order the currrent order to be view in the popup
@@ -13,14 +13,37 @@ import OrderPopupSumarryView from "../OrderPopupSumarryView/OrderPopupSumarryVie
  * @returns OrderPopupView
  */
 function OrderPopupView({ order, onClose, onEdit }) {
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const getOrderProducts = async () => {
+      try {
+        const response = await fetch(
+          `/api/employee/orders/${order.order_id}/items`,
+          {
+            method: "GET",
+            credentials: "include",
+          },
+        );
+        if (!response.ok) throw new Error("Couldn't get order's products");
+        const data = await response.json();
+        console.log("Order ID:", order.order_id);
+        console.log("Products from backend:", data.products);
+
+        setProducts(data.products);
+      } catch (error) {
+        console.error("Couldn't get order products: ", error);
+      }
+    };
+    getOrderProducts();
+  }, [order.order_id]);
   return (
     <div className={styles.overlay}>
       <div className={styles.orderPopup}>
         <div className={styles.top}>
           <OrderPopupTitleView
-            orderNumber={order.id}
-            customerName={order.client}
-            date={order.date}
+            orderId={order.order_id}
+            customerName={`${order.first_name} ${order.last_name}`}
+            date={new Date(order.created_at).toLocaleDateString("en-GB")}
           />
 
           <div className={styles.actions}>
@@ -32,9 +55,9 @@ function OrderPopupView({ order, onClose, onEdit }) {
         </div>
 
         {/*the table of all the products in the order, gets the order's products  */}
-        <OrderPopupTableView products={order.products} />
+        <OrderPopupTableView products={products} />
 
-        <OrderPopupSumarryView total={order.total} />
+        <OrderPopupSumarryView total={order.final_price} />
       </div>
     </div>
   );

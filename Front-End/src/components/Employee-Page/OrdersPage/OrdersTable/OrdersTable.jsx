@@ -12,9 +12,10 @@ import OrderPopupEdit from "../OrderPopupEdit-Window/OrderPopupEdit/OrderPopupEd
  * @param {orders} orders which shown to the user
  * @returns OrdersTable
  */
-function OrdersTable({ onSave, orders }) {
+function OrdersTable({ onSave, orders, onStatusChange }) {
   //state variable which is the selectedOrder to have changes in, by default null
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [openStatusOrderId, setOpenStatusOrderId] = useState(null);
 
   //state variable which tells which order clicked to be change, by default false because none of the orders are clicked to be edited
   const [editOrder, setEditOrder] = useState(false);
@@ -24,8 +25,9 @@ function OrdersTable({ onSave, orders }) {
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Order</th>
+            <th>Order ID</th>
             <th>Client</th>
+            <th>Client's Email</th>
             <th>Items</th>
             <th>Date</th>
             <th>Total</th>
@@ -38,9 +40,12 @@ function OrdersTable({ onSave, orders }) {
           {/*building the rows of the orders table, gets the onView even which will present the details of the current order */}
           {orders.map((order) => (
             <OrderRow
-              key={order.id}
+              key={order.order_id}
               order={order}
               onView={() => setSelectedOrder(order)}
+              onStatusChange={onStatusChange}
+              openStatusOrderId={openStatusOrderId}
+              setOpenStatusOrderId={setOpenStatusOrderId}
             />
           ))}
         </tbody>

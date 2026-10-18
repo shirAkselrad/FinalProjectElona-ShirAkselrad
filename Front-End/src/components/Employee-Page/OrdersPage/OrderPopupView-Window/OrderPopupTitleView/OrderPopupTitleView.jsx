@@ -6,10 +6,10 @@ import styles from "./orderPopupTitleView.module.css";
  * @param {date} date the ordering date
  * @returns OrderPopupTitleView
  */
-function OrderPopupTitleView({ orderNumber, customerName, date }) {
+function OrderPopupTitleView({ orderId, customerName, date }) {
   return (
     <div className={styles.orderPopupTitle}>
-      <h2>Order #{orderNumber}</h2>
+      <h2>Order #{orderId}</h2>
 
       <p>
         {customerName} · {date}

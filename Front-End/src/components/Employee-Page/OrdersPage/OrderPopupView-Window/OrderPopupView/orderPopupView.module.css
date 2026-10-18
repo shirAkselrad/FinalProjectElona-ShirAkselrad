@@ -12,12 +12,14 @@
 }
 
 .orderPopup {
-  width: 610px;
+  width: 760px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
 
   padding: 42px 42px 46px;
 
   background-color: white;
-
   box-sizing: border-box;
 }
 

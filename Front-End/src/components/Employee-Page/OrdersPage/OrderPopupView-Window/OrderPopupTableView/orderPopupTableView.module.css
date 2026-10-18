@@ -1,16 +1,24 @@
+
 .header {
   display: grid;
-  grid-template-columns: 2fr 0.55fr 1.1fr 0.8fr;
-
+  grid-template-columns: 1.1fr 2.5fr 0.6fr 1fr 1fr;
   align-items: center;
+  gap: 16px;
 
-  padding: 12px 0;
-
+  padding: 14px 0;
   border-bottom: 2px solid #e8ddd5;
 
   font-family: Arial, sans-serif;
   font-size: 11px;
   font-weight: 600;
-
   color: #a58d80;
+}
+
+.header span:nth-child(3) {
+  text-align: center;
+}
+
+.header span:nth-child(4),
+.header span:nth-child(5) {
+  text-align: right;
 }
