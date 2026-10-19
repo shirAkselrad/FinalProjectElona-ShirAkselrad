@@ -20,17 +20,42 @@ router.get("/user", (req, res) => {
   });
 });
 
+function failedLogin(req, res) {
+  req.session.loginAttempts = (req.session.loginAttempts || 0) + 1;
+  if (req.session.loginAttempts >= 5) {
+    req.session.lockUntil = Date.now() + 10 * 60 * 1000;
+    return res.status(429).json({
+      success: false,
+      message: "Too many login attempts.Please try again in 10 minutes.",
+      lockUntil:req.session.lockUntil
+    });
+  }
+  return res.status(401).json({
+    success: false,
+    message: "Invalid username or password",
+  });
+}
+
 //This path is for the login part, the user fill the username and password,
 //if those are valid and correct will be able to start shopping,
 //else will have to try again
 router.post("/", (req, res) => {
   const { userName, password } = req.body;
-  console.log("body:", req.body);
+  //checking if the user is blocked after unsuccessed loggin
+  if (req.session.lockUntil) {
+    if (Date.now() < req.session.lockUntil)
+      return res.status(429).json({
+        success: false,
+        message: "Too many login attempts.Please try again in 10 minutes.",
+        lockUntil: req.session.lockUntil,
+      });
+    req.session.loginAttempts = 0;
+    req.session.lockUntil = null;
+  }
   const query =
     "select username, password, first_name,email, role, status from users where username=?";
 
   db.query(query, [userName], (err, results) => {
-    console.log("results:", results);
     if (err) {
       return res.status(500).send(err);
     }
@@ -44,6 +69,8 @@ router.post("/", (req, res) => {
         }
 
         if (isMatch) {
+          req.session.loginAttempts = 0;
+          req.session.lockUntil = null;
           if (results[0].status === "Not Active") {
             return res.status(403).json({
               success: false,
@@ -65,17 +92,11 @@ router.post("/", (req, res) => {
           });
         }
 
-        return res.status(401).json({
-          success: false,
-          message: "Invalid username or password",
-        });
+        return failedLogin(req, res);
       });
     }
 
-    return res.status(401).json({
-      success: false,
-      message: "Invalid username or password",
-    });
+    return failedLogin(req, res);
   });
 });
 

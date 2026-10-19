@@ -8,18 +8,20 @@
   border: none;
   background: transparent;
 
-  color: #8b8179;
+  color: #382116;
 
-  font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 
   cursor: pointer;
 }
 
 .icon {
-  font-size: 17px;
+  font-size: 26px;
 }
 
 .logout:hover {
-  color: #5f554e;
+  color: #ad7949;
 }

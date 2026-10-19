@@ -5,15 +5,14 @@
   justify-content: center;
   background: none;
   border: none;
-  color: #c5aa96;
+  color: #382116;
   padding: 5px;
   cursor: pointer;
 }
 
-
 .cart svg {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
 }
 
 .cartCount {
@@ -21,8 +20,8 @@
   top: -5px;
   right: -7px;
 
-  min-width: 16px;
-  height: 16px;
+  min-width: 18px;
+  height: 18px;
   padding: 0 3px;
   box-sizing: border-box;
 
@@ -31,12 +30,12 @@
   justify-content: center;
 
   border-radius: 50%;
-  background-color: #875b43;
-  color: white;
+  background-color: #d8afa6;
+  color: #382116;
 
-  font-family: Arial, sans-serif;
-  font-size: 9px;
-  font-weight: 600;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .overlay {

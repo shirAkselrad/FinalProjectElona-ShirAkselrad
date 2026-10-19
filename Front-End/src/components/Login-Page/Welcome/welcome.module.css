@@ -1,8 +1,8 @@
 .welcome {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 12px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 22px;
   font-weight: 400;
-  letter-spacing: 2.2px;
-  color: #5a3528;
+  letter-spacing: 0.5px;
+  color: #382116;
   white-space: nowrap;
 }

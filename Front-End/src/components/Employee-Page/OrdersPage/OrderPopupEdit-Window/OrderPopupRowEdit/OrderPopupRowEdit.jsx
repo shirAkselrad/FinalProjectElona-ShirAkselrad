@@ -12,15 +12,14 @@ import BrightGeneralBtn from "../../../../General/BrightGeneralBtn/BrightGeneral
  */
 function OrderPopupRowEdit({ product, products, setProducts }) {
   //The function update the current product which have been edited in the products array
-  const updateProduct = (field, value) => {
-    //getting the field and value which changed
-    const updatedProducts = products.map(
-      (
-        item, //finding the edited product
-      ) => (item.id === product.id ? { ...item, [field]: value } : item), //updating the product with all the values and the updated value
-    );
 
-    setProducts(updatedProducts); // finally, setting all the changes
+  const updateProduct = (field, value) => {
+    const updatedProducts = product.map((item) =>
+      item.product_id === product.product_id
+        ? { ...item, [field]: value }
+        : item,
+    );
+    setProducts(updatedProducts);
   };
 
   //changing the state of the product after the user decided to remove it
@@ -30,23 +29,16 @@ function OrderPopupRowEdit({ product, products, setProducts }) {
 
   return (
     <div className={`${styles.row} ${product.removed ? styles.removed : ""}`}>
-      <EmptyInput
-        value={product.name}
-        onChange={(e) => updateProduct("name", e.target.value)}
-      />
+      <span>{product.product_name}</span>
 
       <EmptyInput
         value={product.quantity}
         onChange={(e) => updateProduct("quantity", e.target.value)}
       />
-
-      <EmptyInput
-        value={product.price}
-        onChange={(e) => updateProduct("price", e.target.value)}
-      />
+      <span>${Number(product.product_price).toFixed(2)}</span>
 
       <span className={styles.total}>
-        ${Number(product.price) * Number(product.quantity)}
+        ${Number(product.product_price) * Number(product.quantity)}
       </span>
 
       <BrightGeneralBtn

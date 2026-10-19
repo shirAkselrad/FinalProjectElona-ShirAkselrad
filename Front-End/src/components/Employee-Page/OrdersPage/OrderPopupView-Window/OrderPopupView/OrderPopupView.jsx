@@ -48,7 +48,10 @@ function OrderPopupView({ order, onClose, onEdit }) {
 
           <div className={styles.actions}>
             {/*gets the onEdit function to oprate when clicked */}
-            <EditBtn onClick={onEdit} className={styles.popupEdit} />
+
+            {order.status == "PAID" && (
+              <EditBtn onClick={onEdit} className={styles.popupEdit} />
+            )}
             {/*gets the onClose function to oprate when clicked */}
             <Remove onClick={onClose} className={styles.popupRemove} />
           </div>

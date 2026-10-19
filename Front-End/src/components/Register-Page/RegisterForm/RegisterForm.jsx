@@ -7,7 +7,7 @@ import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
 import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import * as Validation from "../../../utils/inputValidation.js";
 
 //The function sends all the inputs values to backend for creating a new user
@@ -18,6 +18,7 @@ async function createUser(userData) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
     });
+
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const data = await response.json();
@@ -85,8 +86,8 @@ function RegisterForm() {
     const userData = {
       firstName: Validation.onlyFirstLetterCapital(user.firstName),
       lastName: Validation.onlyFirstLetterCapital(user.lastName),
-      city: Validation.onlyFirstLetterCapital(user.city),
-      street: Validation.onlyFirstLetterCapital(user.street),
+      city: user.city.trim(),
+      street: user.street.trim(),
       houseNum: user.houseNum.trim(),
       email: user.email.trim(),
       phoneNum: user.phoneNum.trim(),
@@ -201,10 +202,7 @@ function RegisterForm() {
             maxLength={50}
             error={errors.city}
             onChange={(e) => {
-              if (
-                Validation.checkStr(e.target.value) &&
-                Validation.checkCity(e.target.value)
-              ) {
+              if (Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   city: "",
@@ -220,11 +218,6 @@ function RegisterForm() {
                 setErrors({
                   ...errors,
                   city: "Only letters and spaces are allowed",
-                });
-              } else if (!Validation.checkCity(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  city: "City doesn't exist",
                 });
               } else {
                 setErrors({
@@ -244,10 +237,7 @@ function RegisterForm() {
             maxLength={50}
             error={errors.street}
             onChange={(e) => {
-              if (
-                Validation.checkStr(e.target.value) &&
-                Validation.checkStreet(user.city, e.target.value)
-              ) {
+              if (Validation.checkStr(e.target.value)) {
                 setErrors({
                   ...errors,
                   street: "",
@@ -263,11 +253,6 @@ function RegisterForm() {
                 setErrors({
                   ...errors,
                   street: "Only letters and spaces are allowed",
-                });
-              } else if (!Validation.checkStreet(user.city, e.target.value)) {
-                setErrors({
-                  ...errors,
-                  street: "Street doesn't exist in this city",
                 });
               } else {
                 setErrors({

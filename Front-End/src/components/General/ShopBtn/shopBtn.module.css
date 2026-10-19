@@ -3,12 +3,12 @@
   border: none;
   padding: 6px;
 
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 14px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 22px;
   font-weight: 400;
 
-  letter-spacing: 3px;
-  color: #78675d;
+  letter-spacing: 0.5px;
+  color: #382116;
 
   cursor: pointer;
 
@@ -16,5 +16,5 @@
 }
 
 .shop:hover {
-  color: #b58b52;
+  color: #ad7949;
 }

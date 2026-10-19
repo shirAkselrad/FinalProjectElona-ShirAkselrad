@@ -1,6 +1,6 @@
 .userBtn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
 
   display: flex;
   align-items: center;
@@ -11,7 +11,7 @@
 
   padding: 0;
 
-  color: #c9ad98;
+  color: #382116;
 
   cursor: pointer;
 
@@ -19,10 +19,10 @@
 }
 
 .userBtn svg {
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
 }
 
 .userBtn:hover {
-  color: #8a6f60;
+  color: #ad7949;
 }

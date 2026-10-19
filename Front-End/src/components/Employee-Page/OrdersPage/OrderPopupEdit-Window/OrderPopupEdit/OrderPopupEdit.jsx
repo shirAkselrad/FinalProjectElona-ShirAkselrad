@@ -1,5 +1,5 @@
 import styles from "./OrderPopupEdit.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import OrderPopupTitleView from "../../OrderPopupView-Window/OrderPopupTitleView/OrderPopupTitleView.jsx";
 import OrderPopupSumarryView from "../../OrderPopupView-Window/OrderPopupSumarryView/OrderPopupSumarryView.jsx";
 import OrderPopupTableEdit from "../OrderPopupTableEdit/OrderPopupTableEdit.jsx";
@@ -16,8 +16,31 @@ import Remove from "../../../../General/Remove/Remove.jsx";
  * @returns OrderPopupEdit
  */
 function OrderPopupEdit({ order, onClose, onCancel, onSave }) {
-  //The updated products after editing, starts by default by the original products details
-  const [editedProducts, setEditedProducts] = useState(order.products);
+  const [editedProducts, setEditedProducts] = useState([]);
+  useEffect(() => {
+    //this function responsible to get all the order products details
+    async function getOrderProducts() {
+      try {
+        const response = await fetch(
+          `/api/employee/orders/${order.order_id}/items`,
+          {
+            method: "GET",
+          },
+        );
+        if (!response.ok) throw new Error("Couldn't get order's products");
+        const data = await response.json();
+        setEditedProducts(
+          data.products.map((product) => ({
+            ...product,
+            removed: false,
+          })),
+        );
+      } catch (error) {
+        console.error("Couldn't get order products: ", error);
+      }
+    }
+    getOrderProducts();
+  }, [order.order_id]);
 
   //an array which include all the products which didn't removed
   const productsToSave = editedProducts.filter(
@@ -26,7 +49,7 @@ function OrderPopupEdit({ order, onClose, onCancel, onSave }) {
 
   //calculate the final price after all the edits
   const editedTotal = productsToSave.reduce(
-    (sum, product) => sum + Number(product.price) * Number(product.quantity),
+    (sum, product) => sum + Number(product.product_price) * Number(product.quantity),
     0,
   );
 

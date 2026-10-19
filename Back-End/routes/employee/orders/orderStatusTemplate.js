@@ -125,6 +125,42 @@ const OrderStatusTemplate = (order) => {
                       ${details.details}
                     </p>
 
+                    ${
+                      order.status === "COMPLETED"
+                        ? `
+      <table
+        role="presentation"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="margin:0 auto 35px;"
+      >
+        <tr>
+          <td
+            align="center"
+            bgcolor="#49372f"
+            style="padding:15px 30px;"
+          >
+            <a
+            href="${process.env.FRONTEND_URL}/orderReview?order_id=${order.order_id}"
+              style="
+                color:#ffffff;
+                text-decoration:none;
+                font-size:12px;
+                letter-spacing:2px;
+                font-family:Arial,sans-serif;
+                display:inline-block;
+              "
+            >
+              RATE YOUR EXPERIENCE
+            </a>
+          </td>
+        </tr>
+      </table>
+    `
+                        : ""
+                    }
+
                     <div style="border-top:1px solid #e9ded4;"></div>
 
                     <p style="

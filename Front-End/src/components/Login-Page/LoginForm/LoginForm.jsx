@@ -7,8 +7,8 @@ import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
 import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import ForgotPassword from "../ForgotPassword/ForgotPassword.jsx";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 //The function gets an str and returns true if str is not empty, else, false
 function checkInput(str) {
@@ -32,7 +32,20 @@ async function loginUser(userData) {
 
 function LoginForm() {
   const navigate = useNavigate();
+  const location = useLocation(); 
   const { user: loggedInUser, login } = useAuth();
+  const [lockUntil, setLockUntil] = useState(null);
+
+  //checks if the temporary block is over
+  useEffect(() => {
+    if (!lockUntil) return;
+    const interval = setInterval(() => {
+      if (Date.now() >= lockUntil) {
+        setLockUntil(null);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockUntil]);
 
   //keeps the user inputs
   const [user, setUser] = useState({
@@ -66,6 +79,7 @@ function LoginForm() {
   //The function check if the form is valid if it does, call the createUser function
   async function handleSubmit(e) {
     e.preventDefault();
+    if (lockUntil && Date.now() < lockUntil) return;
 
     if (!isFormValid) return;
     const userData = {
@@ -74,6 +88,7 @@ function LoginForm() {
     };
 
     const data = await loginUser(userData);
+    if (data?.lockUntil) setLockUntil(data.lockUntil);
     if (data?.success) {
       login(data.user);
       setDisplayMessagePopup({
@@ -173,7 +188,10 @@ function LoginForm() {
         </div>
 
         <div className={styles.signIn}>
-          <GeneralBtn disabled={!isFormValid} text="LOGIN" />
+          <GeneralBtn
+            disabled={!isFormValid || (lockUntil && Date.now() < lockUntil)}
+            text="LOGIN"
+          />
         </div>
 
         <div className={styles.account}>
@@ -194,9 +212,13 @@ function LoginForm() {
           type={displayMessagePopup.type}
           onClose={() => {
             if (displayMessagePopup.type === "success") {
-              if (loggedInUser?.role === "Manager") navigate("/managerPage");
-              else if (loggedInUser?.role === "Employee") navigate("/employeePage");
-              else navigate("/");
+              const previousPage= location.state?.from;
+              if ( previousPage && loggedInUser?.role === "Client") navigate(previousPage.pathname+previousPage.search, {replace:true});
+              else if (loggedInUser?.role === "Manager")
+                navigate("/managerPage");
+              else if(loggedInUser?.role==="Employee") navigate("/employeePage");
+              else
+                navigate("/"); 
             } else {
               setDisplayMessagePopup({
                 show: false,

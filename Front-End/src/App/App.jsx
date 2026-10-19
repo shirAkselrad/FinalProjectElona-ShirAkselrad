@@ -14,6 +14,7 @@ import Orders from "../components/Employee-Page/OrdersPage/Orders/Orders.jsx";
 import OrderSummaryPage from "../components/Shop-Page/OrderSummary/OrderSummaryPage/OrderSummaryPage.jsx";
 import PaymentPage from "../components/Shop-Page/PaymentPage/PaymentPage.jsx";
 import PaymentSuccessPage from "../components/Shop-Page/PaymentSuccessPage/PaymentSuccessPage.jsx";
+import OrderReview from "../components/OrderReview-Page/OrderReview/OrderReview.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
 import ProtectedRoute from "../routes/ProtectedRoute.jsx";
@@ -56,6 +57,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={["Client"]}>
                 <PaymentSuccessPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orderReview"
+            element={
+              <ProtectedRoute allowedRoles={["Client"]}>
+                <OrderReview />
               </ProtectedRoute>
             }
           />

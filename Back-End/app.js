@@ -5,7 +5,6 @@ const app = express();
 const session = require("express-session");
 const port = process.env.PORT || 3001;
 
-
 //This routes is for each page in the front end
 const registerPageRoutes = require("./routes/register");
 const loginPageRoutes = require("./routes/login");
@@ -20,6 +19,8 @@ const cartRoutes = require("./routes/ShopPage/cart");
 const orderSummaryRoutes = require("./routes/ShopPage/orderSummary");
 const editClientDetailsRoutes = require("./routes/client/editClientDetails");
 const paymentRoutes = require("./routes/ShopPage/payment");
+const orderReviewRoutes = require("./routes/client/orderReview");
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "..", "Front-End")));
@@ -45,10 +46,8 @@ app.use("/api/shop", shopPageRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orderSummary", orderSummaryRoutes);
 app.use("/api/client", editClientDetailsRoutes);
-app.use("/api/payment", paymentRoutes); 
-
-
-
+app.use("/api/payment", paymentRoutes);
+app.use("/api/orderReview", orderReviewRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -46,8 +46,8 @@ function EditClientPopup({ client, onClose, onSave }) {
       first_name: Validation.onlyFirstLetterCapital(clientData.first_name),
       last_name: Validation.onlyFirstLetterCapital(clientData.last_name),
       phone_num: clientData.phone_num,
-      city: Validation.onlyFirstLetterCapital(clientData.city),
-      street: Validation.onlyFirstLetterCapital(clientData.street),
+      city: clientData.city.trim(),
+      street: clientData.street.trim(),
       house_num: clientData.house_num,
     };
     const data = await updateClient(userData);

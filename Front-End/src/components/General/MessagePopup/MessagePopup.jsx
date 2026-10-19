@@ -5,6 +5,7 @@ function MessagePopup({
   type = "success",
   onClose,
   autoClose = false,
+  buttonText = "OK",
 }) {
   useEffect(() => {
     if (!autoClose) return;
@@ -32,7 +33,7 @@ function MessagePopup({
 
         {!autoClose && (
           <button className={styles.button} onClick={onClose}>
-            OK
+            {buttonText}
           </button>
         )}
       </div>

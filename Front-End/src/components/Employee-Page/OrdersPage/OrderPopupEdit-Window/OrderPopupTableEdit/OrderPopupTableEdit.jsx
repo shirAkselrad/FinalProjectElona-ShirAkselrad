@@ -21,7 +21,7 @@ function OrderPopupTableEdit({ products, setProducts }) {
       {/*building the rows of the edit table, gets the current product, all the products and the setProducts function which will save the changes of the products  */}
       {products.map((product) => (
         <OrderPopupRowEdit
-          key={product.id}
+          key={product.product_id}
           product={product}
           products={products}
           setProducts={setProducts}

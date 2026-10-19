@@ -1,0 +1,17 @@
+.star {
+  border: none;
+  background: transparent;
+  color: #c29a58;
+  font-size: 38px;
+  cursor: pointer;
+  padding: 4px;
+  transition: transform 0.2s ease;
+    display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 5px 0 0;
+}
+
+.star:hover {
+  transform: scale(1.15);
+}
