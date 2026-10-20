@@ -7,7 +7,7 @@ import { useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 
-function Clients() {
+function Clients({ isManager = false }) {
   //This popup will be displayed only in case there is no results of the filtering action
   const [showNoMatchesPopup, setShowNoMatchesPopup] = useState(false);
 
@@ -57,17 +57,18 @@ function Clients() {
     },
   ];
 
-  //This variable state gets the clients and after one of the clients gets updated, the whole clients view is updated as well for front-end
-  const { clients, setClients } = useOutletContext();
+  const { clients, setClients, users, setUsers } = useOutletContext();
+  const displayedClients = isManager ? users : clients;
+  const updateDisplayedClients = isManager ? setUsers : setClients;
   //This part is resposible to the search filter in the clients table
   const [searchValue, setSearchValue] = useState("");
 
   //this state variable is for those clients that will be presented after filtering
-  const [filteredClients, setFilteredClients] = useState(clients);
+  const [filteredClients, setFilteredClients] = useState(null);
 
   //This function operates the filtering action, update the client's list and displays the popup if needs
   function applyFilters(status, city, search) {
-    const result = clients.filter((client) => {
+    const result = displayedClients.filter((client) => {
       const matchedSearch = Object.entries(client).some(([key, value]) => {
         const currentValue = String(value).toLowerCase();
         const currentSearch = search.toLowerCase();
@@ -85,12 +86,8 @@ function Clients() {
       return matchedSearch && matchesCity && matchesStatus;
     });
 
-    if (result.length === 0) {
-      setShowNoMatchesPopup(true);
-      return;
-    }
-
     setFilteredClients(result);
+    setShowNoMatchesPopup(result.length == 0);
   }
 
   //This function gets a status value and change the status state variable, also calls the applyFilters function for an operating the filtering
@@ -116,11 +113,12 @@ function Clients() {
     setSelectedStatus("All Statuses");
     setSelectedCity("All Cities");
     setSearchValue("");
-    setFilteredClients(clients);
+    setFilteredClients(null);
+    setShowNoMatchesPopup(false);
   }
   //the function which update the clients array after updating a client
   function handleUpdateClient(updateClient) {
-    setClients((prevClients) =>
+    updateDisplayedClients((prevClients) =>
       prevClients.map((client) =>
         client.email === updateClient.email
           ? { ...client, ...updateClient }
@@ -128,11 +126,13 @@ function Clients() {
       ),
     );
     setFilteredClients((prevClients) =>
-      prevClients.map((client) =>
-        client.email === updateClient.email
-          ? { ...client, ...updateClient }
-          : client,
-      ),
+      prevClients === null
+        ? null
+        : prevClients.map((client) =>
+            client.email === updateClient.email
+              ? { ...client, ...updateClient }
+              : client,
+          ),
     );
     getCitiesNoRepeat();
   }
@@ -140,7 +140,7 @@ function Clients() {
   return (
     <div className={styles.clients}>
       <div className={styles.top}>
-        <SectionTitle title="Clients" />
+        <SectionTitle title={isManager ? "Users" : "Clients"} />
       </div>
 
       <div className={styles.tools}>
@@ -156,7 +156,8 @@ function Clients() {
 
       <ClientsTable
         onSave={handleUpdateClient}
-        clients={filteredClients.length > 0 ? filteredClients : clients}
+        clients={filteredClients ?? displayedClients}
+        isManager={isManager}
       />
 
       {showNoMatchesPopup && (

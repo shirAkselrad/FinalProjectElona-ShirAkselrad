@@ -7,7 +7,7 @@ import { useState } from "react";
  * @param {clients} param0
  * @returns ClientsTable
  */
-function ClientsTable({ clients, onSave }) {
+function ClientsTable({ clients, onSave, isManager = false }) {
   //state variable which is the selectedClient to have changes in, by default null
   const [selectedClient, setSelectedClient] = useState(null);
 
@@ -23,6 +23,7 @@ function ClientsTable({ clients, onSave }) {
             <th>Street</th>
             <th>House Number</th>
             <th>Email</th>
+            {isManager && <th>Role</th>}
             <th>Points</th>
             <th>Actions</th>
           </tr>
@@ -36,6 +37,7 @@ function ClientsTable({ clients, onSave }) {
               client={client}
               onEdit={() => setSelectedClient(client)}
               onRemove={onSave}
+              isManager={isManager}
             />
           ))}
         </tbody>
@@ -45,6 +47,7 @@ function ClientsTable({ clients, onSave }) {
           client={selectedClient}
           onClose={() => setSelectedClient(null)}
           onSave={onSave}
+          isManager={isManager}
         />
       )}
     </div>

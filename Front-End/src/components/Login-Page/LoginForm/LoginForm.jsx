@@ -32,7 +32,7 @@ async function loginUser(userData) {
 
 function LoginForm() {
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const { user: loggedInUser, login } = useAuth();
   const [lockUntil, setLockUntil] = useState(null);
 
@@ -212,13 +212,16 @@ function LoginForm() {
           type={displayMessagePopup.type}
           onClose={() => {
             if (displayMessagePopup.type === "success") {
-              const previousPage= location.state?.from;
-              if ( previousPage && loggedInUser?.role === "Client") navigate(previousPage.pathname+previousPage.search, {replace:true});
+              const previousPage = location.state?.from;
+              if (previousPage && loggedInUser?.role === "Client")
+                navigate(previousPage.pathname + previousPage.search, {
+                  replace: true,
+                });
               else if (loggedInUser?.role === "Manager")
                 navigate("/managerPage");
-              else if(loggedInUser?.role==="Employee") navigate("/employeePage");
-              else
-                navigate("/"); 
+              else if (loggedInUser?.role === "Employee")
+                navigate("/employeePage");
+              else navigate("/");
             } else {
               setDisplayMessagePopup({
                 show: false,

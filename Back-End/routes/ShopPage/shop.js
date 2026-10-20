@@ -9,8 +9,22 @@ const db = dbSingleton.getConnection();
 
 //This path returns to front-end all products to be displays at the shop page
 router.get("/getProducts", (req, res) => {
-  const query = "select * from inventory where status='Active'";
-  db.query(query, (err, results) => {
+  const { category } = req.query;
+  const validCategories = [
+    "ALL",
+    "BROOCHES",
+    "PENDANTS",
+    "HANDBAGS",
+    "WATCHES",
+  ];
+  if (typeof category !== "string" || !validCategories.includes(category))
+    return res.status(400).json({
+      success: false,
+      message: "Invalid category",
+    });
+  const query =
+    "select * from inventory where status='Active' and (?='ALL' or category=?)";
+  db.query(query, [category, category], (err, results) => {
     if (err) {
       console.error("Couldn't get products, error: ", err);
       return res.status(500).json({

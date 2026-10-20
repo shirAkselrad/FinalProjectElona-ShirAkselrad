@@ -35,7 +35,6 @@ function RegisterForm() {
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
-    ID: "",
     city: "",
     street: "",
     houseNum: "",
@@ -50,7 +49,6 @@ function RegisterForm() {
   const [errors, setErrors] = useState({
     firstName: "",
     lastName: "",
-    ID: "",
     city: "",
     street: "",
     houseNum: "",

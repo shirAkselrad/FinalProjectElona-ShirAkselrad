@@ -9,6 +9,7 @@ function useClientForm(initialClient) {
     city: initialClient?.city ?? "",
     street: initialClient?.street ?? "",
     house_num: initialClient?.house_num ?? "",
+    role: initialClient?.role ?? "Client",
   });
 
   const [errors, setErrors] = useState({
@@ -23,17 +24,17 @@ function useClientForm(initialClient) {
   const [touched, setTouched] = useState({});
 
   //updates a specific field in client object
-function handleInputChange(field, value) {
-  setClient((prev) => ({
-    ...prev,
-    [field]: value,
-  }));
+  function handleInputChange(field, value) {
+    setClient((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
 
-  setErrors((prev) => ({
-    ...prev,
-    [field]: validateField(field, value),
-  }));
-}
+    setErrors((prev) => ({
+      ...prev,
+      [field]: validateField(field, value),
+    }));
+  }
 
   function validateField(field, value) {
     switch (field) {

@@ -5,12 +5,12 @@ import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
 import Remove from "../../../General/Remove/Remove.jsx";
 import * as Validation from "../../../../utils/inputValidation.js";
 import useClientForm from "./useClientForm.js";
-
+import GeneralSelection from "../../../General/GeneralSelection/GeneralSelection.jsx";
 /**
  *
  * @returns EditClientPopup
  */
-function EditClientPopup({ client, onClose, onSave }) {
+function EditClientPopup({ client, onClose, onSave, isManager = false }) {
   const {
     client: clientData,
     errors,
@@ -21,7 +21,10 @@ function EditClientPopup({ client, onClose, onSave }) {
 
   async function updateClient(clientData) {
     try {
-      const response = await fetch("/api/employee/updateClient", {
+      const url = isManager
+        ? "/api/manager/updateUser"
+        : "/api/employee/updateClient";
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(clientData),
@@ -32,7 +35,7 @@ function EditClientPopup({ client, onClose, onSave }) {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("error updating client's details: ", error);
+      console.error("error updating user's details: ", error);
     }
   }
 
@@ -49,6 +52,7 @@ function EditClientPopup({ client, onClose, onSave }) {
       city: clientData.city.trim(),
       street: clientData.street.trim(),
       house_num: clientData.house_num,
+      ...(isManager && { role: clientData.role }),
     };
     const data = await updateClient(userData);
     if (data?.success) {
@@ -61,7 +65,9 @@ function EditClientPopup({ client, onClose, onSave }) {
     <div className={styles.overlay}>
       <div className={styles.popup}>
         <div className={styles.top}>
-          <h2 className={styles.title}>Edit Client</h2>
+          <h2 className={styles.title}>
+            {isManager ? "Edit User" : "Edit Client"}
+          </h2>
           <Remove onClick={onClose} className={styles.closeBtn} />
         </div>
 
@@ -131,6 +137,19 @@ function EditClientPopup({ client, onClose, onSave }) {
               onBlur={(e) => handleInputBlur("house_num", e.target.value)}
             />
           </div>
+
+          {isManager && (
+            <div className={styles.field}>
+              <InputLabel text="ROLE" />
+              <GeneralSelection
+                value={clientData.role}
+                options={["Client", "Employee", "Manager"]}
+                onChange={(e) => handleInputChange("role", e.target.value)}
+                onBlur={(e) => handleInputBlur("role", e.target.value)}
+                error={errors.role}
+              />
+            </div>
+          )}
 
           <div className={styles.save}>
             <GeneralBtn

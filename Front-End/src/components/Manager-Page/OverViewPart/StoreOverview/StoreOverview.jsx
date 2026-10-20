@@ -4,17 +4,10 @@ import Title from "../../../General/Title/Title.jsx"
 import OverviewLine from "../OverViewLine/OverViewLine.jsx"
 import UnshippedOrders from "../UnshippedOrdersPart/UnshippedOrders/UnshippedOrders.jsx";
 import LowStock from "../LowStockPart/LowStock/LowStock.jsx"
+import { useOutletContext } from "react-router-dom";
 
-function StoreOverview({
-  orders,
-  clients,
-  dates,
-  totals,
-  items,
-  products,
-  statuses,
-  stocks,
-}) {
+function StoreOverview() {
+  const { orders, clients, dates, totals, items, products, statuses, stocks }=useOutletContext(); 
   return (
     <div className={styles.storeOverview}>
       <Title text="Store Overview" />

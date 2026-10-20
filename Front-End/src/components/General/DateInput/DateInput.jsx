@@ -3,7 +3,7 @@ import InputLabel from "../InputLabel/InputLabel.jsx";
 
 function DateInput({ label, value, onChange, min, error }) {
   return (
-    <div>
+    <div className={styles.container}>
       <InputLabel text={label} />
 
       <input

@@ -69,7 +69,6 @@ router.post("/", (req, res) => {
   const {
     firstName,
     lastName,
-    ID,
     city,
     street,
     houseNum, 
@@ -80,7 +79,7 @@ router.post("/", (req, res) => {
   } = req.body;
   console.log(firstName, lastName);
   const query =
-    "insert into users (first_name, last_name,user_id, city,street, house_num,email, phone_num, username, password,role, status, points) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    "insert into users (first_name, last_name, city,street, house_num,email, phone_num, username, password,role, status, points) values(?,?,?,?,?,?,?,?,?,?,?,?)";
 
   bcrypt.genSalt(10, (err, salt) => {
     if (err) throw err;
@@ -94,7 +93,6 @@ router.post("/", (req, res) => {
         [
           firstName,
           lastName,
-          ID,
           city,
           street,
           houseNum,

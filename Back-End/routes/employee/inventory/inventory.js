@@ -4,6 +4,28 @@ const router = express.Router();
 const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
+router.get("/categories", (req, res) => {
+  const query = "select category_id, name, types from categories";
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get categories",
+      });
+
+    const categories = results.map((category) => ({
+      ...category,
+      types: category.types
+        ? category.types.split(",").map((type) => type.trim())
+        : [],
+    }));
+    return res.status(200).json({
+      success: true,
+      categories,
+    });
+  });
+});
+
 router.post("/changeProductStatus", (req, res) => {
   const { product_id, status } = req.body;
   const query = "update inventory set status=? where product_id=?";

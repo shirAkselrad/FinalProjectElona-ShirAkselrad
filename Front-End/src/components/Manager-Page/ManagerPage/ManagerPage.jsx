@@ -1,8 +1,8 @@
 import styles from "./managerPage.module.css";
-
+import { Outlet } from "react-router-dom";
 import StoreOverview from "../OverViewPart/StoreOverview/StoreOverview.jsx";
 import Menu from "../../General/ManagerAndEmployee/Menu/Menu.jsx";
-
+import { useState, useEffect } from "react";
 import { FaRegDotCircle } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
 import { FaBoxesStacked } from "react-icons/fa6";
@@ -10,35 +10,72 @@ import { FaBox } from "react-icons/fa";
 import { FiClipboard } from "react-icons/fi";
 
 function ManagerPage() {
+  const [users, setUsers] = useState([]);
+  const [managerOrders, setManagerOrders] = useState([]);
+
+  useEffect(() => {
+    async function getOrders() {
+      try {
+        const response = await fetch("/api/employee/orders", {
+          method: "GET",
+        });
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        setManagerOrders(data.orders);
+      } catch (error) {
+        console.error("Error getting orders: ", error);
+      }
+    }
+    getOrders();
+  }, []);
+
+  useEffect(() => {
+    async function getUsers() {
+      try {
+        const response = await fetch("/api/manager/users", {
+          method: "GET",
+        });
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        if (data.success) setUsers(data.users);
+      } catch (error) {
+        console.error("Error getting users: ", error);
+      }
+    }
+    getUsers();
+  }, []);
+
   const managerMenu = [
     {
       text: "Overview",
       value: "overview",
-      path: "managerPage/overview",
+      path: "/managerPage/overview",
       icon: <FaRegDotCircle />,
     },
     {
       text: "Edit Users",
       value: "users",
-      path: "managerPage/users",
+      path: "/managerPage/users",
       icon: <FaUser />,
     },
     {
       text: "Edit Inventory",
       value: "inventory",
-      path: "managerPage/inventory",
+      path: "/managerPage/inventory",
       icon: <FaBoxesStacked />,
     },
     {
       text: "Orders",
       value: "orders",
-      path: "managerPage/orders",
+      path: "/managerPage/orders",
       icon: <FaBox />,
     },
     {
       text: "Issuing Reports",
       value: "reports",
-      path: "managerPage/reports",
+      path: "/managerPage/reports",
       icon: <FiClipboard />,
     },
   ];
@@ -71,17 +108,22 @@ function ManagerPage() {
   return (
     <main className={styles.managerPage}>
       <div className={styles.content}>
-        <StoreOverview
-          orders={orders}
-          clients={clients}
-          dates={dates}
-          totals={totals}
-          items={items}
-          products={products}
-          statuses={statuses}
-          stocks={stocks}
+        <Outlet
+          context={{
+            orders,
+            clients,
+            dates,
+            totals,
+            items,
+            products,
+            statuses,
+            stocks,
+            users,
+            setUsers,
+            managerOrders,
+            setManagerOrders,
+          }}
         />
-
         <Menu items={managerMenu} />
       </div>
     </main>

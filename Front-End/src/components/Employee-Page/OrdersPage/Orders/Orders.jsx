@@ -9,8 +9,15 @@ import { useOutletContext } from "react-router-dom";
  *
  * @returns Orders
  */
-function Orders() {
-  const { orders, setOrders } = useOutletContext();
+function Orders({isManager=false}) {
+  const{
+    orders: employeeOrders,
+    setOrders:setEmployeeOrders,
+    managerOrders,
+    setManagerOrders
+  }=useOutletContext();
+  const orders=isManager? managerOrders : employeeOrders;
+  const setOrders=isManager? setManagerOrders: setEmployeeOrders; 
   //the state variable is resposible to the search filter in the orders table
   const [searchValue, setSearchValue] = useState("");
 

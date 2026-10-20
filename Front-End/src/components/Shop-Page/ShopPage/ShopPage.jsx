@@ -7,11 +7,12 @@ import { useState, useEffect } from "react";
 import { useCart } from "../../../context/CartContext.jsx";
 import ProductPopup from "../ProductInfoPopup/ProductPopup/ProductPopup.jsx";
 function ShopPage() {
+  const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [products, setProducts] = useState([]);
   const [frontImgs, setFrontImgs] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedProductImgs, setSelectedProductImgs] = useState([]);
-  const {getCartAmount}=useCart(); 
+  const { getCartAmount } = useCart();
   const [popup, setPopup] = useState({
     show: false,
     message: "",
@@ -20,11 +21,14 @@ function ShopPage() {
   });
 
   //getting all the products from back end to front-end to be presented to the user
-  async function getProducts() {
+  async function getProducts(category) {
     try {
-      const response = await fetch("/api/shop/getProducts", {
-        method: "GET",
-      });
+      const response = await fetch(
+        `/api/shop/getProducts?category=${category}`,
+        {
+          method: "GET",
+        },
+      );
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
@@ -119,14 +123,11 @@ function ShopPage() {
         return;
       }
       console.log("Card order id: ", data.order_id);
-      await getCartAmount(); 
-      if(selectedProduct)
-      {
+      await getCartAmount();
+      if (selectedProduct) {
         setSelectedProduct(null);
         setSelectedProductImgs([]);
-      }
-      else
-        showAddToCartMessage(); 
+      } else showAddToCartMessage();
     } catch (error) {
       console.error("Error adding product to cart: ", error);
       setPopup({
@@ -143,10 +144,14 @@ function ShopPage() {
     const success = await getProductImgs(product.product_id);
     if (success) setSelectedProduct(product);
   }
+
   useEffect(() => {
-    getProducts();
     getFrontImgs();
   }, []);
+
+  useEffect(() => {
+    getProducts(selectedCategory);
+  }, [selectedCategory]);
 
   //This function will display a popup which will be closed automaticly after the client added a product to the cart
   function showAddToCartMessage() {
@@ -180,12 +185,16 @@ function ShopPage() {
         <SearchBar />
 
         <div className={styles.categories}>
-          <CategoryBtn text="ALL" />
-          <CategoryBtn text="BROOCHES" />
-          <CategoryBtn text="PENDANTS" />
-          <CategoryBtn text="HANDBAGS" />
-          <CategoryBtn text="WATCHES" />
-          <CategoryBtn text="ACCESSORIES" />
+          {["ALL", "BROOCHES", "PENDANTS", "HANDBAGS", "WATCHES"].map(
+            (category) => (
+              <CategoryBtn
+                key={category}
+                text={category}
+                active={selectedCategory === category}
+                onClick={() => setSelectedCategory(category)}
+              />
+            ),
+          )}
         </div>
       </div>
 

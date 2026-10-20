@@ -10,7 +10,7 @@ import { useState } from "react";
  * @param {client, onEdit, onRemove} param0
  * @returns ClientRow
  */
-function ClientRow({ client, onEdit, onRemove }) {
+function ClientRow({ client, onEdit, onRemove, isManager = false }) {
   /**
    * current client from the whole clients in the clients table
    * onEdit-the event which happens when the user clicks on the edit button in the current     client's row
@@ -76,7 +76,8 @@ function ClientRow({ client, onEdit, onRemove }) {
       <td>{client.street}</td>
       <td>{client.house_num}</td>
       <td>{client.email}</td>
-      <td>{client.points}</td>
+      {isManager && <td>{client.role}</td>}
+      <td>{client.role === "Employee" ? "-" : client.points}</td>
 
       <td>
         <div className={styles.actions}>

@@ -1,0 +1,11 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.container > :first-child {
+  flex: 1;
+  min-width: 0;
+}

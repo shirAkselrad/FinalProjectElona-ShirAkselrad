@@ -4,6 +4,8 @@ import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
 import InventoryTable from "../InventoryTable/InventoryTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
+import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
+import AddCategoryPopup from "../../../Manager-Page/ProductCategory/AddCategoryPopup/AddCategoryPopup.jsx"
 import { useState, useEffect } from "react";
 
 /**
@@ -11,7 +13,7 @@ import { useState, useEffect } from "react";
  * @param {inventory} inventory array
  * @returns Inventory
  */
-function Inventory() {
+function Inventory({ isManager = false }) {
   const [inventory, setInventory] = useState([]);
   const [popup, setPopup] = useState({
     show: false,
@@ -29,6 +31,15 @@ function Inventory() {
   }, []);
 
   const [showPopupAdd, setShowPopupAdd] = useState(false);
+  const [showPopupCategory, setShowPopupCategory] = useState(false);
+
+  function handlePopupCategory() {
+    setShowPopupCategory(true);
+  }
+
+  function handleClosePopupCategory() {
+    setShowPopupCategory(false);
+  }
 
   function handleOpenPopupAdd() {
     setShowPopupAdd(true);
@@ -126,9 +137,18 @@ function Inventory() {
         <SectionTitle title="Inventory" />
 
         <div className={styles.topActions}>
-          <button onClick={handleOpenPopupAdd} className={styles.addProduct}>
-            + ADD PRODUCT
-          </button>
+          {isManager && (
+            <GeneralBtn
+              text="+ ADD CATEGORY"
+              className={styles.addProduct}
+              onClick={handlePopupCategory}
+            />
+          )}
+          <GeneralBtn
+            text="+ ADD PRODUCT"
+            onClick={handleOpenPopupAdd}
+            className={styles.addProduct}
+          />
         </div>
       </div>
 
@@ -149,6 +169,10 @@ function Inventory() {
           onClose={handleClosePopupAdd}
           onProductAdded={getInventory}
         />
+      )}
+
+      {isManager && showPopupCategory && (
+        <AddCategoryPopup onClose={handleClosePopupCategory} />
       )}
     </div>
   );

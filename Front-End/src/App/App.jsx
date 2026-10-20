@@ -15,6 +15,7 @@ import OrderSummaryPage from "../components/Shop-Page/OrderSummary/OrderSummaryP
 import PaymentPage from "../components/Shop-Page/PaymentPage/PaymentPage.jsx";
 import PaymentSuccessPage from "../components/Shop-Page/PaymentSuccessPage/PaymentSuccessPage.jsx";
 import OrderReview from "../components/OrderReview-Page/OrderReview/OrderReview.jsx";
+import StoreOverview from "../components/Manager-Page/OverViewPart/StoreOverview/StoreOverview.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
 import ProtectedRoute from "../routes/ProtectedRoute.jsx";
@@ -35,7 +36,13 @@ function App() {
                 <ManagerPage />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<StoreOverview />} />
+            <Route path="users" element={<Clients isManager={true} />} />
+            <Route path="inventory" element={<Inventory isManager={true} />} />
+            <Route path="orders" element={<Orders isManager={true} />} />
+          </Route>
           <Route
             path="/orderSummary"
             element={

@@ -1,22 +1,36 @@
+
 .textarea {
   width: 100%;
   min-height: 100px;
   box-sizing: border-box;
-  padding: 10px;
+  padding: 10px 12px;
 
-  border: 1px solid #9d918b;
-  background-color: #fbf8f5;
+  border: 1px solid #ddc9ba;
+  border-radius: 5px;
 
-  color: #51453f;
+  background-color: #fffdfb;
+
+  color: #5f4638;
   font-size: 13px;
   font-family: inherit;
 
   resize: vertical;
   outline: none;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.textarea::placeholder {
+  color: #a38e81;
+}
+
+.textarea:hover {
+  border-color: #b99b88;
 }
 
 .textarea:focus {
-  border-color: #9a7466;
+  border-color: #8b5e4b;
+  box-shadow: 0 0 0 2px rgba(139, 94, 75, 0.1);
 }
 
 .bottomRow {

@@ -1,14 +1,15 @@
 import { useState } from "react";
 import * as InventoryInputValidation from "../../../../../utils/inventoryInputValidation.js";
 import * as inputValidation from "../../../../../utils/inputValidation.js";
-import { ProductCategory, ProductSize } from "../../../../../Enums/products.js";
+import { ProductSize } from "../../../../../Enums/products.js";
 
 //passing empty product (as long as the user didn't press back)
 function useProductDetails(initialDetails = null) {
   const emptyDetails = {
     product_id: "",
     name: "",
-    category: ProductCategory.NONE,
+    category: "None",
+    type: "None",
     colors: [],
     country_origin: "None",
     size: ProductSize.NONE,
@@ -31,6 +32,7 @@ function useProductDetails(initialDetails = null) {
     product_id: "",
     name: "",
     category: "",
+    type: "",
     colors: "",
     country_origin: "",
     size: "",
@@ -98,23 +100,25 @@ function useProductDetails(initialDetails = null) {
 
   //This function check the validation of the product's category
   function handleProductCategoryChange(value) {
-    setDetails({
-      ...details,
+    setDetails((prev) => ({
+      ...prev,
       category: value,
-    });
-    if (value === ProductCategory.NONE) {
-      setErrors({
-        ...errors,
-        category: "Please select a category",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        category: "",
-      });
-    }
+      type: "None",
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      category: value === "None" ? "Please select a category" : "",
+      type: "",
+    }));
   }
 
+  //This function updates the product's type
+  function handleProductTypeChange(value) {
+    setDetails((prev) => ({
+      ...prev,
+      type: value,
+    }));
+  }
   //This function check the validation of the product's size
   function handleProductSizeChange(value) {
     setDetails({
@@ -343,12 +347,13 @@ function useProductDetails(initialDetails = null) {
   }
 
   //This function check all the inputs, only if all the values are valid returns true, else, false
-  function checkInputDetailsValidation() {
+  function checkInputDetailsValidation(hasTypes = false) {
     const noErrors = Object.values(errors).every((error) => error === "");
     const noEmptyInputs =
       details.name !== "" &&
       details.product_id !== "" &&
-      details.category !== ProductCategory.NONE &&
+      details.category !== "None" &&
+      (!hasTypes || (details.type !== "" && details.type!= "None")) &&
       details.size !== ProductSize.NONE &&
       details.country_origin !== "None" &&
       details.colors.length > 0 &&
@@ -369,6 +374,7 @@ function useProductDetails(initialDetails = null) {
     errors,
     handleColorsChange,
     handleProductCategoryChange,
+    handleProductTypeChange,
     handleProductCostPriceChange,
     handleProductCountryChange,
     handleProductDescriptionChange,
