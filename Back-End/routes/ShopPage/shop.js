@@ -7,21 +7,29 @@ const router = express.Router();
 const dbSingleton = require("../../dbSingleton");
 const db = dbSingleton.getConnection();
 
-//This path returns to front-end all products to be displays at the shop page
-router.get("/getProducts", (req, res) => {
+//this middleware checks if the selected category exists
+const checkCategory = (req, res, next) => {
   const { category } = req.query;
-  const validCategories = [
-    "ALL",
-    "BROOCHES",
-    "PENDANTS",
-    "HANDBAGS",
-    "WATCHES",
-  ];
-  if (typeof category !== "string" || !validCategories.includes(category))
-    return res.status(400).json({
-      success: false,
-      message: "Invalid category",
-    });
+  if (category === "ALL") return next();
+  const query = "select category_id from categories where name=?";
+  db.query(query, [category], (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't check category",
+      });
+    if (results.length === 0)
+      return res.status(400).json({
+        success: false,
+        message: "Invalid category",
+      });
+    next();
+  });
+};
+
+//This path returns to front-end all products to be displays at the shop page
+router.get("/getProducts", checkCategory, (req, res) => {
+  const { category } = req.query;
   const query =
     "select * from inventory where status='Active' and (?='ALL' or category=?)";
   db.query(query, [category, category], (err, results) => {
@@ -80,6 +88,22 @@ router.get("/getProductImgs/:product_id", (req, res) => {
     return res.status(200).json({
       success: true,
       imgs: results,
+    });
+  });
+});
+
+//this middleware send to FE all the products categories
+router.get("/getCategories", (req, res) => {
+  const query = "select category_id, name from categories";
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get categories",
+      });
+    return res.status(200).json({
+      success: true,
+      categories: results,
     });
   });
 });

@@ -118,6 +118,10 @@ function useProductDetails(initialDetails = null) {
       ...prev,
       type: value,
     }));
+    setErrors((prev) => ({
+      ...prev,
+      type: value === "None" ? "Please select a product type." : "",
+    }));
   }
   //This function check the validation of the product's size
   function handleProductSizeChange(value) {
@@ -163,17 +167,19 @@ function useProductDetails(initialDetails = null) {
       ...details,
       price: value,
     });
-    if (!InventoryInputValidation.checkPrice(value) || Number(value) <= 0) {
-      setErrors({
-        ...errors,
-        price: "Invalid price value",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        price: "",
-      });
-    }
+    setErrors((prev) => ({
+      ...prev,
+      price:
+        !InventoryInputValidation.checkPrice(value) || Number(value) <= 0
+          ? "Invalid price value."
+          : "",
+      cost_price:
+        value !== "" &&
+        details.cost_price !== "" &&
+        Number(details.cost_price) >= Number(value)
+          ? "Cost price cannnot be equal/higher than the selling price"
+          : "",
+    }));
   }
 
   //This function checks the validation of the product's cost price
@@ -187,10 +193,10 @@ function useProductDetails(initialDetails = null) {
         ...errors,
         cost_price: "Invalid cost price value",
       });
-    } else if (Number(details.price) < Number(value)) {
+    } else if (details.price !== "" && Number(details.price) <= Number(value)) {
       setErrors({
         ...errors,
-        cost_price: "Cost price cannot be higher than the selling price ",
+        cost_price: "Cost price cannot be equal/higher than the selling price ",
       });
     } else {
       setErrors({
@@ -262,29 +268,6 @@ function useProductDetails(initialDetails = null) {
     }
   }
 
-  //This function checks the validation of the product's min_sales value
-  function handleProductMinSalesChange(value) {
-    setDetails({
-      ...details,
-      min_sales: value,
-    });
-    if (!InventoryInputValidation.onlyNumbers(value) || value <= 0) {
-      setErrors({
-        ...errors,
-        min_sales: "Invalid min sales value",
-      });
-    } else if (Number(details.quantity) < Number(value)) {
-      setErrors({
-        ...errors,
-        min_sales: "Minimum sales cannot be bigger than product's quantity.",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        min_sales: "",
-      });
-    }
-  }
 
   //This function checks the validation of the product's description
   function handleProductDescriptionChange(value) {
@@ -310,16 +293,15 @@ function useProductDetails(initialDetails = null) {
     setDetails((prev) => ({
       ...prev,
       restock_required: value,
+      min_stock: value ? prev.min_stock : "",
     }));
+    if (!value)
+      setErrors((prev) => ({
+        ...prev,
+        min_stock: "",
+      }));
   }
 
-  //This function sets the chosen check date
-  function handleSalesCheckDateChange(value) {
-    setDetails({
-      ...details,
-      sales_check_date: value,
-    });
-  }
 
   //This function set the product's color/s
   function handleColorsChange(value) {
@@ -347,23 +329,21 @@ function useProductDetails(initialDetails = null) {
   }
 
   //This function check all the inputs, only if all the values are valid returns true, else, false
-  function checkInputDetailsValidation(hasTypes = false) {
+  function checkInputDetailsValidation() {
     const noErrors = Object.values(errors).every((error) => error === "");
     const noEmptyInputs =
       details.name !== "" &&
       details.product_id !== "" &&
       details.category !== "None" &&
-      (!hasTypes || (details.type !== "" && details.type!= "None")) &&
+     details.type!==""&&
       details.size !== ProductSize.NONE &&
       details.country_origin !== "None" &&
       details.colors.length > 0 &&
       details.price !== "" &&
       details.cost_price !== "" &&
       details.quantity !== "" &&
-      details.min_stock !== "" &&
+      (!details.restock_required || details.min_stock !== "") &&
       details.discount !== "" &&
-      details.min_sales !== "" &&
-      details.sales_check_date !== "" &&
       details.description !== "";
 
     return noErrors && noEmptyInputs;
@@ -380,14 +360,12 @@ function useProductDetails(initialDetails = null) {
     handleProductDescriptionChange,
     handleProductDiscountChange,
     handleProductIdChange,
-    handleProductMinSalesChange,
     handleProductMinStockChange,
     handleProductNameChange,
     handleProductPriceChange,
     handleProductQuantityChange,
     handleProductSizeChange,
     handleRestockRequiredChange,
-    handleSalesCheckDateChange,
     checkInputDetailsValidation,
   };
 }

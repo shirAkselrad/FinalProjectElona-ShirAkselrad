@@ -26,9 +26,15 @@
     
 }
 
-
 .removed td:not(:last-child) {
   color: #aaa;
   text-decoration: line-through;
   text-decoration-thickness: 1px;
 }
+
+th:nth-child(12),
+td:nth-child(12) {
+  text-align: center;
+}
+
+

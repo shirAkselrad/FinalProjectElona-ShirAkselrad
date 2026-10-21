@@ -40,6 +40,7 @@ function InventoryTable({ inventory, onRemove, onSave, onSaveImgs }) {
             <th>Product ID</th>
             <th>Name</th>
             <th>Category</th>
+            <th>Category Type</th>
             <th>Color/s</th>
             <th>Size</th>
             <th>Price</th>

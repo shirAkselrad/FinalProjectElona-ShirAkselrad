@@ -1,4 +1,4 @@
-import styles from "../AddProductPopup/addProductPopup.module.css";
+
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import InputField from "../../../General/InputField/InputField.jsx";
 import InputLabel from "../../../General/InputLabel/InputLabel.jsx";

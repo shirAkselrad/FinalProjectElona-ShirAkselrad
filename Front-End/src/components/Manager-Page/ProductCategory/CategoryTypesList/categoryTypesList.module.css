@@ -1,0 +1,86 @@
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.addBtn {
+  width: fit-content;
+  height: 38px;
+  flex: 0 0 auto;
+  padding: 0 14px;
+
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+.label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #1c120c;
+}
+
+.types {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.typeItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.typeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.typeTitle {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.row > * {
+  min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+.saveBtn {
+  width: 150px;
+  height: 45px;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+.saveBtn:disabled {
+  background-color: #d8d0ca;
+  color: #ffffff;
+  border: none;
+  cursor: not-allowed;
+}

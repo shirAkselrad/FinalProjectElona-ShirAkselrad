@@ -3,7 +3,7 @@ import styles from "./addCategoryPopup.module.css";
 import Remove from "../../../General/Remove/Remove";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn";
 import InputField from "../../../General/InputField/InputField";
-import DynamicInputsList from "../../../General/DynamicInputsList/DynamicInputsList";
+import CategoryTypesList from "../CategoryTypesList/CategoryTypesList";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup";
 import { checkCategoryValidation } from "./categoryValidation";
 import { onlyFirstLetterCapital } from "../../../../utils/inputValidation";
@@ -15,19 +15,26 @@ function AddCategoryPopup({ onClose }) {
     type: "",
   });
   const [name, setName] = useState("");
-  const [types, setTypes] = useState([""]);
+  const [types, setTypes] = useState([
+    {
+      name: "",
+      min_sales: "",
+      sales_check_days: "",
+    },
+  ]);
   const [nameTouched, setNamedTouched] = useState(false);
   const isFormValid = checkCategoryValidation(name, types);
 
   async function handleSave() {
     if (!isFormValid) return;
-const categoryData = {
-  name: onlyFirstLetterCapital(name.trim()),
-  types: types
-    .map((type) => type.trim())
-    .filter((type) => type !== "")
-    .map((type) => onlyFirstLetterCapital(type)),
-};
+    const categoryData = {
+      name: onlyFirstLetterCapital(name.trim()),
+      types: types.map((type) => ({
+        name: onlyFirstLetterCapital(type.name.trim()),
+        min_sales: Number(type.min_sales),
+        sales_check_days: Number(type.sales_check_days),
+      })),
+    };
     try {
       const response = await fetch("/api/manager/addCategory", {
         method: "POST",
@@ -88,14 +95,7 @@ const categoryData = {
             }
           />
 
-          <DynamicInputsList
-            values={types}
-            onChange={setTypes}
-            label="Types"
-            placeholder="Enter type"
-            addBtnText="+ Add Type"
-            maxInputs={15}
-          />
+          <CategoryTypesList types={types} onChange={setTypes} maxTypes={15} />
         </div>
 
         <div className={styles.footer}>

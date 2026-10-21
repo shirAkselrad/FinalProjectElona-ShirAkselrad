@@ -61,13 +61,14 @@ function InventoryRow({ inv, onEdit, onRemove, onImages }) {
       <td>{inv.product_id}</td>
       <td>{inv.name}</td>
       <td>{inv.category}</td>
+      <td>{inv.type}</td>
       <td>{inv.colors}</td>
       <td>{inv.size}</td>
       <td>{inv.price}₪</td>
       <td>{inv.cost_price}₪</td>
       <td>{inv.discount}%</td>
       <td>{inv.quantity}</td>
-      <td>{inv.min_stock}</td>
+      <td>{inv.min_stock ?? "-"}</td>
       <td>{inv.restock_required ? "Yes" : "No"}</td>
       <td>
         <div className={styles.actions}>

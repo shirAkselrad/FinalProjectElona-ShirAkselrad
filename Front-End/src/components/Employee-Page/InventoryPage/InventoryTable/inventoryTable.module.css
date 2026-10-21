@@ -9,6 +9,8 @@
   border-collapse: collapse;
   border: 1px solid #ded3ca;
   background-color: #fffdfb;
+   width: 100%;
+  table-layout: auto;
 }
 
 .table th,
@@ -16,6 +18,11 @@
   padding: 14px 18px;
   text-align: left;
   vertical-align: middle;
+  white-space: nowrap;
+}
+
+th,
+td {
   white-space: nowrap;
 }
 
@@ -106,4 +113,7 @@
 
 .actionsCol {
   width: 180px;
+}
+.table th:last-child {
+  text-align: center;
 }

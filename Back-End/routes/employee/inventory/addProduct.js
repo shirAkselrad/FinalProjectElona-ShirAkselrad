@@ -47,11 +47,32 @@ const checkProductId = (req, res, next) => {
   });
 };
 
+//this middleware gets all the sales settings of the specific product
+const getProductTypeSettings = (req, res, next) => {
+  const { category, type } = req.body.product;
+  const query = `select min_sales, sales_check_days from category_types where name=? and category_id=(select category_id from categories where name=?)`;
+  db.query(query, [type, category], (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get product type settings",
+      });
+    if (results.length === 0)
+      return res.status(400).json({
+        success: false,
+        message: "Product type not found",
+      });
+    req.productTypeSettings = results[0];
+    next();
+  });
+};
+
 const createProduct = (req, res, next) => {
   const {
     product_id,
     name,
     category,
+    type,
     colors,
     country_origin,
     size,
@@ -62,12 +83,12 @@ const createProduct = (req, res, next) => {
     quantity,
     min_stock,
     restock_required,
-    sales_check_date,
-    min_sales,
   } = req.body.product;
 
+  const { min_sales, sales_check_days } = req.productTypeSettings;
+  const productMinSales = Math.min(min_sales, Number(quantity));
   const query =
-    "insert into inventory (product_id, name, category, colors, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', NOW(), ?, ?, ?)";
+    "insert into inventory (product_id, name, category, type, colors, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', NOW(), ?, DATE_ADD(CURDATE(), INTERVAL ? DAY), ?)";
 
   db.query(
     query,
@@ -75,6 +96,7 @@ const createProduct = (req, res, next) => {
       product_id,
       name,
       category,
+      type,
       colors.join(", "),
       country_origin,
       size,
@@ -83,10 +105,10 @@ const createProduct = (req, res, next) => {
       cost_price,
       discount,
       quantity,
-      min_stock,
+      restock_required ? min_stock : null,
       restock_required,
-      sales_check_date,
-      min_sales,
+      sales_check_days,
+      productMinSales,
     ],
     (err, results) => {
       if (err) {
@@ -174,6 +196,7 @@ router.post(
   upload.array("uploading-files"),
   parseProductData,
   checkProductId,
+  getProductTypeSettings,
   matchFilesWithData,
   createProduct,
   addFiles,

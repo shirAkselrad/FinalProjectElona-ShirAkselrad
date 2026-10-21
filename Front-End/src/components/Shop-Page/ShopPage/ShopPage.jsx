@@ -8,6 +8,7 @@ import { useCart } from "../../../context/CartContext.jsx";
 import ProductPopup from "../ProductInfoPopup/ProductPopup/ProductPopup.jsx";
 function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState("ALL");
+  const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [frontImgs, setFrontImgs] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -19,6 +20,21 @@ function ShopPage() {
     type: "",
     autoClose: false,
   });
+
+  //this function gets all the categories from BE
+  async function getCategories() {
+    try {
+      const response = await fetch("/api/shop/getCategories", {
+        method: "GET",
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setCategories(data.categories);
+    } catch (error) {
+      console.error("Couldn't get categories: ", error);
+    }
+  }
 
   //getting all the products from back end to front-end to be presented to the user
   async function getProducts(category) {
@@ -32,6 +48,7 @@ function ShopPage() {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log("Products:", data.products);
       if (!response.ok || !data.success) {
         setPopup({
           show: true,
@@ -66,6 +83,7 @@ function ShopPage() {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log("Front images:", data.imgs);
       setFrontImgs(data.imgs);
     } catch (error) {
       console.log("Error getting front imgs, error: ", error);
@@ -147,6 +165,7 @@ function ShopPage() {
 
   useEffect(() => {
     getFrontImgs();
+    getCategories();
   }, []);
 
   useEffect(() => {
@@ -185,16 +204,19 @@ function ShopPage() {
         <SearchBar />
 
         <div className={styles.categories}>
-          {["ALL", "BROOCHES", "PENDANTS", "HANDBAGS", "WATCHES"].map(
-            (category) => (
-              <CategoryBtn
-                key={category}
-                text={category}
-                active={selectedCategory === category}
-                onClick={() => setSelectedCategory(category)}
-              />
-            ),
-          )}
+          <CategoryBtn
+            text="ALL"
+            active={selectedCategory === "ALL"}
+            onClick={() => setSelectedCategory("ALL")}
+          />
+          {categories.map((category) => (
+            <CategoryBtn
+              key={category.category_id}
+              text={category.name.toUpperCase()}
+              active={selectedCategory === category.name}
+              onClick={() => setSelectedCategory(category.name)}
+            />
+          ))}
         </div>
       </div>
 

@@ -29,6 +29,9 @@
 
   overflow-y: auto;
   overflow-x: hidden;
+   border: 1px solid #c4aa96;
+  outline: 1px solid #c4aa96;
+  outline-offset: -7px;
 }
 
 .closeBtn {

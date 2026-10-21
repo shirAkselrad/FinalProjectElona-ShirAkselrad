@@ -11,6 +11,7 @@ function InputField({
   step,
   value,
   disabled = false,
+  readOnly = false,
 }) {
   return (
     <div className={styles.field}>
@@ -21,6 +22,7 @@ function InputField({
         onChange={onChange}
         onBlur={onBlur}
         disabled={disabled}
+        readOnly={readOnly}
         className={`${styles.input} ${error ? styles.inputError : ""}`}
         type={type}
         placeholder={placeholder}

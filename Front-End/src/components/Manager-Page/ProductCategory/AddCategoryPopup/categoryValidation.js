@@ -6,8 +6,18 @@ export function checkCategoryValidation(name, types) {
   const validName = name.trim() != "" && validText.test(name);
 
   //checking types which are not empty
-  const validTypes = types.every(
-    (type) => type.trim() === "" || validText.test(type),
-  );
+  const validTypes =
+    types.length > 0 &&
+    types.every(
+      (type) =>
+        type.name.trim() !== "" &&
+        validText.test(type.name) &&
+        type.min_sales!==""&&
+        Number.isInteger(Number(type.min_sales)) &&
+        Number(type.min_sales) > 0 &&
+        type.sales_check_days !== "" &&
+        Number.isInteger(Number(type.sales_check_days)) &&
+        Number(type.sales_check_days) > 0,
+    );
   return validName && validTypes;
 }

@@ -4,7 +4,6 @@ import InputLabel from "../../../../General/InputLabel/InputLabel.jsx";
 import GeneralBtn from "../../../../General/GeneralBtn/GeneralBtn.jsx";
 import CheckBoxField from "../../../../General/CheckBoxField/CheckBoxField.jsx";
 import GeneralSelection from "../../../../General/GeneralSelection/GeneralSelection.jsx";
-import DateInput from "../../../../General/DateInput/DateInput.jsx";
 import TextAreaField from "../../../../General/TextAreaField/TextAreaField.jsx";
 import ColorsCheckBoxList from "../../../../General/Colors/ColorsCheckBoxList/ColorsCheckBoxList.jsx";
 import { ProductSize } from "../../../../../Enums/products.js";
@@ -22,8 +21,10 @@ function AddProductDetails({ savedDetails, onNext }) {
         const response = await fetch("/api/employee/categories", {
           method: "GET",
         });
+
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
+
         const data = await response.json();
         console.log("Categories from DB:", data.categories);
         setCategories(data.categories);
@@ -31,6 +32,7 @@ function AddProductDetails({ savedDetails, onNext }) {
         console.error("Couldn't get categories: ", error);
       }
     }
+
     getCategories();
   }, []);
 
@@ -45,20 +47,41 @@ function AddProductDetails({ savedDetails, onNext }) {
     handleProductDescriptionChange,
     handleProductDiscountChange,
     handleProductIdChange,
-    handleProductMinSalesChange,
     handleProductMinStockChange,
     handleProductNameChange,
     handleProductPriceChange,
     handleProductQuantityChange,
     handleProductSizeChange,
     handleRestockRequiredChange,
-    handleSalesCheckDateChange,
     checkInputDetailsValidation,
   } = useProductDetails(savedDetails);
 
   const selectedCategory = categories.find(
     (category) => category.name === details.category,
   );
+
+  const selectedType = selectedCategory?.types.find(
+    (type) => type.name === details.type,
+  );
+
+  const minSales = selectedType
+    ? details.quantity === ""
+      ? selectedType.min_sales
+      : Math.min(selectedType.min_sales, Number(details.quantity))
+    : "";
+
+  const salesCheckDate = selectedType
+    ? (() => {
+        const date = new Date();
+        date.setDate(date.getDate() + Number(selectedType.sales_check_days));
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${day}-${month}-${year}`;
+      })()
+    : "";
 
   return (
     <div className={styles.container}>
@@ -98,24 +121,24 @@ function AddProductDetails({ savedDetails, onNext }) {
                       ...categories.map((category) => category.name),
                     ]}
                     error={errors.category}
-                    onChange={(e) => {
-                      handleProductCategoryChange(e.target.value);
-                    }}
+                    onChange={(e) =>
+                      handleProductCategoryChange(e.target.value)
+                    }
                   />
 
-                  {selectedCategory?.types.length > 0 && (
-                    <div>
-                      <InputLabel text="Type" />
-                      <GeneralSelection
-                        value={details.type}
-                        options={["None", ...selectedCategory.types]}
-                        error={errors.type}
-                        onChange={(e) =>
-                          handleProductTypeChange(e.target.value)
-                        }
-                      />
-                    </div>
-                  )}
+                  <div>
+                    <InputLabel text="Type" />
+                    <GeneralSelection
+                      value={details.type}
+                      options={[
+                        "None",
+                        ...(selectedCategory?.types ?? []).map((t) => t.name),
+                      ]}
+                      error={errors.type}
+                      disabled={!selectedCategory}
+                      onChange={(e) => handleProductTypeChange(e.target.value)}
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -124,9 +147,7 @@ function AddProductDetails({ savedDetails, onNext }) {
                     value={details.country_origin}
                     options={countries}
                     error={errors.country_origin}
-                    onChange={(e) => {
-                      handleProductCountryChange(e.target.value);
-                    }}
+                    onChange={(e) => handleProductCountryChange(e.target.value)}
                   />
                 </div>
               </div>
@@ -143,12 +164,8 @@ function AddProductDetails({ savedDetails, onNext }) {
                   type="number"
                   step="0.01"
                   error={errors.cost_price}
-                  onChange={(e) => {
-                    handleProductCostPriceChange(e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    handleProductCostPriceChange(e.target.value);
-                  }}
+                  onChange={(e) => handleProductCostPriceChange(e.target.value)}
+                  onBlur={(e) => handleProductCostPriceChange(e.target.value)}
                 />
 
                 <InputField
@@ -158,12 +175,8 @@ function AddProductDetails({ savedDetails, onNext }) {
                   type="number"
                   step="0.01"
                   error={errors.price}
-                  onChange={(e) => {
-                    handleProductPriceChange(e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    handleProductPriceChange(e.target.value);
-                  }}
+                  onChange={(e) => handleProductPriceChange(e.target.value)}
+                  onBlur={(e) => handleProductPriceChange(e.target.value)}
                 />
 
                 <InputField
@@ -202,9 +215,7 @@ function AddProductDetails({ savedDetails, onNext }) {
                     value={details.size}
                     options={Object.values(ProductSize)}
                     error={errors.size}
-                    onChange={(e) => {
-                      handleProductSizeChange(e.target.value);
-                    }}
+                    onChange={(e) => handleProductSizeChange(e.target.value)}
                   />
                 </div>
 
@@ -235,62 +246,83 @@ function AddProductDetails({ savedDetails, onNext }) {
           </div>
         </div>
 
-        <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>
-            04 — Inventory & Sales Monitoring
-          </h3>
+        {/* Sales monitoring and restock settings */}
+        <div className={styles.monitoringSections}>
+          <section className={`${styles.section} ${styles.salesSection}`}>
+            <h3 className={styles.sectionTitle}>04 — Sales Monitoring</h3>
 
-          <div className={styles.inventoryGrid}>
-            <InputField
-              label="Minimum Sales"
-              placeholder="0"
-              type="number"
-              value={details.min_sales}
-              error={errors.min_sales}
-              onChange={(e) => handleProductMinSalesChange(e.target.value)}
-              onBlur={(e) => handleProductMinSalesChange(e.target.value)}
-            />
+            <p className={styles.salesDescription}>
+              Sales targets are automatically calculated based on the selected
+              product type.
+            </p>
 
-            <div className={styles.dateField}>
-              <DateInput
+            <div className={styles.sectionFields}>
+              <InputField
+                label="Minimum Sales"
+                placeholder="Automatically calculated"
+                type="text"
+                value={minSales}
+                disabled
+              />
+
+              <InputField
                 label="Sales Check Date"
-                value={details.sales_check_date}
-                onChange={(e) => handleSalesCheckDateChange(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
-                error={errors.sales_check_date}
+                placeholder="Automatically calculated"
+                type="text"
+                value={salesCheckDate}
+                disabled
               />
             </div>
-            <div className={styles.checkboxField}>
-              <InputLabel text="Restock Reminder" />
-              <CheckBoxField
-                text="Required"
-                checked={details.restock_required}
-                onChange={(e) => handleRestockRequiredChange(e.target.checked)}
-              />
-            </div>
+          </section>
 
-            <InputField
-              label="Minimum Stock"
-              value={details.min_stock}
-              placeholder="0"
-              type="number"
-              error={errors.min_stock}
-              onChange={(e) => handleProductMinStockChange(e.target.value)}
-              onBlur={(e) => handleProductMinStockChange(e.target.value)}
-            />
-          </div>
-        </section>
+          <section className={styles.section}>
+            <h3 className={styles.sectionTitle}>05 — Restock Settings</h3>
+
+            <div className={styles.restockSection}>
+              <div className={styles.checkboxField}>
+                <InputLabel text="Restock Reminder" />
+                <CheckBoxField
+                  text="Required"
+                  checked={details.restock_required}
+                  onChange={(e) =>
+                    handleRestockRequiredChange(e.target.checked)
+                  }
+                />
+              </div>
+
+              <div
+                className={`${styles.minStockField} ${
+                  !details.restock_required ? styles.hiddenField : ""
+                }`}
+              >
+                <InputField
+                  label="Minimum Stock"
+                  value={details.min_stock}
+                  placeholder="0"
+                  type="number"
+                  error={
+                    details.restock_required ? errors.min_stock : undefined
+                  }
+                  onChange={(e) => handleProductMinStockChange(e.target.value)}
+                  onBlur={(e) => handleProductMinStockChange(e.target.value)}
+                />
+              </div>
+            </div>
+          </section>
+        </div>
 
         <GeneralBtn
           text="NEXT"
           type="button"
           className={styles.addBtn}
-          disabled={
-            !checkInputDetailsValidation(
-              (selectedCategory?.types.length ?? 0) > 0,
-            )
+          disabled={!checkInputDetailsValidation()}
+          onClick={() =>
+            onNext({
+              ...details,
+              min_sales: minSales,
+              sales_check_date: salesCheckDate,
+            })
           }
-          onClick={() => onNext(details)}
         />
       </form>
     </div>
