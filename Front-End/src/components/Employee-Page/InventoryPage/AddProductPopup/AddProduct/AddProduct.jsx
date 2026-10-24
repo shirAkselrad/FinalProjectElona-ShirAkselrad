@@ -4,7 +4,7 @@ import styles from "./addProduct.module.css";
 import AddProductFrontImg from "../AddProductFrontImg/AddProductFrontImg.jsx";
 import AddProductImages from "../AddProductImages/AddProductImages.jsx";
 import Remove from "../../../../General/Remove/Remove.jsx";
-function AddProduct({ onClose, onProductAdded }) {
+function AddProduct({ onClose, onProductAdded, isManager = false }) {
   //this state variable save the "step" of the addProductPopup component (details/images)
   const [step, setStep] = useState(1);
   //this state variable will save the product details (starts null)
@@ -55,6 +55,7 @@ function AddProduct({ onClose, onProductAdded }) {
           <AddProductDetails
             savedDetails={productDetails}
             onNext={handleDetailsNext}
+            isManager={isManager}
           />
         )}
 
@@ -77,6 +78,7 @@ function AddProduct({ onClose, onProductAdded }) {
             onBack={handleBack}
             onClose={onClose}
             onProductAdded={onProductAdded}
+            isManager={isManager}
           />
         )}
       </div>

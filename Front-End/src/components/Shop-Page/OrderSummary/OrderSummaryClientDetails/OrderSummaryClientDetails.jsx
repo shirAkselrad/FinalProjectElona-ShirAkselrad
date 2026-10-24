@@ -5,7 +5,13 @@ import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn";
 import useClientForm from "../../../Employee-Page/ClientsPage/EditClientPopup/useClientForm";
 import * as Validation from "../../../../utils/inputValidation.js";
 
-function OrderSummaryClientDetails({ client, onSave, onContinue, onBack }) {
+function OrderSummaryClientDetails({
+  client,
+  onSave,
+  onContinue,
+  onBack,
+  mode = "checkout",
+}) {
   const {
     client: clientData,
     errors,
@@ -16,7 +22,11 @@ function OrderSummaryClientDetails({ client, onSave, onContinue, onBack }) {
 
   async function updateClient(clientData) {
     try {
-      const response = await fetch("/api/client/updateDetails", {
+      const url =
+        mode === "account"
+          ? "/api/editMyAccount/me"
+          : "/api/client/UpdateDetails";
+      const response = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(clientData),
@@ -26,7 +36,7 @@ function OrderSummaryClientDetails({ client, onSave, onContinue, onBack }) {
         throw new Error(`HTTP error! status: ${response.status}`);
       return await response.json();
     } catch (error) {
-      console.error("Error updating client details: ", error);
+      console.error("Error updating user details: ", error);
       return null;
     }
   }
@@ -45,14 +55,16 @@ function OrderSummaryClientDetails({ client, onSave, onContinue, onBack }) {
 
     const data = await updateClient(updatedClient);
     if (data?.success) {
-      onSave(updatedClient);
-      onContinue();
+      onSave?.(updatedClient);
+      if (mode === "checkout") onContinue?.();
     }
   }
 
   return (
     <section className={styles.container}>
-      <h2 className={styles.title}>CLIENT DETAILS</h2>
+      <h2 className={styles.title}>
+        {mode === "checkout" ? "CLIENT DETAILS" : "MY ACCOUNT"}
+      </h2>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.fields}>
@@ -124,17 +136,25 @@ function OrderSummaryClientDetails({ client, onSave, onContinue, onBack }) {
         </div>
 
         <div className={styles.save}>
-          <div className={styles.actions}>
-            <GeneralBtn
-              type="button"
-              text="BACK TO SHOP"
-              onClick={onBack}
-              className={styles.backButton}
-            />
+          <div
+            className={`${styles.actions}${mode === "account" ? styles.singleAction : ""}`}
+          >
+            {mode === "checkout" && (
+              <GeneralBtn
+                type="button"
+                text="BACK TO SHOP"
+                onClick={onBack}
+                className={styles.backButton}
+              />
+            )}
 
             <GeneralBtn
               type="submit"
-              text="SAVE AND CONTINUE TO PAYMENT"
+              text={
+                mode === "checkout"
+                  ? "SAVE AND CONTINUE TO PAYMENT"
+                  : "SAVE CHANGES"
+              }
               disabled={!isFormValid}
               className={styles.paymentButton}
             />

@@ -117,3 +117,14 @@ td {
 .table th:last-child {
   text-align: center;
 }
+.stockSummary {
+  display: flex;
+  gap: 24px;
+  padding: 14px 18px;
+  background-color: #fffdfb;
+  border: 1px solid #ded3ca;
+  border-bottom: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6f625b;
+}

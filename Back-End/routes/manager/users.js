@@ -69,4 +69,44 @@ router.post("/updateUser", (req, res) => {
     });
   });
 });
+
+//get all the cities without duplicates
+router.get("/citiesNoRepeat", (rfeq, res) => {
+  const query =
+    "select distinct city from users where role in('Client','Employee') order by city";
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get cities",
+      });
+    return res.status(200).json({
+      success: true,
+      cities: results.map((row) => row.city),
+    });
+  });
+});
+
+//change user status
+router.post("/changeUserStatus", (req, res) => {
+  const { email, status } = req.body;
+  const query =
+    "update users set status=? where email=? and role in('Client', 'Employee')";
+  db.query(query, [status, email], (err, results) => {
+    if (err)
+      return req.status(500).json({
+        success: false,
+        message: "Couldn't update user status",
+      });
+    if (results.affectedRows === 0)
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    return res.status(200).json({
+      success: true,
+      message: "User status updated successfully",
+    });
+  });
+});
 module.exports = router;

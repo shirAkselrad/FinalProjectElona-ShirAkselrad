@@ -9,15 +9,16 @@ import { useOutletContext } from "react-router-dom";
  *
  * @returns Orders
  */
-function Orders({isManager=false}) {
-  const{
+function Orders({ isManager = false }) {
+  const {
     orders: employeeOrders,
-    setOrders:setEmployeeOrders,
+    setOrders: setEmployeeOrders,
     managerOrders,
-    setManagerOrders
-  }=useOutletContext();
-  const orders=isManager? managerOrders : employeeOrders;
-  const setOrders=isManager? setManagerOrders: setEmployeeOrders; 
+    setManagerOrders,
+  } = useOutletContext();
+  const context = useOutletContext();
+  const orders = isManager ? context.managerOrders : context.orders;
+  const setOrders = isManager ? context.setManagerOrders : context.setOrders;
   //the state variable is resposible to the search filter in the orders table
   const [searchValue, setSearchValue] = useState("");
 
@@ -35,7 +36,7 @@ function Orders({isManager=false}) {
   //This function save all the changes while clicking on the SAVE button
   const onSave = (editedOrder) => {
     const updatedOrders = orders.map((order) =>
-      order.order_id === editedOrder.order_id? editedOrder : order,
+      order.order_id === editedOrder.order_id ? editedOrder : order,
     );
     setOrders(updatedOrders);
   };
@@ -59,6 +60,7 @@ function Orders({isManager=false}) {
           onSave={onSave}
           orders={filterOrders}
           onStatusChange={onStatusChange}
+          isManager={isManager}
         />
       </div>
     </div>

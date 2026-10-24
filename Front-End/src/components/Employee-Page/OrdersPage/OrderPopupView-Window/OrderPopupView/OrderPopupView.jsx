@@ -12,18 +12,17 @@ import { useEffect, useState } from "react";
  * @param {onEdit} onEdit the event which accurs when the user click on the edit btn
  * @returns OrderPopupView
  */
-function OrderPopupView({ order, onClose, onEdit }) {
+function OrderPopupView({ order, onClose, onEdit, isManager = false }) {
   const [products, setProducts] = useState([]);
   useEffect(() => {
     const getOrderProducts = async () => {
       try {
-        const response = await fetch(
-          `/api/employee/orders/${order.order_id}/items`,
-          {
-            method: "GET",
-            credentials: "include",
-          },
-        );
+        const url = isManager
+          ? `/api/manager/orders/${order.order_id}/items`
+          : `/api/employee/orders/${order.order_id}/items`;
+        const response = await fetch(url, {
+          method: "GET",
+        });
         if (!response.ok) throw new Error("Couldn't get order's products");
         const data = await response.json();
         console.log("Order ID:", order.order_id);
@@ -35,7 +34,7 @@ function OrderPopupView({ order, onClose, onEdit }) {
       }
     };
     getOrderProducts();
-  }, [order.order_id]);
+  }, [order.order_id, isManager]);
   return (
     <div className={styles.overlay}>
       <div className={styles.orderPopup}>

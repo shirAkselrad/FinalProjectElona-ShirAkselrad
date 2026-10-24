@@ -26,7 +26,10 @@ function ClientRow({ client, onEdit, onRemove, isManager = false }) {
   //The function send the new status to backend
   async function updateClientStatus(clientData) {
     try {
-      const response = await fetch("/api/employee/changeClientStatus", {
+      const url = isManager
+        ? "/api/manager/changeClientStatus"
+        : "/api/employee/changeClientStatus";
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(clientData),

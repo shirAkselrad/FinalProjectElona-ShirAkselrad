@@ -5,7 +5,7 @@ import InventoryTable from "../InventoryTable/InventoryTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
-import AddCategoryPopup from "../../../Manager-Page/ProductCategory/AddCategoryPopup/AddCategoryPopup.jsx"
+import AddCategoryPopup from "../../../Manager-Page/ProductCategory/AddCategoryPopup/AddCategoryPopup.jsx";
 import { useState, useEffect } from "react";
 
 /**
@@ -22,13 +22,18 @@ function Inventory({ isManager = false }) {
   });
 
   async function getInventory() {
-    const response = await fetch("/api/employee/inventory");
+    const url = isManager
+      ? "/api/manager/inventory"
+      : "/api/employee/inventory";
+    const response = await fetch(url, {
+      method: "GET",
+    });
     const data = await response.json();
     if (data.success) setInventory(data.inventory);
   }
   useEffect(() => {
     getInventory();
-  }, []);
+  }, [isManager]);
 
   const [showPopupAdd, setShowPopupAdd] = useState(false);
   const [showPopupCategory, setShowPopupCategory] = useState(false);
@@ -68,18 +73,18 @@ function Inventory({ isManager = false }) {
   //This function update the product images after pressing the save btn at the images popup
   async function onSaveImgs(product_id, imgsData) {
     try {
-      const response = await fetch(
-        `/api/employee/deleteProductImgs/${product_id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            imgsData: imgsData,
-          }),
+      const url = isManager
+        ? `/api/manager/deleteProductImgs/${product_id}`
+        : `/api/employee/deleteProductImgs/${product_id}`;
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({
+          imgsData: imgsData,
+        }),
+      });
       const data = await response.json();
       if (data?.success) {
         //displaying a popup according to the success status
@@ -163,11 +168,13 @@ function Inventory({ isManager = false }) {
         onSaveImgs={onSaveImgs}
         onRemove={onRemove}
         inventory={filterInventory}
+        isManager={isManager}
       />
       {showPopupAdd && (
         <AddProduct
           onClose={handleClosePopupAdd}
           onProductAdded={getInventory}
+          isManager={isManager}
         />
       )}
 

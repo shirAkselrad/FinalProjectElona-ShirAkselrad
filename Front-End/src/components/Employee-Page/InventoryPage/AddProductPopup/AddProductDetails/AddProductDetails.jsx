@@ -12,13 +12,16 @@ import { colors } from "../../../../../data/colors.js";
 import { useEffect, useState } from "react";
 import useProductDetails from "./useProductDetails.js";
 
-function AddProductDetails({ savedDetails, onNext }) {
+function AddProductDetails({ savedDetails, onNext, isManager=false }) {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     async function getCategories() {
       try {
-        const response = await fetch("/api/employee/categories", {
+        const url = isManager
+          ? "/api/manager/categories"
+          : "/api/employee/categories";
+        const response = await fetch(url, {
           method: "GET",
         });
 
@@ -34,7 +37,7 @@ function AddProductDetails({ savedDetails, onNext }) {
     }
 
     getCategories();
-  }, []);
+  }, [isManager]);
 
   const {
     details,
@@ -181,10 +184,12 @@ function AddProductDetails({ savedDetails, onNext }) {
 
                 <InputField
                   label="Discount (Precents)"
-                  value={details.discount}
+                  value={details.discount??0}
                   placeholder="0"
                   type="number"
+                  inputMode="numeric"
                   error={errors.discount}
+                  onFocus={(e)=>e.target.select()}
                   onChange={(e) => handleProductDiscountChange(e.target.value)}
                   onBlur={(e) => handleProductDiscountChange(e.target.value)}
                 />

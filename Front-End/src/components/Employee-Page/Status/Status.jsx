@@ -7,9 +7,16 @@ import styles from "./status.module.css";
  * @param {status} status of the order
  * @returns Status
  */
-function Status({ status, order_id, onStatusChange, openStatusOrderId, setOpenStatusOrderId }) {
+function Status({
+  status,
+  order_id,
+  onStatusChange,
+  openStatusOrderId,
+  setOpenStatusOrderId,
+  isManager = false,
+}) {
   //the state variable which tells if the choosing options are open or closed, by default close
-  const isOpen=openStatusOrderId===order_id; 
+  const isOpen = openStatusOrderId === order_id;
 
   const [isUpdating, setIsUpdating] = useState(false);
   const [popup, setPopup] = useState({
@@ -28,14 +35,16 @@ function Status({ status, order_id, onStatusChange, openStatusOrderId, setOpenSt
   const availableOptions = statusOptions[status] || [];
 
   async function changeStatus(newStatus) {
-   setOpenStatusOrderId(null)
+    setOpenStatusOrderId(null);
     setIsUpdating(true);
 
     try {
-      const response = await fetch(`/api/employee/orders/${order_id}/status`, {
+      const url = isManager
+        ? `/api/manager/orders/${order_id}/status`
+        : `/api/employee/orders/${order_id}/status`;
+      const response = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ status: newStatus }),
       });
 
@@ -60,7 +69,8 @@ function Status({ status, order_id, onStatusChange, openStatusOrderId, setOpenSt
         className={`${styles.status} ${styles[status.toLowerCase()]}`}
         disabled={isUpdating}
         onClick={() => {
-          if (availableOptions.length > 0) setOpenStatusOrderId(isOpen? null: order_id);
+          if (availableOptions.length > 0)
+            setOpenStatusOrderId(isOpen ? null : order_id);
         }}
       >
         {status}

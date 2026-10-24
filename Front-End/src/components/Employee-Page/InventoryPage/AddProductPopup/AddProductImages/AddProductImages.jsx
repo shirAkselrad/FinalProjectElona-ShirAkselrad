@@ -12,6 +12,7 @@ function AddProductImages({
   onBack,
   onClose,
   onProductAdded,
+  isManager=false
 }) {
   const [popup, setPopup] = useState({
     show: false,
@@ -63,7 +64,10 @@ function AddProductImages({
     });
 
     try {
-      const response = await fetch("/api/employee/createProduct", {
+      const url = isManager
+        ? "/api/manager/createProduct"
+        : "/api/employee/createProduct";
+      const response = await fetch(url, {
         method: "POST",
         body: formData,
       });

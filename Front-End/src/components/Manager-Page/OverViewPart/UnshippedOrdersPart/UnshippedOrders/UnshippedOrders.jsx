@@ -3,7 +3,7 @@ import styles from "./unshippedOrders.module.css";
 import AlertsTitle from "../../AlertsTitle/AlertsTitle.jsx";
 import UnshippedOrdersTable from "../UnshippedOrdersTable/UnshippedOrdersTable.jsx";
 
-function UnshippedOrders({ orders, clients, dates, totals, items }) {
+function UnshippedOrders({ orders,onStatusChange, openStatusOrderId, setOpenStatusOrderId }) {
   return (
     <div className={styles.unshippedOrders}>
       <AlertsTitle text="UNSHIPPED ORDERS – AWAITING SHIPMENT" />
@@ -11,10 +11,9 @@ function UnshippedOrders({ orders, clients, dates, totals, items }) {
       <div className={styles.tableContainer}>
         <UnshippedOrdersTable
           orders={orders}
-          clients={clients}
-          dates={dates}
-          totals={totals}
-          items={items}
+          onStatusChange={onStatusChange}
+          openStatusOrderId={openStatusOrderId}
+          setOpenStatusOrderId={setOpenStatusOrderId}
         />
       </div>
     </div>

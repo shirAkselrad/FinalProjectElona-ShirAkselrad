@@ -316,7 +316,8 @@ const updateCartTotals = (req, res, next) => {
   update orders
   set total_items=?,
       total_price=?,
-      final_price=? 
+      final_price=?,
+      points_used=?
   where order_id=? and status='PROCESSING'
 `;
 
@@ -326,6 +327,7 @@ const updateCartTotals = (req, res, next) => {
       req.cartTotals.total_items,
       totalAfterPromotions,
       finalPrice,
+      pointsUsed,
       req.cartOrderId,
     ],
     (err, results) => {
@@ -571,27 +573,27 @@ const calculateOrderSummary = (req, res, next) => {
   const promotionsDiscount = originalTotal - totalAfterPromotions;
   const shipping = Number(req.cartTotals.shipping);
 
-  const pointUsed = Math.min(
+  const pointsUsed = Math.min(
     Math.max(0, req.clientPoints),
     totalAfterPromotions,
   );
 
-  const finalTotal = totalAfterPromotions - pointUsed + shipping;
+  const finalTotal = totalAfterPromotions - pointsUsed + shipping;
 
   req.orderSummary = {
     original_total: Number(originalTotal),
     promotions_discount: Number(promotionsDiscount),
     total_after_promotions: totalAfterPromotions,
     available_points: req.clientPoints,
-    points_used: pointUsed,
+    points_used: pointsUsed,
     shipping,
     final_total: Number(finalTotal),
   };
 
-  const query = `update orders set final_price=? where order_id=? and client_email=? and status='PROCESSING'`;
+  const query = `update orders set final_price=?, points_used=? where order_id=? and client_email=? and status='PROCESSING'`;
   db.query(
     query,
-    [finalTotal, req.cartOrderId, req.session.user.email],
+    [finalTotal,pointsUsed, req.cartOrderId, req.session.user.email],
     (err, results) => {
       if (err) {
         return res.status(500).json({

@@ -4,7 +4,7 @@ import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
 import Remove from "../../../General/Remove/Remove.jsx";
 import { useState, useEffect } from "react";
 
-function ProductImagesPopup({ product, onClose, onSave }) {
+function ProductImagesPopup({ product, onClose, onSave, isManager = false }) {
   const [images, setImages] = useState([]);
   const [unblockSave, setUnblockSave] = useState(false);
 
@@ -16,12 +16,12 @@ function ProductImagesPopup({ product, onClose, onSave }) {
 
   async function getProduct(product_id) {
     try {
-      const response = await fetch(
-        `/api/employee/getProductImages/${product_id}`,
-        {
-          method: "GET",
-        },
-      );
+      const url = isManager
+        ? `/api/manager/getProductImages/${product_id}`
+        : `/api/employee/getProductImages/${product_id}`;
+      const response = await fetch(url, {
+        method: "GET",
+      });
 
       const data = await response.json();
       if (data?.success) {
@@ -35,7 +35,7 @@ function ProductImagesPopup({ product, onClose, onSave }) {
 
   useEffect(() => {
     getProduct(product.product_id);
-  }, [product.product_id]);
+  }, [product.product_id, isManager]);
   return (
     <div className={styles.overlay}>
       <div className={styles.popup}>

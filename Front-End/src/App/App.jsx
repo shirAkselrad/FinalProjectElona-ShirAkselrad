@@ -16,6 +16,7 @@ import PaymentPage from "../components/Shop-Page/PaymentPage/PaymentPage.jsx";
 import PaymentSuccessPage from "../components/Shop-Page/PaymentSuccessPage/PaymentSuccessPage.jsx";
 import OrderReview from "../components/OrderReview-Page/OrderReview/OrderReview.jsx";
 import StoreOverview from "../components/Manager-Page/OverViewPart/StoreOverview/StoreOverview.jsx";
+import MyAccountPage from "../components/MyAccountPage/MyAccountPage.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
 import ProtectedRoute from "../routes/ProtectedRoute.jsx";
@@ -43,6 +44,14 @@ function App() {
             <Route path="inventory" element={<Inventory isManager={true} />} />
             <Route path="orders" element={<Orders isManager={true} />} />
           </Route>
+          <Route
+            path="myAccount"
+            element={
+              <ProtectedRoute allowedRoles={["Client", "Employee", "Manager"]}>
+                <MyAccountPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/orderSummary"
             element={
@@ -78,7 +87,7 @@ function App() {
           <Route
             path="/employeePage"
             element={
-              <ProtectedRoute allowedRoles={["Employee", "Manager"]}>
+              <ProtectedRoute allowedRoles={["Employee"]}>
                 <EmployeePage />
               </ProtectedRoute>
             }

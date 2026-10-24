@@ -13,16 +13,30 @@ function ProductCard({
   onImageClick,
   onViewDetails,
   onAddToCart,
+  previewMode = false,
 }) {
+  const isOutOfStock = (product.status =
+    "Active" && Number(product.quantity) <= 0);
   return (
     <div className={styles.productCard}>
-      <ProductImg
-        image={image}
-        name={product.name}
-        editable={editable}
-        //in case edit mode is false, if onViewDetails doesn't exist then no error will accure (nothing will happen)
-        onImageClick={editable ? onImageClick : () => onViewDetails?.(product)}
-      />
+      <div className={styles.imageContainer}>
+        <ProductImg
+          image={image}
+          name={product.name}
+          editable={editable}
+          //in case edit mode is false, if onViewDetails doesn't exist then no error will accure (nothing will happen)
+          onImageClick={
+            previewMode
+              ? () => {}
+              : editable
+                ? onImageClick
+                : () => onViewDetails?.(product)
+          }
+        />
+        {isOutOfStock && !editable && (
+          <span className={styles.outOfStock}>OUT OF STOCK</span>
+        )}
+      </div>
 
       <div className={styles.content}>
         <DescriptionProduct category={product.category} name={product.name} />
@@ -31,9 +45,9 @@ function ProductCard({
         <div className={styles.bottom}>
           <ProductPrice price={product.price} discount={product.discount} />
           <Plus
-            onClick={() =>
+            onClick={
               //1-the amount of products to add to the cart from the same product
-              onAddToCart?.(product, 1)
+              previewMode ? () => {} : () => onAddToCart?.(product, 1)
             }
             disabled={Number(product.quantity <= 0)}
           />

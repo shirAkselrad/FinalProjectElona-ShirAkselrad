@@ -12,7 +12,7 @@ import OrderPopupEdit from "../OrderPopupEdit-Window/OrderPopupEdit/OrderPopupEd
  * @param {orders} orders which shown to the user
  * @returns OrdersTable
  */
-function OrdersTable({ onSave, orders, onStatusChange }) {
+function OrdersTable({ onSave, orders, onStatusChange, isManager = false }) {
   //state variable which is the selectedOrder to have changes in, by default null
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [openStatusOrderId, setOpenStatusOrderId] = useState(null);
@@ -46,6 +46,7 @@ function OrdersTable({ onSave, orders, onStatusChange }) {
               onStatusChange={onStatusChange}
               openStatusOrderId={openStatusOrderId}
               setOpenStatusOrderId={setOpenStatusOrderId}
+              isManager={isManager}
             />
           ))}
         </tbody>
@@ -57,6 +58,7 @@ function OrdersTable({ onSave, orders, onStatusChange }) {
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onEdit={() => setEditOrder(true)}
+          isManager={isManager}
         />
       )}
 
@@ -70,6 +72,7 @@ function OrdersTable({ onSave, orders, onStatusChange }) {
             setEditOrder(false);
           }}
           onCancel={() => setEditOrder(false)}
+          isManager={isManager}
         />
       )}
     </div>

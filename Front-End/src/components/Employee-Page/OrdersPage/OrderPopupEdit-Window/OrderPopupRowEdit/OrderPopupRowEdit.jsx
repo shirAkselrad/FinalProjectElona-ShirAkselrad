@@ -14,7 +14,7 @@ function OrderPopupRowEdit({ product, products, setProducts }) {
   //The function update the current product which have been edited in the products array
 
   const updateProduct = (field, value) => {
-    const updatedProducts = product.map((item) =>
+    const updatedProducts = products.map((item) =>
       item.product_id === product.product_id
         ? { ...item, [field]: value }
         : item,
@@ -33,7 +33,11 @@ function OrderPopupRowEdit({ product, products, setProducts }) {
 
       <EmptyInput
         value={product.quantity}
-        onChange={(e) => updateProduct("quantity", e.target.value)}
+        onChange={(e) => {
+          updateProduct("quantity", e.target.value);
+          if (Number.isInteger(quantity) && quantity > 0)
+            updateProduct("quantity", quantity);
+        }}
       />
       <span>${Number(product.product_price).toFixed(2)}</span>
 

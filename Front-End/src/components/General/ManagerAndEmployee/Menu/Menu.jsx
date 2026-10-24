@@ -1,7 +1,7 @@
 import MenuLine from "../../MenuLine/MenuLine.jsx";
 import styles from "./menu.module.css";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 /**
  *
@@ -11,9 +11,7 @@ import { useNavigate } from "react-router-dom";
  */
 function Menu({ items }) {
   const navigate = useNavigate();
-
-  //which page will be active now, by default the first section in the item array
-  const [activeMenu, setActiveMenu] = useState(items[0].value);
+  const location = useLocation();
 
   return (
     <div className={styles.menu}>
@@ -34,9 +32,8 @@ function Menu({ items }) {
             key={item.value}
             text={item.text}
             icon={item.icon}
-            active={activeMenu === item.value}
+            active={location.pathname === item.path}
             onClick={() => {
-              setActiveMenu(item.value);
               navigate(item.path);
             }}
           />

@@ -1,22 +1,34 @@
 import styles from "./unshippedOrdersRow.module.css";
-
+import Status from "../../../../Employee-Page/Status/Status.jsx";
 import EditBtn from "../../../../General/EditBtn/EditBtn.jsx";
 
-function UnshippedOrdersRow({ order, client, date, total, items }) {
+function UnshippedOrdersRow({
+  order,
+  onStatusChange,
+  openStatusOrderId,
+  setOpenStatusOrderId,
+}) {
   return (
     <tr className={styles.row}>
-      <td className={styles.order}>{order}</td>
+      <td className={styles.order}>{order.order_id}</td>
 
-      <td>{client}</td>
+      <td>{`${order.first_name} ${order.last_name}`}</td>
 
-      <td>{date}</td>
+      <td>{new Date(order.created_at).toLocaleDateString("en-GB")}</td>
 
-      <td className={styles.total}>${total}</td>
+      <td className={styles.total}>{order.final_price}₪</td>
 
-      <td>{items}</td>
+      <td>{order.total_items}</td>
 
       <td className={styles.edit}>
-        <EditBtn />
+        <Status
+          status={order.status}
+          order_id={order.order_id}
+          onStatusChange={onStatusChange}
+          openStatusOrderId={openStatusOrderId}
+          setOpenStatusOrderId={setOpenStatusOrderId}
+          isManager={true}
+        />
       </td>
     </tr>
   );

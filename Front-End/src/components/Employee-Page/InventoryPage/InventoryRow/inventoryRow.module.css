@@ -1,3 +1,4 @@
+
 .row {
   background-color: #fffdfb;
 }
@@ -10,20 +11,15 @@
   color: #c28d67;
 }
 
-.outOfStock {
-  color: #c94f4f;
-  font-weight: 600;
-}
-
 .actions {
   display: flex;
   align-items: center;
   gap: 18px;
 }
 
+/* Inactive products */
 .removed {
   opacity: 0.45;
-    
 }
 
 .removed td:not(:last-child) {
@@ -37,4 +33,43 @@ td:nth-child(12) {
   text-align: center;
 }
 
+/* Low stock */
+.row.lowStock td {
+  background-color: #fff5dc;
+}
 
+.row.lowStock:hover td {
+  background-color: #ffedc2;
+}
+
+/* Out of stock */
+.row.outOfStock td {
+  background-color: #fce8e6;
+}
+
+.row.outOfStock:hover td {
+  background-color: #f9d8d4;
+}
+
+/* Quantity display */
+.quantityCell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Low stock label */
+.lowStockLabel {
+  color: #9a6700;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Out of stock label */
+.outOfStockLabel {
+  color: #b42318;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}

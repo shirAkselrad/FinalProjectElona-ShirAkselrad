@@ -2,7 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const usersRoutes = require("./manager/users");
-const categoriesRoutes=require("./manager/categories");
+const categoriesRoutes = require("./manager/categories");
+const ordersRoutes = require("./employee/orders");
+const inventoryRoutes = require("./employee/inventory/inventory");
+const addProductRoutes = require("./employee/inventory/addProduct");
+const editProductRoutes = require("./employee/inventory/editProduct");
 
 //this middleware check if the user is a manager
 const checkIfManager = (req, res, next) => {
@@ -21,6 +25,10 @@ const checkIfManager = (req, res, next) => {
 
 router.use("/", checkIfManager);
 router.use("/", usersRoutes);
-router.use("/", categoriesRoutes); 
+router.use("/", categoriesRoutes);
+router.use("/", ordersRoutes);
+router.use("/", inventoryRoutes);
+router.use("/", addProductRoutes);
+router.use("/", editProductRoutes);
 
 module.exports = router;

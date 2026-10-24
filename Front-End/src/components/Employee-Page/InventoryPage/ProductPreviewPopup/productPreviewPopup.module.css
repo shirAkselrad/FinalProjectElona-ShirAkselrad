@@ -1,0 +1,82 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popup {
+  position: relative;
+  width: 95%;
+  max-width: 1600px;
+  max-height: 95vh;
+  overflow-y: auto;
+  background-color: #f6f0e9;
+  border-radius: 10px;
+  padding: 35px;
+  box-sizing: border-box;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  z-index: 10;
+}
+
+.title {
+  text-align: center;
+  font-family: "Playfair Display", serif;
+  font-size: 25px;
+  color: #382116;
+  margin: 0 0 30px;
+}
+.content {
+  display: grid;
+  grid-template-columns: 350px minmax(0, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+
+.cardSection,
+.detailsSection {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+
+.cardSection h3,
+.detailsSection h3 {
+  font-family: "Libre Baskerville", serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #76503a;
+  letter-spacing: 1.5px;
+  text-align: center;
+  margin: 0;
+}
+
+
+
+.sectionFrame {
+  flex: 1;
+  min-width: 0;
+  background-color: #fbf8f5;
+  border: 1px solid #e3d1c4;
+  border-radius: 6px;
+  padding: 18px;
+}
+
+
+@media (max-width: 1000px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}

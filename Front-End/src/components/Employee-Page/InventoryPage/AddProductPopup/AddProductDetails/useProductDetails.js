@@ -16,7 +16,7 @@ function useProductDetails(initialDetails = null) {
     description: "",
     price: "",
     cost_price: "",
-    discount: "",
+    discount: "0",
     quantity: "",
     min_stock: "",
     restock_required: true,

@@ -7,7 +7,16 @@
   align-items: center;
   z-index: 1000;
 }
-.popup {
+
+/* Preview mode - without an additional overlay */
+.previewWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Shared popup design */
+.popup,
+.previewPopup {
   position: relative;
   width: 85%;
   max-width: 1100px;
@@ -23,7 +32,17 @@
   box-shadow: 0 18px 55px rgba(45, 27, 18, 0.18);
 }
 
-.popup::before {
+/* Preview mode adjustments */
+.previewPopup {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  box-shadow: none;
+}
+
+/* Decorative inner border */
+.popup::before,
+.previewPopup::before {
   content: "";
   position: absolute;
   inset: 12px;
@@ -34,7 +53,9 @@
   pointer-events: none;
 }
 
-.popup::after {
+/* Decorative star */
+.popup::after,
+.previewPopup::after {
   content: "✦";
   position: absolute;
   top: 3px;
@@ -49,12 +70,14 @@
 
   pointer-events: none;
 }
+
 .closeBtn {
   position: absolute;
   top: 19px;
   right: 22px;
   z-index: 2;
 }
+
 .content {
   display: grid;
   grid-template-columns: minmax(0, 40fr) minmax(0, 60fr);
@@ -85,6 +108,7 @@
     transparent
   );
 }
+
 .purchaseSection {
   display: flex;
   flex-direction: column;
@@ -104,4 +128,34 @@
   font-weight: 600;
   letter-spacing: 1px;
   color: #5b4b43;
+}
+
+.outOfStock {
+  width: 100%;
+  padding: 14px 20px;
+  text-align: center;
+
+  background-color: #f5f0eb;
+  color: #6b5548;
+  border: 1px solid #d9c9bd;
+
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+
+.previewPopup {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  padding: 15px 0;
+}
+
+.previewPopup::before,
+.previewPopup::after {
+  display: none;
 }

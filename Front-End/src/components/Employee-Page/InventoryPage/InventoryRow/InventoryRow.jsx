@@ -5,7 +5,7 @@ import BrightGeneralBtn from "../../../General/BrightGeneralBtn/BrightGeneralBtn
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import { useState } from "react";
 
-function InventoryRow({ inv, onEdit, onRemove, onImages }) {
+function InventoryRow({ inv, onEdit, onRemove, onImages, isManager = false }) {
   const [displayMesssagePopup, setDisplayMessagePopup] = useState({
     show: false,
     message: "",
@@ -15,7 +15,10 @@ function InventoryRow({ inv, onEdit, onRemove, onImages }) {
   //The function send the new status to backend
   async function updateProductStatus(invData) {
     try {
-      const response = await fetch("/api/employee/changeProductStatus", {
+      const url = isManager
+        ? "/api/manager/changeProductStatus"
+        : "/api/employee/changeProductStatus";
+      const response = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(invData),
@@ -52,10 +55,23 @@ function InventoryRow({ inv, onEdit, onRemove, onImages }) {
       });
     }
   }
+
+  const isOutOfStock =
+    Number(inv.restock_required) === 1 && Number(inv.quantity) === 0;
+  const isLowStock =
+    Number(inv.restock_required) === 1 &&
+    Number(inv.quantity) > 0 &&
+    Number(inv.quantity) <= Number(inv.min_stock);
   return (
     <tr
       className={`${styles.row} ${
-        inv.status === "Not Active" ? styles.removed : ""
+        inv.status === "Not Active"
+          ? styles.removed
+          : isOutOfStock
+            ? styles.outOfStock
+            : isLowStock
+              ? styles.lowStock
+              : ""
       }`}
     >
       <td>{inv.product_id}</td>
@@ -67,7 +83,20 @@ function InventoryRow({ inv, onEdit, onRemove, onImages }) {
       <td>{inv.price}₪</td>
       <td>{inv.cost_price}₪</td>
       <td>{inv.discount}%</td>
-      <td>{inv.quantity}</td>
+      <td>
+        <div className={styles.quantityCell}>
+          {inv.status === "Active" && isOutOfStock ? (
+            <span className={styles.outOfStockLable}>Out Of Stock</span>
+          ) : (
+            <div>
+              <span>{inv.quantity}</span>
+              {inv.status === "Active" && isLowStock && (
+                <span className={styles.lowStockLabel}>Low Stock</span>
+              )}
+            </div>
+          )}
+        </div>
+      </td>
       <td>{inv.min_stock ?? "-"}</td>
       <td>{inv.restock_required ? "Yes" : "No"}</td>
       <td>

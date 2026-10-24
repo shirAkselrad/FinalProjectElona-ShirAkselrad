@@ -6,6 +6,8 @@ function InputField({
   type = "text",
   onChange,
   onBlur,
+  onFocus,
+  inputMode,
   error,
   maxLength,
   step,
@@ -20,6 +22,8 @@ function InputField({
       <input
         value={value}
         onChange={onChange}
+        onFocus={onFocus}
+        inputMode={inputMode}
         onBlur={onBlur}
         disabled={disabled}
         readOnly={readOnly}

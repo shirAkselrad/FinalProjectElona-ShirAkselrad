@@ -20,6 +20,14 @@ const getOrderItems = (req, res, next) => {
   });
 };
 
+const updateProductsStatus = (req, res, next) => {
+  const query = `update inventory set status='Not Active' where restock_required=0 and quantity=0 and product_id in(select product_id from order_items where order_id=?)`;
+  db.query(query, [req.orderId], (err) => {
+    if (err) return next(err);
+    next();
+  });
+};
+
 //this middleware update the inventory after a successfull payment
 const updateInventory = (req, res, next) => {
   const updateNextProduct = (index) => {
@@ -46,4 +54,5 @@ const updateInventory = (req, res, next) => {
 module.exports = {
   getOrderItems,
   updateInventory,
+  updateProductsStatus,
 };

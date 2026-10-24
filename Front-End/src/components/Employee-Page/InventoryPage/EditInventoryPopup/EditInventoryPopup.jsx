@@ -1,4 +1,3 @@
-
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import InputField from "../../../General/InputField/InputField.jsx";
 import InputLabel from "../../../General/InputLabel/InputLabel.jsx";
@@ -19,7 +18,7 @@ import { useEffect, useState } from "react";
 import useEditProductImgs, { checkFormValidation } from "./editProductPopup.js";
 import useProductForm from "../AddProductPopup/addProductPopupInfo.js";
 
-function EditProductPopup({ onClose, product, onSave }) {
+function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
   const [productImgs, setProductImgs] = useState([]);
   const [frontImg, setFrontImg] = useState("");
 
@@ -55,16 +54,25 @@ function EditProductPopup({ onClose, product, onSave }) {
       productImgs.forEach((img) => {
         if (img.file instanceof File) formData.append("files", img.file);
       });
-      const response = await fetch(
-        `/api/employee/editedProduct/${product.product_id}`,
-        {
-          method: "PUT",
-          body: formData,
-        },
-      );
+
+      const url = isManager
+        ? `/api/manager/editedProduct/${product.product_id}`
+        : `/api/employee/editedProduct/${product.product_id}`;
+      const response = await fetch(url, {
+        method: "PUT",
+        body: formData,
+      });
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      if (data.success) {
+        onSave({
+          ...product,
+          ...editedProduct,
+          colors: editedProduct.colors.json("-"),
+        });
+        onClose();
+      }
       return data;
     } catch (error) {
       console.error("couldn't update the wanted product, error: ", error);
@@ -73,12 +81,12 @@ function EditProductPopup({ onClose, product, onSave }) {
 
   async function getProductImgs() {
     try {
-      const response = await fetch(
-        `/api/employee/getProductImages/${product.product_id}`,
-        {
-          method: "GET",
-        },
-      );
+      const url = isManager
+        ? `/api/manager/getProductImages/${product.product_id}`
+        : `/api/employee/getProductImages/${product.product_id}`;
+      const response = await fetch(url, {
+        method: "GET",
+      });
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
@@ -109,7 +117,7 @@ function EditProductPopup({ onClose, product, onSave }) {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, []);
+  }, [product.product_id, isManager]);
 
   //changing the product's formate so it will be fitted to useProductForm object formate
   const initialProduct = {
@@ -370,4 +378,4 @@ function EditProductPopup({ onClose, product, onSave }) {
   );
 }
 
-export default EditProductPopup;
+export default EditInventoryPopup;

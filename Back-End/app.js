@@ -20,6 +20,7 @@ const orderSummaryRoutes = require("./routes/ShopPage/orderSummary");
 const editClientDetailsRoutes = require("./routes/client/editClientDetails");
 const paymentRoutes = require("./routes/ShopPage/payment");
 const orderReviewRoutes = require("./routes/client/orderReview");
+const editMyAccountRoutes=require("./routes/editMyAccount");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -48,6 +49,7 @@ app.use("/api/orderSummary", orderSummaryRoutes);
 app.use("/api/client", editClientDetailsRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/orderReview", orderReviewRoutes);
+app.use("/api/editMyAccount",editMyAccountRoutes); 
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

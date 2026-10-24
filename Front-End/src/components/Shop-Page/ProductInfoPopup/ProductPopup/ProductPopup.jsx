@@ -5,22 +5,40 @@ import ProductImagesGallery from "../../../General/ProductImagesGallery/ProductI
 import { useState } from "react";
 import QuantitySelector from "../../QuantitySelector/QuantitySelector";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn";
-function ProductPopup({ product, images, onClose, onAddToCart }) {
+function ProductPopup({
+  product,
+  images,
+  onClose,
+  onAddToCart,
+  previewMode = false,
+}) {
+  const isOutOfStock = Number(product.quantity) <= 0;
   const [quantity, setQuantity] = useState(1);
 
   //this function responsible of the plus action according the product's quantity
   function handleIncrease() {
+    if (previewMode) return;
     setQuantity((prev) => Math.min(prev + 1, Number(product.quantity)));
   }
 
   //this function responsible of the minus action (min 1)
   function handleDecrease() {
+    if (previewMode) return;
     setQuantity((prev) => Math.max(prev - 1, 1));
   }
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.popup} onClick={(e) => e.stopPropagation()}>
-        <Remove onClick={onClose} className={styles.closeBtn} />
+    <div
+      className={previewMode ? styles.previewWrapper : styles.overlay}
+      onClick={previewMode ? undefined : onClose}
+    >
+      <div
+        className={previewMode ? styles.previewPopup : styles.popup}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Remove
+          onClick={previewMode ? () => {} : onClose}
+          className={styles.closeBtn}
+        />
         <div className={styles.content}>
           <ProductImagesGallery
             frontImg={images.find((img) => Number(img.file_number) === 1)}
@@ -29,26 +47,29 @@ function ProductPopup({ product, images, onClose, onAddToCart }) {
           />
           <div className={styles.productInfo}>
             <ProductDetails product={product} />
-            <div className={styles.purchaseSection}>
-              <div className={styles.quantityRow}>
-                <span className={styles.quantityLabel}>QUANTITY</span>
+            {!isOutOfStock && (
+              <div className={styles.purchaseSection}>
+                <div className={styles.quantityRow}>
+                  <span className={styles.quantityLabel}>QUANTITY</span>
 
-                <QuantitySelector
-                  quantity={quantity}
-                  onIncrease={handleIncrease}
-                  onDecrease={handleDecrease}
-                  maxQuantity={Number(product.quantity)}
+                  <QuantitySelector
+                    quantity={quantity}
+                    onIncrease={handleIncrease}
+                    onDecrease={handleDecrease}
+                    maxQuantity={Number(product.quantity)}
+                  />
+                </div>
+
+                <GeneralBtn
+                  text="ADD TO CART"
+                  type="button"
+                  className={styles.addToCartBtn}
+                  onClick={() => {
+                    if (!previewMode) onAddToCart?.(product, quantity);
+                  }}
                 />
               </div>
-
-              <GeneralBtn
-                text="ADD TO CART"
-                type="button"
-                className={styles.addToCartBtn}
-                disabled={Number(product.quantity) <= 0}
-                onClick={() => onAddToCart(product, quantity)}
-              />
-            </div>
+            )}
           </div>
         </div>
       </div>

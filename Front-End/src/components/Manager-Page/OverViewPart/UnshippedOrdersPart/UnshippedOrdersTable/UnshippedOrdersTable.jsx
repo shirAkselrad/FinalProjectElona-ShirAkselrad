@@ -2,7 +2,12 @@ import styles from "./unshippedOrdersTable.module.css";
 
 import UnshippedOrdersRow from "../UnshippedOrdersRow/UnshippedOrdersRow.jsx";
 
-function UnshippedOrdersTable({ orders, clients, dates, totals, items }) {
+function UnshippedOrdersTable({
+  orders,
+  onStatusChange,
+  openStatusOrderId,
+  setOpenStatusOrderId,
+}) {
   return (
     <table className={styles.table}>
       <thead>
@@ -17,14 +22,13 @@ function UnshippedOrdersTable({ orders, clients, dates, totals, items }) {
       </thead>
 
       <tbody>
-        {orders.map((order, i) => (
+        {orders.map((order) => (
           <UnshippedOrdersRow
-            key={i}
+            key={order.order_id}
             order={order}
-            client={clients[i]}
-            date={dates[i]}
-            total={totals[i]}
-            items={items[i]}
+            onStatusChange={onStatusChange}
+            openStatusOrderId={openStatusOrderId}
+            setOpenStatusOrderId={setOpenStatusOrderId}
           />
         ))}
       </tbody>

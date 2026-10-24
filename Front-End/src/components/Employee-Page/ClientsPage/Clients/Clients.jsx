@@ -17,7 +17,10 @@ function Clients({ isManager = false }) {
   //The function gets all the cities names with no repeats
   async function getCitiesNoRepeat() {
     try {
-      const response = await fetch("/api/employee/citiesNoRepeat", {
+      const url = isManager
+        ? "/api/manager/citiesNoRepeat"
+        : "/api/employee/citiesNoRepeat";
+      const response = await fetch(url, {
         method: "GET",
       });
       if (!response.ok)

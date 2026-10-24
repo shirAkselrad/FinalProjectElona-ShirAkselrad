@@ -12,16 +12,35 @@ import { FiClipboard } from "react-icons/fi";
 function ManagerPage() {
   const [users, setUsers] = useState([]);
   const [managerOrders, setManagerOrders] = useState([]);
+  const [inventory, setInventory] = useState([]);
 
   useEffect(() => {
-    async function getOrders() {
+    async function getInventory() {
       try {
-        const response = await fetch("/api/employee/orders", {
+        const response = await fetch("/api/manager/inventory", {
           method: "GET",
         });
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
+        if (data.success) setInventory(data.inventory);
+      } catch (error) {
+        console.error("Error getting inventory: ", error);
+      }
+    }
+    getInventory();
+  }, []);
+
+  useEffect(() => {
+    async function getOrders() {
+      try {
+        const response = await fetch("/api/manager/orders", {
+          method: "GET",
+        });
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+        console.log([...new Set(data.orders.map((order) => order.status))]);
         setManagerOrders(data.orders);
       } catch (error) {
         console.error("Error getting orders: ", error);
@@ -104,7 +123,13 @@ function ManagerPage() {
   const statuses = ["OUT OF STOCK", "LOW STOCK", "LOW STOCK"];
 
   const stocks = [0, 3, 2];
-
+  const onSave = (editedInv) => {
+    setInventory((prevInventory) =>
+      prevInventory.map((inv) =>
+        inv.product_id === editedInv.product_id ? editInv : inv,
+      ),
+    );
+  };
   return (
     <main className={styles.managerPage}>
       <div className={styles.content}>
@@ -122,6 +147,9 @@ function ManagerPage() {
             setUsers,
             managerOrders,
             setManagerOrders,
+            inventory,
+            setInventory,
+            onSave,
           }}
         />
         <Menu items={managerMenu} />

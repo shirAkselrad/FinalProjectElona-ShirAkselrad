@@ -2,7 +2,7 @@ import styles from "./inventoryTable.module.css";
 import InventoryRow from "../InventoryRow/InventoryRow.jsx";
 import { useState } from "react";
 import EditInventoryPopup from "../EditInventoryPopup/EditInventoryPopup.jsx";
-import ProductImagesPopup from "../ProductImagesPopup/ProductImagesPopup.jsx";
+import ProductPreviewPopup from "../ProductPreviewPopup/ProductPreviewPopup.jsx";
 
 /**
  *
@@ -11,14 +11,35 @@ import ProductImagesPopup from "../ProductImagesPopup/ProductImagesPopup.jsx";
  * @param {onRemove} onRemove an even which will happen when the user click on the remove btn
  * @returns InventoryTable
  */
-function InventoryTable({ inventory, onRemove, onSave, onSaveImgs }) {
+function InventoryTable({
+  inventory,
+  onRemove,
+  onSave,
+  onSaveImgs,
+  isManager = false,
+}) {
   //state which give info about which inv in the inventory table is getting change
   const [selectedInv, setSelectedInv] = useState(null);
-  const [showPopupImg, setShowPopupImg] = useState(false);
+  const [showProductPreview, setShowProductPreview] = useState(false);
   const [showPopupEdit, setShowPopupEdit] = useState(false);
+
+  const lowStockCount = inventory.filter(
+    (inv) =>
+      Number(inv.restock_required) === 1 &&
+      Number(inv.quantity) > 0 &&
+      Number(inv.quantity) <= Number(inv.min_stock),
+  ).length;
+
+  const outOfStockCount = inventory.filter(
+    (inv) => Number(inv.restock_required) === 1 && Number(inv.quantity) === 0,
+  ).length;
 
   return (
     <div className={styles.tableWrapper}>
+      <div className={styles.stockSummary}>
+        <span>Low Stock:{lowStockCount}</span>
+        <span>Out Of Stock: {outOfStockCount} </span>
+      </div>
       <table className={styles.table}>
         <colgroup>
           <col className={styles.productIdCol} />
@@ -64,10 +85,11 @@ function InventoryTable({ inventory, onRemove, onSave, onSaveImgs }) {
               }}
               onImages={() => {
                 setSelectedInv(inv);
-                setShowPopupImg(true);
+                setShowProductPreview(true);
               }}
               key={inv.product_id}
               inv={inv}
+              isManager={isManager}
             />
           ))}
         </tbody>
@@ -78,6 +100,7 @@ function InventoryTable({ inventory, onRemove, onSave, onSaveImgs }) {
         <EditInventoryPopup
           product={selectedInv}
           onSave={onSave}
+          isManager={isManager}
           onClose={() => {
             setSelectedInv(null);
             setShowPopupEdit(false);
@@ -85,13 +108,13 @@ function InventoryTable({ inventory, onRemove, onSave, onSaveImgs }) {
         />
       )}
 
-      {showPopupImg && (
-        <ProductImagesPopup
+      {showProductPreview && (
+        <ProductPreviewPopup
           product={selectedInv}
-          onSave={onSaveImgs}
+          images={selectedInv.images}
           onClose={() => {
             setSelectedInv(null);
-            setShowPopupImg(false);
+            setShowProductPreview(false);
           }}
         />
       )}

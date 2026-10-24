@@ -15,6 +15,7 @@ function OrderRow({
   onStatusChange,
   openStatusOrderId,
   setOpenStatusOrderId,
+  isManager=false
 }) {
   return (
     <tr className={styles.row}>
@@ -37,6 +38,7 @@ function OrderRow({
           onStatusChange={onStatusChange}
           openStatusOrderId={openStatusOrderId}
           setOpenStatusOrderId={setOpenStatusOrderId}
+          isManager={isManager}
         />
       </td>
 

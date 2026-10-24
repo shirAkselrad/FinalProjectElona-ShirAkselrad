@@ -2,7 +2,7 @@ import styles from "./lowStockTable.module.css";
 
 import LowStockRow from "../LowStockRow/LowStockRow.jsx";
 
-function LowStockTable({ products, statuses, stocks }) {
+function LowStockTable({ products, onEdit }) {
   return (
     <table className={styles.table}>
       <thead>
@@ -15,12 +15,11 @@ function LowStockTable({ products, statuses, stocks }) {
       </thead>
 
       <tbody>
-        {products.map((product, i) => (
+        {products.map((product) => (
           <LowStockRow
-            key={i}
+            key={product.product_id}
             product={product}
-            status={statuses[i]}
-            stock={stocks[i]}
+            onEdit={() => onEdit(product)}
           />
         ))}
       </tbody>

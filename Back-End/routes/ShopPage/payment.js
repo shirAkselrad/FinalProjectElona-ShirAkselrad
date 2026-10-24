@@ -4,6 +4,7 @@ const { sendConfirmationEmail } = require("./paymentEmailMiddleware");
 const {
   getOrderItems,
   updateInventory,
+  updateProductsStatus
 } = require("./updateInventoryMiddleware");
 const {
   checkUserLoggedIn,
@@ -41,6 +42,7 @@ router.post(
   verifyPayment,
   getOrderItems,
   updateInventory,
+  updateProductsStatus,
   updateOrderStatus,
   updateClientPoints,
   sendConfirmationEmail,

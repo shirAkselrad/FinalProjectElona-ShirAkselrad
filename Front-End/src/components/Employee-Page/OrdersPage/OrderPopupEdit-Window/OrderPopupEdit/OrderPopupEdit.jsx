@@ -15,18 +15,24 @@ import Remove from "../../../../General/Remove/Remove.jsx";
  * @param {onSave} onSave the  event which accurs when the user click on the saveChanges btn
  * @returns OrderPopupEdit
  */
-function OrderPopupEdit({ order, onClose, onCancel, onSave }) {
+function OrderPopupEdit({
+  order,
+  onClose,
+  onCancel,
+  onSave,
+  isManager = false,
+}) {
   const [editedProducts, setEditedProducts] = useState([]);
   useEffect(() => {
     //this function responsible to get all the order products details
     async function getOrderProducts() {
       try {
-        const response = await fetch(
-          `/api/employee/orders/${order.order_id}/items`,
-          {
-            method: "GET",
-          },
-        );
+        const url = isManager
+          ? `/api/manager/orders/${order.order_id}/items`
+          : `/api/employee/orders/${order.order_id}/items`;
+        const response = await fetch(url, {
+          method: "GET",
+        });
         if (!response.ok) throw new Error("Couldn't get order's products");
         const data = await response.json();
         setEditedProducts(
@@ -40,7 +46,7 @@ function OrderPopupEdit({ order, onClose, onCancel, onSave }) {
       }
     }
     getOrderProducts();
-  }, [order.order_id]);
+  }, [order.order_id, isManager]);
 
   //an array which include all the products which didn't removed
   const productsToSave = editedProducts.filter(
@@ -49,7 +55,8 @@ function OrderPopupEdit({ order, onClose, onCancel, onSave }) {
 
   //calculate the final price after all the edits
   const editedTotal = productsToSave.reduce(
-    (sum, product) => sum + Number(product.product_price) * Number(product.quantity),
+    (sum, product) =>
+      sum + Number(product.product_price) * Number(product.quantity),
     0,
   );
 
@@ -63,8 +70,8 @@ function OrderPopupEdit({ order, onClose, onCancel, onSave }) {
   const editedOrder = {
     ...order,
     products: productsToSave,
-    total: editedTotal,
-    items: editedItems,
+    final_price: editedTotal,
+    total_items: editedItems,
   };
 
   return (
@@ -72,9 +79,9 @@ function OrderPopupEdit({ order, onClose, onCancel, onSave }) {
       <div className={styles.orderPopup}>
         <div className={styles.top}>
           <OrderPopupTitleView
-            orderNumber={order.id}
-            customerName={order.client}
-            date={order.date}
+            orderNumber={order.order_id}
+            customerName={`${order.first_name} ${order.last_name}`}
+            date={new Date(order.created_at).toLocaleDateString("en-GB")}
           />
 
           <div className={styles.actions}>

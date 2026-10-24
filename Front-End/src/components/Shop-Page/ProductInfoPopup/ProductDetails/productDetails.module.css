@@ -58,3 +58,25 @@
 
   border-radius: 2px;
 }
+
+.availableStock {
+  display: inline-block;
+  width: fit-content;
+  margin-top: 12px;
+  padding: 7px 12px;
+
+  background-color: #f5eee9;
+  border: 1px solid #eaded7;
+  border-radius: 2px;
+
+  color: #8a624d;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.outOfStock {
+  background-color: #f3e0d8;
+  border-color: #d9ab98;
+  color: #a3543d;
+}

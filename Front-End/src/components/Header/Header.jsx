@@ -25,6 +25,15 @@ function Header() {
     else if (user?.role === "Employee") navigate("/employeePage");
   }
 
+  function openMyAccount()
+  {
+    if(!user)
+    {
+      navigate("/loginPage");
+      return;
+    }
+    navigate("/myAccount"); 
+  }
   return (
     <header className={styles.header}>
       <div className={styles.left}>
@@ -62,7 +71,7 @@ function Header() {
 
         <span className={styles.diamond}></span>
 
-        <UserBtn />
+        {user&&<UserBtn onClick={openMyAccount} />}
 
         {!user && (
           <div>

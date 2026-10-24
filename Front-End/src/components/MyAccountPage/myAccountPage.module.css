@@ -1,0 +1,15 @@
+.container {
+  min-height: 80vh;
+  padding: 60px 24px 90px;
+  background-color: #f6f0e9;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.content {
+  width: 100%;
+  max-width: 850px;
+}

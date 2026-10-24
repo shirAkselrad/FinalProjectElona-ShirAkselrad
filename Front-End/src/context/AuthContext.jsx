@@ -35,6 +35,13 @@ export function AuthProvider({ children }) {
     setUser(userData);
   }
 
+  //update logged in user deatils
+  function updateUser(updatedDetails) {
+    setUser((prevUser) => ({
+      ...prevUser,
+      ...updatedDetails,
+    }));
+  }
   //logout user
   async function logout() {
     try {
@@ -53,7 +60,7 @@ export function AuthProvider({ children }) {
   const isAuthenticated = user !== null;
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, loading, login, logout }}
+      value={{ user, isAuthenticated, loading, login, logout, updateUser }}
     >
       {children}
     </AuthContext.Provider>
