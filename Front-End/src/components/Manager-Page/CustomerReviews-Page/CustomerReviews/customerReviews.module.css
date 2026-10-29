@@ -1,0 +1,35 @@
+.customerReviews {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.summary > div {
+  padding: 22px;
+  background-color: #f6f0e9;
+  border: 1px solid #d8afa6;
+  border-radius: 8px;
+}
+
+.summary span {
+  font-size: 14px;
+  color: #76503a;
+}
+
+.summary h2 {
+  margin: 10px 0 0;
+  font-size: 28px;
+  color: #382116;
+}
+
+@media (max-width: 700px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
+}

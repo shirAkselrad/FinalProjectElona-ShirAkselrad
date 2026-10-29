@@ -17,6 +17,7 @@ function InventoryTable({
   onSave,
   onSaveImgs,
   isManager = false,
+  showStockSummary = true,
 }) {
   //state which give info about which inv in the inventory table is getting change
   const [selectedInv, setSelectedInv] = useState(null);
@@ -36,10 +37,12 @@ function InventoryTable({
 
   return (
     <div className={styles.tableWrapper}>
-      <div className={styles.stockSummary}>
-        <span>Low Stock:{lowStockCount}</span>
-        <span>Out Of Stock: {outOfStockCount} </span>
-      </div>
+      {showStockSummary && (
+        <div className={styles.stockSummary}>
+          <span>Low Stock: {lowStockCount}</span>
+          <span>Out Of Stock: {outOfStockCount}</span>
+        </div>
+      )}
       <table className={styles.table}>
         <colgroup>
           <col className={styles.productIdCol} />
@@ -111,7 +114,7 @@ function InventoryTable({
       {showProductPreview && (
         <ProductPreviewPopup
           product={selectedInv}
-          images={selectedInv.images}
+          isManager={isManager}
           onClose={() => {
             setSelectedInv(null);
             setShowProductPreview(false);

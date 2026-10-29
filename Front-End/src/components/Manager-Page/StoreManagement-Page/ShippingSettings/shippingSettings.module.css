@@ -1,0 +1,47 @@
+.container {
+  width: 100%;
+  padding: 28px;
+  background-color: #ffffff;
+  border: 1px solid #e4d8ce;
+  box-sizing: border-box;
+}
+
+.header {
+  margin-bottom: 28px;
+}
+
+.header h2 {
+  margin: 0 0 8px;
+  font-family: "Playfair Display", serif;
+  font-size: 23px;
+  font-weight: 500;
+  color: #382116;
+}
+
+.header p {
+  margin: 0;
+  font-size: 14px;
+  color: #76503a;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.fields > * {
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+}
+
+@media (max-width: 800px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+}

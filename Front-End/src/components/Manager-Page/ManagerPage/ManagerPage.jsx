@@ -8,6 +8,8 @@ import { FaUser } from "react-icons/fa";
 import { FaBoxesStacked } from "react-icons/fa6";
 import { FaBox } from "react-icons/fa";
 import { FiClipboard } from "react-icons/fi";
+import { FaRegStar } from "react-icons/fa";
+import { FiSettings } from "react-icons/fi";
 
 function ManagerPage() {
   const [users, setUsers] = useState([]);
@@ -92,10 +94,22 @@ function ManagerPage() {
       icon: <FaBox />,
     },
     {
+      text: "Customer Reviews",
+      value: "reviews",
+      path: "/managerPage/reviews",
+      icon: <FaRegStar />,
+    },
+    {
       text: "Issuing Reports",
       value: "reports",
       path: "/managerPage/reports",
       icon: <FiClipboard />,
+    },
+    {
+      text: "Store Management",
+      value: "storeManagement",
+      path: "/managerPage/storeManagement",
+      icon: <FiSettings />,
     },
   ];
 
@@ -123,10 +137,19 @@ function ManagerPage() {
   const statuses = ["OUT OF STOCK", "LOW STOCK", "LOW STOCK"];
 
   const stocks = [0, 3, 2];
+
   const onSave = (editedInv) => {
     setInventory((prevInventory) =>
       prevInventory.map((inv) =>
-        inv.product_id === editedInv.product_id ? editInv : inv,
+        inv.product_id === editedInv.product_id ? editedInv : inv,
+      ),
+    );
+  };
+
+  const onRemove = (updatedInv) => {
+    setInventory((prevInventory) =>
+      prevInventory.map((inv) =>
+        inv.product_id === updatedInv.product_id ? updatedInv : inv,
       ),
     );
   };
@@ -150,6 +173,7 @@ function ManagerPage() {
             inventory,
             setInventory,
             onSave,
+            onRemove,
           }}
         />
         <Menu items={managerMenu} />

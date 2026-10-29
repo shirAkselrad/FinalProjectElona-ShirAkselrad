@@ -1,0 +1,43 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  box-sizing: border-box;
+}
+
+.container h1 {
+  margin: 0 0 10px;
+  font-family: "Playfair Display", serif;
+  font-size: 32px;
+  font-weight: 500;
+  color: #382116;
+}
+
+.section {
+  padding: 30px;
+  background-color: #ffffff;
+  border: 1px solid #e4d8ce;
+  box-sizing: border-box;
+}
+
+@media (max-width: 650px) {
+  .section {
+    padding: 20px;
+  }
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 30px 0;
+}
+
+.storeManagement h1 {
+  color: #382116;
+  font-family: "Playfair Display", serif;
+  font-weight: 500;
+}

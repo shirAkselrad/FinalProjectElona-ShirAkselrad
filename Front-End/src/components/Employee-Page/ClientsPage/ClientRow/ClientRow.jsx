@@ -27,7 +27,7 @@ function ClientRow({ client, onEdit, onRemove, isManager = false }) {
   async function updateClientStatus(clientData) {
     try {
       const url = isManager
-        ? "/api/manager/changeClientStatus"
+        ? "/api/manager/changeUserStatus"
         : "/api/employee/changeClientStatus";
       const response = await fetch(url, {
         method: "POST",

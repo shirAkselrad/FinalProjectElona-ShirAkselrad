@@ -1,0 +1,23 @@
+.container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  margin-bottom: 25px;
+}
+
+.header h2 {
+  margin: 0 0 8px;
+  font-family: "Playfair Display", serif;
+  font-size: 25px;
+  font-weight: 500;
+  color: #382116;
+}
+
+.header p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #76503a;
+}

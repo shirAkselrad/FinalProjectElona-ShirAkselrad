@@ -17,6 +17,8 @@ import PaymentSuccessPage from "../components/Shop-Page/PaymentSuccessPage/Payme
 import OrderReview from "../components/OrderReview-Page/OrderReview/OrderReview.jsx";
 import StoreOverview from "../components/Manager-Page/OverViewPart/StoreOverview/StoreOverview.jsx";
 import MyAccountPage from "../components/MyAccountPage/MyAccountPage.jsx";
+import CustomerReviews from "../components/Manager-Page/CustomerReviews-Page/CustomerReviews/CustomerReviews.jsx";
+import StoreManagement from "../components/Manager-Page/StoreManagement-Page/StoreManagement/StoreManagement.jsx";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
 import ProtectedRoute from "../routes/ProtectedRoute.jsx";
@@ -43,6 +45,8 @@ function App() {
             <Route path="users" element={<Clients isManager={true} />} />
             <Route path="inventory" element={<Inventory isManager={true} />} />
             <Route path="orders" element={<Orders isManager={true} />} />
+            <Route path="reviews" element={<CustomerReviews />} />
+            <Route path="storeManagement" element={<StoreManagement/>}/>
           </Route>
           <Route
             path="myAccount"

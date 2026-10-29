@@ -2,22 +2,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap");
 
 /* #region variables */
-/*
-=============== 
-Variables
-===============
-*/
 
 :root {
   font-size: 62.5%;
-  /* dark shades of primary color*/
+
+  /* ELONA COLORS */
+  --clr-espresso: #382116;
+  --clr-brown: #76503a;
+  --clr-bronze: #ad7949;
+  --clr-pink: #d8afa6;
+  --clr-ivory: #f6f0e9;
+
+  /* ORIGINAL COLORS */
   --clr-blue-1: hsl(205, 86%, 17%);
   --clr-blue-2: hsl(205, 77%, 27%);
   --clr-blue-3: hsl(205, 72%, 37%);
   --clr-blue-4: hsl(205, 63%, 48%);
-  /* primary/main color */
   --clr-blue-5: hsl(205, 78%, 60%);
-  /* lighter shades of primary color */
   --clr-blue-6: hsl(205, 89%, 70%);
   --clr-blue-7: hsl(205, 90%, 76%);
   --clr-blue-8: hsl(205, 86%, 81%);
@@ -26,6 +27,7 @@ Variables
 
   --clr-white: #fff;
   --clr-black: #222;
+
   --clr-red: hsl(0, 100%, 50%);
   --clr-red-dark: hsl(0, 67%, 44%);
   --clr-red-light: hsl(360, 71%, 66%);
@@ -43,28 +45,26 @@ Variables
   --clr-grey-9: hsl(212, 33%, 89%);
   --clr-grey-10: hsl(210, 36%, 96%);
 
+  /* SHADOWS */
   --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   --wide-shadow: 5px 0px 15px rgba(0, 0, 0, 0.2);
 
-  --clr-heading: var(--clr-blue-2);
-  --clr-footer: var(--clr-blue-2);
+  /* GLOBAL COLORS */
+  --clr-heading: var(--clr-espresso);
+  --clr-footer: var(--clr-espresso);
 
+  /* GENERAL */
   --transition: all 0.4s linear;
   --spacing: 0.1rem;
   --radius: 0.25rem;
-
   --max-width: 900px;
 }
 
 /* #endregion variables */
 
+
 /* #region global */
-/*
-=============== 
-Global Styles
-===============
-*/
 
 *,
 ::after,
@@ -74,24 +74,49 @@ Global Styles
 
 html {
   font-size: 62.5%;
+  min-height: 100%;
 }
 
 body {
+  margin: 0;
   min-height: 100vh;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  font-family: 'Raleway', sans-serif;
-  background: var(--clr-grey-9);
-  color: var(--clr-black);
+
+  font-family: "Libre Baskerville", serif;
+  color: var(--clr-espresso);
   line-height: 1.5;
   font-size: 1rem;
+
+  /* ELONA BACKGROUND */
+  background-color: var(--clr-ivory);
+
+  background-image:
+    /* linear-gradient(
+      rgba(246, 240, 233, 0.25),
+      rgba(246, 240, 233, 0.25)
+    ), */
+    url("./assets/backgrounds/background.png");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+:root {
+  --clr-burgundy: #4d0a07;
 }
 ul {
   list-style-type: none;
 }
+
 a {
   text-decoration: none;
 }
+
 h1,
 h2,
 h3,
@@ -100,24 +125,28 @@ h4 {
   letter-spacing: var(--spacing);
   text-transform: capitalize;
 }
+
 h1 {
-  font-family: 'Paytone One', sans-serif;
+  font-family: "Playfair Display", serif;
   color: var(--clr-heading);
   font-size: 3rem;
+  font-weight: 500;
   text-align: center;
 }
 
 h2 {
+  font-family: "Playfair Display", serif;
   font-size: 2.5rem;
 }
 
 h3 {
+  font-family: "Playfair Display", serif;
   font-size: 2rem;
 }
 
 p {
   margin-bottom: 1.3rem;
-  color: var(--clr-black);
+  color: var(--clr-espresso);
   font-size: 1.8rem;
 }
 
@@ -131,9 +160,11 @@ img {
   h1 {
     font-size: 4rem;
   }
+
   h2 {
     font-size: 3rem;
   }
+
   h3 {
     font-size: 2rem;
   }

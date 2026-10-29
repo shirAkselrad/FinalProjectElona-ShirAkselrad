@@ -103,7 +103,7 @@ function InventoryRow({ inv, onEdit, onRemove, onImages, isManager = false }) {
         <div className={styles.actions}>
           <EditBtn onClick={onEdit} />
 
-          <BrightGeneralBtn text="IMAGES" onClick={onImages} />
+          <BrightGeneralBtn text="PRODUCT PREVIEW" onClick={onImages} />
 
           <BrightGeneralBtn
             text={inv.status === "Active" ? "REMOVE" : "RESTORE"}

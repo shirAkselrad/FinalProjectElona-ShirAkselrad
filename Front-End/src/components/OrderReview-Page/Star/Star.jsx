@@ -1,10 +1,13 @@
 import styles from "./star.module.css";
-function Star({ value, filled, onClick }) {
+function Star({ value, filled, onClick, readOnly = false }) {
   return (
     <button
       type="button"
       className={styles.star}
-      onClick={() => onClick(value)}
+      onClick={() => {
+        if (!readOnly) onClick(value);
+      }}
+      disabled={readOnly}
       aria-label={`Rate ${value} stars`}
       aria-pressed={filled}
     >
