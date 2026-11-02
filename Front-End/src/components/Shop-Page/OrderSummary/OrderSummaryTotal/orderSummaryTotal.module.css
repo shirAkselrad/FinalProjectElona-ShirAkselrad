@@ -1,7 +1,6 @@
 .orderSummaryTotal {
   width: 100%;
   max-width: 450px;
-  height: 100%;
   margin: 0;
   padding: 30px;
   background-color: #ffffff;
@@ -30,6 +29,7 @@
 .finalTotal {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 20px;
   padding-top: 20px;
   margin-top: 20px;
@@ -39,9 +39,31 @@
   color: #75513e;
 }
 
+.deliveryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #e8ddd5;
+  font-size: 13px;
+  color: #75513e;
+}
+
+.deliveryRow span:last-child {
+  white-space: nowrap;
+  font-size: 12px;
+}
+
 @media (max-width: 600px) {
   .orderSummaryTotal {
     max-width: 100%;
     padding: 22px;
+  }
+
+  .deliveryRow {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 }

@@ -1,7 +1,7 @@
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../context/CartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./paymentPage.module.css";
 
 const paypalOptions = {
@@ -15,6 +15,24 @@ function PaymentPage() {
   const { getCartAmount } = useCart();
 
   const [paymentError, setPaymentError] = useState("");
+
+  const recoveryPayment = async (paypalOrderId) => {
+    const response = await fetch("/api/payment/recoverOrder", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        paypal_order_id: paypalOrderId,
+      }),
+    });
+    const result = await response.json();
+    if (!response.ok || !result.success)
+      throw new Error(result.message || "Payment recovery failed");
+    return result;
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.paymentCard}>
@@ -131,8 +149,6 @@ function PaymentPage() {
               }}
             />
           </PayPalScriptProvider>
-
-      
 
           {paymentError && (
             <p role="alert" style={{ color: "#a94442", marginTop: "16px" }}>

@@ -15,15 +15,23 @@
 }
 
 .table th {
-  padding: 16px;
+  padding: 18px 16px;
   text-align: left;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #382116;
   white-space: nowrap;
   border-bottom: 1px solid #e4d8ce;
 }
 
+
+.table td {
+  padding: 16px;
+  font-size: 13px;
+  color: #382116;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee5dd;
+}
 .empty {
   padding: 30px;
   text-align: center;

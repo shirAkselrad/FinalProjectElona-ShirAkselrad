@@ -102,7 +102,7 @@ router.post("/", (req, res) => {
           hashedPassword,
           "Client",
           "Active",
-          20
+         0
         ],
         (err, results) => {
           if (err) {

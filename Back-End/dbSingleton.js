@@ -1,6 +1,16 @@
 //dbSingleton.js
 const mysql = require("mysql2");
 
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "elona",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
 let connection; // Variable for storing a single connection
 
 const dbSingleton = {
@@ -33,6 +43,9 @@ const dbSingleton = {
     }
 
     return connection; // Return the current connection
+  },
+  getPoolConnection: (callback) => {
+    pool.getConnection(callback);
   },
 };
 

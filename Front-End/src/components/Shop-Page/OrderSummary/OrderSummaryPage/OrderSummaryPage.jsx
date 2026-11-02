@@ -19,7 +19,9 @@ function OrderSummaryPage() {
     available_points: 0,
     points_used: 0,
     shipping: 0,
-    final_price: 0,
+    final_total: 0,
+    min_delivery_days: 0,
+    max_delivery_days: 0,
   });
 
   //This function gets client's order from the data base
@@ -65,6 +67,12 @@ function OrderSummaryPage() {
   function handleBackToShop() {
     navigate("/");
   }
+
+  const calculateDeliveryDate = (days) => {
+    const date = new Date();
+    date.setDate(date.getDate() + Number(days));
+    return date.toLocaleDateString("en-GB");
+  };
   return (
     <div className={styles.orderSummaryPage}>
       <h1>ORDER SUMMARY</h1>
@@ -72,7 +80,11 @@ function OrderSummaryPage() {
       <OrderSummaryTable items={order.items} />
 
       <div className={styles.bottomSection}>
-        <OrderSummaryTotal order={order} />
+        <OrderSummaryTotal
+          order={order}
+          minDeliveryDate={calculateDeliveryDate(order.min_delivery_days)}
+          maxDeliveryDate={calculateDeliveryDate(order.max_delivery_days)}
+        />
 
         <div className={styles.clientSection}>
           {client && (

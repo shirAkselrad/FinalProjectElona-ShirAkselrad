@@ -25,5 +25,13 @@ export const validateShippingSettings = (settings) => {
     maxDays < 0
   )
     errors.max_delivery_days = "Enter valid maximum delivery days";
+
+  if (
+    !errors.min_delivery_days &&
+    !errors.max_delivery_days &&
+    maxDays < minDays
+  )
+    errors.max_delivery_days =
+      "Maximum delivery days cannot be less than minimum delivery days";
   return errors;
 };

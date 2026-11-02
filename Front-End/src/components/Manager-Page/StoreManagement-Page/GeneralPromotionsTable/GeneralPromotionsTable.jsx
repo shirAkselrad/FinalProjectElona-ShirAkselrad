@@ -1,7 +1,12 @@
 import GeneralPromotionsRow from "../GeneralPromotionsRow/GeneralPromotionsRow.jsx";
 import styles from "./generalPromotionsTable.module.css";
 
-function GeneralPromotionsTable({ promotions, onActivate, onDeactivate }) {
+function GeneralPromotionsTable({
+  promotions,
+  onActivate,
+  onDeactivate,
+  readOnly = false,
+}) {
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -13,13 +18,13 @@ function GeneralPromotionsTable({ promotions, onActivate, onDeactivate }) {
             <th>Start Date</th>
             <th>End Date</th>
             <th>Status</th>
-            <th>Actions</th>
+            {!readOnly && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
           {promotions.length === 0 ? (
             <tr>
-              <td colSpan={7} className={styles.empty}>
+              <td colSpan={readOnly?6:7} className={styles.empty}>
                 No promotions avaliable.
               </td>
             </tr>
@@ -31,6 +36,7 @@ function GeneralPromotionsTable({ promotions, onActivate, onDeactivate }) {
                 index={index}
                 onActivate={onActivate}
                 onDeactivate={onDeactivate}
+                readOnly={readOnly}
               />
             ))
           )}

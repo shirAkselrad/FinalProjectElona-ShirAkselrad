@@ -7,12 +7,11 @@ import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 function ShippingSettings() {
   const [popup, setPopup] = useState(null);
   const [settings, setSettings] = useState({
-    shipping_price: 0,
-    min_delivery_days: 0,
-    max_delivery_days: 0,
+    shipping_price: "",
+    min_delivery_days: "",
+    max_delivery_days: "",
   });
-
-  const [errors, setErrors] = useState({});
+  const [originalSettings, setOriginalSettings] = useState(null);
 
   useEffect(() => {
     const getShippingSettings = async () => {
@@ -26,7 +25,10 @@ function ShippingSettings() {
 
         const data = await response.json();
 
-        if (data.success && data.settings) setSettings(data.settings);
+        if (data.success && data.settings) {
+          setSettings(data.settings);
+          setOriginalSettings({ ...data.settings });
+        }
       } catch (error) {
         console.error("Error getting shipping settings: ", error);
         setPopup({
@@ -43,20 +45,10 @@ function ShippingSettings() {
       ...prev,
       [field]: value,
     }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [field]: "",
-    }));
   };
 
   const handleSave = async () => {
-    const validationErrors = validateShippingSettings(settings);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-    setErrors({});
+    if (!isFormValid || !hasChanges) return;
     try {
       const response = await fetch("/api/manager/updateShippingSettings", {
         method: "PUT",
@@ -68,11 +60,13 @@ function ShippingSettings() {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      if (data.success)
+      if (data.success) {
+        setOriginalSettings({ ...settings });
         setPopup({
           type: "success",
           message: "Shipping settings updated successfully!",
         });
+      }
     } catch (error) {
       console.error("Error updating shipping settings: ", error);
       setPopup({
@@ -82,6 +76,15 @@ function ShippingSettings() {
     }
   };
 
+  const validationErrors =
+    originalSettings !== null ? validateShippingSettings(settings) : {};
+  const isFormValid =
+    originalSettings !== null && Object.keys(validationErrors).length === 0;
+  const hasChanges =
+    originalSettings !== null &&
+    Object.keys(settings).some(
+      (key) => Number(settings[key]) !== Number(originalSettings[key]),
+    );
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -93,17 +96,20 @@ function ShippingSettings() {
           label="Shipping Price"
           type="number"
           step="0.01"
-          error={errors.shipping_price}
+          error={validationErrors.shipping_price}
           value={settings.shipping_price}
+          onFocus={(e) => e.target.select()}
           onChange={(e) => handleChange("shipping_price", e.target.value)}
+          suffix="₪"
         />
 
         <InputField
           label="Minimum Delivery Days"
           type="number"
           step="1"
-          error={errors.min_delivery_days}
+          error={validationErrors.min_delivery_days}
           value={settings.min_delivery_days}
+          onFocus={(e) => e.target.select()}
           onChange={(e) => handleChange("min_delivery_days", e.target.value)}
         />
 
@@ -111,13 +117,18 @@ function ShippingSettings() {
           label="Maximum Delivery Days"
           type="number"
           step="1"
-          error={errors.max_delivery_days}
+          error={validationErrors.max_delivery_days}
           value={settings.max_delivery_days}
+          onFocus={(e) => e.target.select()}
           onChange={(e) => handleChange("max_delivery_days", e.target.value)}
         />
       </div>
       <div className={styles.actions}>
-        <GeneralBtn text="SAVE CHANGES" onClick={handleSave} />
+        <GeneralBtn
+          text="SAVE CHANGES"
+          onClick={handleSave}
+          disabled={!isFormValid || !hasChanges}
+        />
       </div>
 
       {popup && (
@@ -125,7 +136,7 @@ function ShippingSettings() {
           message={popup.message}
           type={popup.type}
           onClose={() => setPopup(null)}
-          autoClose={popup.type === "success"}
+          autoClose={false}
         />
       )}
     </div>

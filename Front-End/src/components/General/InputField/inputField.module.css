@@ -13,13 +13,25 @@
   color: #9a7868;
 }
 
+.inputWrapper {
+  width: 100%;
+}
+
+.inputContent {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  border-bottom: 1px solid #e5d8cf;
+  box-sizing: border-box;
+}
+
 .input {
   width: 100%;
+  min-width: 0;
   padding: 0 0 10px;
 
   border: none;
-  border-bottom: 1px solid #e5d8cf;
-
   outline: none;
   background-color: transparent;
 
@@ -34,22 +46,30 @@
   color: #9a8b82;
 }
 
-.input:focus {
+.inputContent:focus-within {
   border-bottom-color: #c99a5b;
 }
 
-.inputError {
-  border-color: red;
+.inputContent:has(.inputError) {
+  border-bottom-color: red;
+}
+
+.inputContent:has(.suffix) .input {
+  width: 65px;
+  flex: none;
+}
+
+.suffix {
+  color: #76503a;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  padding-bottom: 10px;
+  flex-shrink: 0;
 }
 
 .errorText {
+  display: block;
   color: red;
   font-size: 11px;
   margin-top: 4px;
-}
-
-.input:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-  background-color: #f5f1ee;
 }

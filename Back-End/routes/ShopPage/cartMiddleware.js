@@ -46,7 +46,7 @@ const createCartIfNeeded = (req, res, next) => {
   if (req.cartOrderId !== null) return next();
 
   //the shipping price
-  const shipping = 30; //WILL BE CHANGED
+  const shipping = 0;
 
   const query = `insert into orders (client_email, total_items, total_price,shipping, final_price, status) values (?,0,0,?,?, 'PROCESSING')`;
 
@@ -281,7 +281,6 @@ const deleteEmptyCart = (req, res, next) => {
   });
 };
 
-
 //this middleware checks if the cart was deleted, if it was resting all the req details about it, else, continue
 const checkIfCartDeleted = (req, res, next) => {
   if (req.cartDeleted) {
@@ -295,27 +294,18 @@ const checkIfCartDeleted = (req, res, next) => {
   next();
 };
 
-
 //this middleware updates all the total values (total products in the cart, order price(includes discounts), final price- including the points and shippping price)
 const updateCartTotals = (req, res, next) => {
-  //saving the price after all the discounts 
   const totalAfterPromotions = Number(req.cartTotals.total_price);
-  //the shipping price
-  const shipping = 30; //WILL BE CHANGED
-
-  //the amount of points the user can use in the order
-  const pointsUsed = Math.min(
-    Math.max(0, Number(req.clientPoints)),
-    totalAfterPromotions,
-  );
-
-  //the final price of the oder after calculating all the discounts, the user's points and adding the shipping price 
-  const finalPrice = Number(totalAfterPromotions - pointsUsed + shipping);
-  //updating all the final prices 
+  const shipping = 0;
+  const pointsUsed = 0;
+  const finalPrice = totalAfterPromotions;
+  //updating all the final prices
   const query = `
   update orders
   set total_items=?,
       total_price=?,
+      shipping=?,
       final_price=?,
       points_used=?
   where order_id=? and status='PROCESSING'
@@ -326,6 +316,7 @@ const updateCartTotals = (req, res, next) => {
     [
       req.cartTotals.total_items,
       totalAfterPromotions,
+      shipping,
       finalPrice,
       pointsUsed,
       req.cartOrderId,
@@ -349,8 +340,6 @@ const updateCartTotals = (req, res, next) => {
     },
   );
 };
-
-
 
 //this middleware gets all the items of req.cartOrderId
 const getCartItems = (req, res, next) => {
@@ -384,7 +373,6 @@ const getCartItems = (req, res, next) => {
     next();
   });
 };
-
 
 //this middleware save the totals (total price-before points and shipping, and total amount of products )
 const getCartTotals = (req, res, next) => {
@@ -422,7 +410,6 @@ where order_id = ?
   });
 };
 
-
 //this middleware save the new requested quantity of the product
 const checkNewQuantity = (req, res, next) => {
   const quantity = Number(req.body.quantity);
@@ -438,9 +425,7 @@ const checkNewQuantity = (req, res, next) => {
   next();
 };
 
-
-
-//this middleware checks if the product to update (quantity) exists in the cart 
+//this middleware checks if the product to update (quantity) exists in the cart
 const checkCartItemForUpdate = (req, res, next) => {
   if (req.cartOrderId === null) {
     return res.status(409).json({
@@ -471,8 +456,7 @@ const checkCartItemForUpdate = (req, res, next) => {
   });
 };
 
-
-//this middleware update product's quantity in the cart and the total price of this product amount of pieces 
+//this middleware update product's quantity in the cart and the total price of this product amount of pieces
 const updateCartItemQuantity = (req, res, next) => {
   const newQuantity = req.newQuantity;
   const product = req.product;
@@ -502,8 +486,7 @@ const updateCartItemQuantity = (req, res, next) => {
   );
 };
 
-
-//this middleware removes a product from the cart 
+//this middleware removes a product from the cart
 const removeCartItem = (req, res, next) => {
   const { product_id } = req.body;
 
@@ -535,7 +518,6 @@ const removeCartItem = (req, res, next) => {
   });
 };
 
-
 //this middleware gets the client's points and save them in req.clientPoints
 const getClientsPoints = (req, res, next) => {
   const query = "select points from users where email=?";
@@ -560,7 +542,6 @@ const getClientsPoints = (req, res, next) => {
   });
 };
 
-
 //this middleware save all the order calculates results to display in front-end
 const calculateOrderSummary = (req, res, next) => {
   const originalTotal = req.cartItems.reduce(
@@ -569,14 +550,28 @@ const calculateOrderSummary = (req, res, next) => {
     0,
   );
 
-  const totalAfterPromotions = Number(req.cartTotals.total_price);
-  const promotionsDiscount = originalTotal - totalAfterPromotions;
-  const shipping = Number(req.cartTotals.shipping);
+const totalPrice = Number(req.cartTotals.total_price);
+const promotion = req.activePromotion;
 
-  const pointsUsed = Math.min(
-    Math.max(0, req.clientPoints),
-    totalAfterPromotions,
-  );
+const generalDiscount =
+  promotion && totalPrice >= Number(promotion.min_order_price)
+    ? Number(
+        ((totalPrice * Number(promotion.discount_percentage)) / 100).toFixed(2),
+      )
+    : 0;
+
+const totalAfterPromotions = Number((totalPrice - generalDiscount).toFixed(2));
+const promotionsDiscount = Number(
+  (originalTotal - totalAfterPromotions).toFixed(2),
+);
+
+  const shipping = Number(req.shippingSettings.shipping_price);
+
+  const minOrderPrice = Number(req.pointsSettings.min_order_price);
+  const pointsUsed =
+    totalAfterPromotions >= minOrderPrice
+      ? Math.min(Math.max(0, req.clientPoints), totalAfterPromotions)
+      : 0;
 
   const finalTotal = totalAfterPromotions - pointsUsed + shipping;
 
@@ -587,13 +582,16 @@ const calculateOrderSummary = (req, res, next) => {
     available_points: req.clientPoints,
     points_used: pointsUsed,
     shipping,
+    min_delivery_days: Number(req.shippingSettings.min_delivery_days),
+    max_delivery_days: Number(req.shippingSettings.max_delivery_days),
     final_total: Number(finalTotal),
   };
 
-  const query = `update orders set final_price=?, points_used=? where order_id=? and client_email=? and status='PROCESSING'`;
+  const query = `update orders set  shipping=?, final_price=?, points_used=?
+  where order_id=? and client_email=? and status='PROCESSING'`;
   db.query(
     query,
-    [finalTotal,pointsUsed, req.cartOrderId, req.session.user.email],
+    [ shipping, finalTotal, pointsUsed, req.cartOrderId, req.session.user.email],
     (err, results) => {
       if (err) {
         return res.status(500).json({
@@ -611,7 +609,6 @@ const calculateOrderSummary = (req, res, next) => {
     },
   );
 };
-
 
 //this middleware saves the orderId of the order which it's status is PROCESSING
 const checkProcessingOrder = (req, res, next) => {
@@ -636,6 +633,58 @@ const checkProcessingOrder = (req, res, next) => {
   });
 };
 
+const getShippingSettings = (req, res, next) => {
+  const query =
+    "select shipping_price, min_delivery_days, max_delivery_days from shipping_settings limit 1";
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get shipping settings",
+      });
+    if (results.length === 0)
+      return res.status(404).json({
+        success: false,
+        message: "Shipping settings not found",
+      });
+    req.shippingSettings = results[0];
+    next();
+  });
+};
+
+const getPointsSettings = (req, res, next) => {
+  const query =
+    "select min_order_price, earning_percentage from points_settings limit 1";
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get points settings",
+      });
+    if (results.length === 0)
+      return res.status(404).json({
+        success: false,
+        message: "Points settings not found",
+      });
+    req.pointsSettings = results[0];
+    next();
+  });
+};
+
+const getActivePromotion = (req, res, next) => {
+  const query =
+    "select * from promotions_settings where status='Active' limit 1";
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get active promotion",
+      });
+    req.activePromotion = results[0] || null;
+    next();
+  });
+};
+
 module.exports = {
   checkingRole,
   checkExisitingCart,
@@ -656,4 +705,7 @@ module.exports = {
   getClientsPoints,
   calculateOrderSummary,
   checkProcessingOrder,
+  getShippingSettings,
+  getPointsSettings,
+  getActivePromotion,
 };

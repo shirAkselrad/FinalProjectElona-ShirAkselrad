@@ -1,13 +1,15 @@
 .container {
   width: 100%;
-  padding: 28px;
+  margin: 0;
+  padding: 35px 45px;
   background-color: #ffffff;
   border: 1px solid #e4d8ce;
   box-sizing: border-box;
 }
 
 .header {
-  margin-bottom: 28px;
+  text-align: center;
+  margin-bottom: 35px;
 }
 
 .header h2 {
@@ -27,7 +29,10 @@
 .fields {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
+  gap: 35px;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
 }
 
 .fields > * {
@@ -36,12 +41,45 @@
 
 .actions {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 28px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.actions button {
+  width: 230px;
+  max-width: 100%;
 }
 
 @media (max-width: 800px) {
+  .container {
+    padding: 30px;
+  }
+
   .fields {
     grid-template-columns: 1fr;
+    max-width: 400px;
+    gap: 25px;
+  }
+
+  .actions button {
+    width: 230px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 25px 20px;
+  }
+
+  .header h2 {
+    font-size: 21px;
+  }
+
+  .fields {
+    max-width: 100%;
+  }
+
+  .actions button {
+    width: 100%;
   }
 }

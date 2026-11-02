@@ -4,7 +4,7 @@ export const emptyPromotion = {
   min_order_price: "",
   start_date: "",
   end_date: "",
-  status:"Not Active"
+  status: "Not Active",
 };
 
 export const validatePromotion = (promotion) => {
@@ -32,12 +32,17 @@ export const validatePromotion = (promotion) => {
 
   const startDate = new Date(promotion.start_date);
   const endDate = new Date(promotion.end_date);
+  const now = new Date();
 
   if (!promotion.start_date || Number.isNaN(startDate.getTime()))
     errors.start_date = "Enter a valid start date.";
+  else if (startDate < now)
+    errors.start_date = "Start date cannot be in the past.";
 
   if (!promotion.end_date || Number.isNaN(endDate.getTime()))
     errors.end_date = "Enter a valid end date.";
+  else if (endDate <= now) 
+    errors.end_date = "End date cannot be in the past.";
   else if (!errors.start_date && endDate <= startDate)
     errors.end_date = "End date must be after start date.";
 

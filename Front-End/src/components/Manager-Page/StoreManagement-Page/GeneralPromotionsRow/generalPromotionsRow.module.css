@@ -12,6 +12,7 @@
   color: #76503a;
   border-bottom: 1px solid #eee5df;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .status {
@@ -31,4 +32,12 @@
 .inactive {
   color: #a15c55;
   background-color: #f8edeb;
+}
+
+.actionBtn {
+  width: auto;
+  min-width: 125px;
+  padding: 10px 18px;
+  font-size: 11px;
+  white-space: nowrap;
 }

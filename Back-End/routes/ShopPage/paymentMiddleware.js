@@ -1,7 +1,6 @@
 const dbSingleton = require("../../dbSingleton");
 const db = dbSingleton.getConnection();
 const { getPayPalAccessToken } = require("../../services/paypal");
-
 const checkUserLoggedIn = (req, res, next) => {
   if (!req?.session?.user?.email)
     return res.status(401).json({
@@ -11,6 +10,38 @@ const checkUserLoggedIn = (req, res, next) => {
   next();
 };
 
+const beginPaymentTransaction = (req, res, next) => {
+  dbSingleton.getPoolConnection((err, connection) => {
+    if (err) return next(err);
+    connection.beginTransaction((err) => {
+      if (err) {
+        connection.release();
+        return next(err);
+      }
+      req.paymentDb = connection;
+      next();
+    });
+  });
+};
+
+const commitPaymentTransaction = (req, res, next) => {
+  req.paymentDb.commit((err) => {
+    if (err) return next(err);
+    req.paymentDb.release();
+    req.paymentCommitted = true;
+    req.paymentDb = null;
+    next();
+  });
+};
+
+const rollbackPaymentTransaction = (err, req, res, next) => {
+  if (!req.paymentDb) return next(err);
+  req.paymentDb.rollback(() => {
+    req.paymentDb.release();
+    req.paymentDb = null;
+    next(err);
+  });
+};
 const verifyPayment = async (req, res, next) => {
   const { paypal_order_id } = req.body;
 
@@ -97,23 +128,43 @@ const verifyPayment = async (req, res, next) => {
 };
 
 const updateOrderStatus = (req, res, next) => {
-  const query = `update orders set status="PAID" where order_id=? and client_email=? and status="PROCESSING"`;
-  db.query(query, [req.orderId, req.session.user.email], (err, result) => {
-    if (err) return next(err);
-    if (result.affectedRows !== 1)
-      return next(new Error("Couldn't update order status"));
-    next();
-  });
+  const query = `update orders set status="PAID", min_delivery_date=date_add(curdate(), interval ? day), max_delivery_date=date_add(curdate(), interval ? day) where order_id=? and client_email=? and status="PROCESSING"`;
+  req.paymentDb.query(
+    query,
+    [
+      req.shippingSettings.min_delivery_days,
+      req.shippingSettings.max_delivery_days,
+      req.orderId,
+      req.session.user.email,
+    ],
+    (err, result) => {
+      if (err) return next(err);
+      if (result.affectedRows !== 1)
+        return next(new Error("Couldn't update order status"));
+      next();
+    },
+  );
 };
 
 const updateClientPoints = (req, res, next) => {
-  const query = "update users set points=5 where email=?";
-  db.query(query, [req.session.user.email], (err, result) => {
-    if (err) return next(err);
-    if (result.affectedRows !== 1)
-      return next(new Error("Couldn't update client's points"));
-    next();
-  });
+  const order = req.order;
+  const pointsUsed = Number(order.points_used);
+  const earnedPoints = Math.round(
+    ((Number(order.total_price) - pointsUsed) *
+      Number(req.pointsSettings.earning_percentage)) /
+      100,
+  );
+  const query = "update users set points=points-?+? where email=?";
+  req.paymentDb.query(
+    query,
+    [pointsUsed, earnedPoints, req.session.user.email],
+    (err, result) => {
+      if (err) return next(err);
+      if (result.affectedRows !== 1)
+        return next(new Error("Couldn't update client's points"));
+      next();
+    },
+  );
 };
 
 const completedPayment = (req, res) => {
@@ -202,7 +253,7 @@ const createPayPalOrder = async (req, res) => {
   }
 };
 
-const recoverPayPalOrder = async (req, res) => {
+const recoverPayPalOrder = async (req, res, next) => {
   const { paypal_order_id } = req.body;
   const order = req.order;
   try {
@@ -231,6 +282,8 @@ const recoverPayPalOrder = async (req, res) => {
       return res.status(409).json({
         success: false,
         message: "PayPal order verification failed",
+        paypal_status: details.status,
+        capture_completed: false,
       });
     }
     const captures = purchaseUnit?.payments?.captures || [];
@@ -242,17 +295,13 @@ const recoverPayPalOrder = async (req, res) => {
     );
 
     if (captureCompleted) {
-      return res.status(409).json({
-        success: false,
-        message: "Payment was completed, but the order requires recovery",
-        order_id: order.order_id,
-        capture_completed: true,
-      });
+      req.orderId = order.order_id;
+      return next();
     }
 
-    return res.status(200).json({
-      success: true,
-      order_id: order.order_id,
+    return res.status(409).json({
+      success: false,
+      message: "Payment has not been captured",
       paypal_status: details.status,
       capture_completed: false,
     });
@@ -315,6 +364,9 @@ const checkPayPalOrderStatus = async (req, res) => {
 
 module.exports = {
   checkUserLoggedIn,
+  beginPaymentTransaction,
+  commitPaymentTransaction,
+  rollbackPaymentTransaction,
   verifyPayment,
   updateOrderStatus,
   updateClientPoints,

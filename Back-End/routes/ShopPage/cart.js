@@ -21,6 +21,9 @@ const {
   getClientsPoints,
   calculateOrderSummary,
   checkProcessingOrder,
+  getShippingSettings,
+  getPointsSettings,
+  getActivePromotion
 } = require("./cartMiddleware");
 
 router.post(
@@ -32,8 +35,7 @@ router.post(
   checkExistingCartItem, //checking if the requested product already exists in the cart
   addOrUpdateCartItem, //updating the cart with the requested product
   calculateCartTotals, //calculating the totals order price and products amount (without points and shipping)
-  getClientsPoints, //getting the amount of points the client has
-  updateCartTotals, //calculating final price (after shipping and points)
+  updateCartTotals, //updating cart totals without points and shipping
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -60,8 +62,6 @@ router.get(
   },
 );
 
-
-
 router.put(
   "/updateQuantity",
   checkingRole, //checking that the user's role is "Client"
@@ -71,8 +71,7 @@ router.put(
   checkCartItemForUpdate, //checking if the product already exists in the cart
   updateCartItemQuantity, //updating the requested amount and final price of this amount (not for all the cart)
   calculateCartTotals, //calculating the totals order price and products amount (without points and shipping)
-  getClientsPoints, //getting the amount of points the client has
-  updateCartTotals, //calculating final price (after shipping and points)
+  updateCartTotals, //updating cart totals without points and shipping
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -91,8 +90,7 @@ router.delete(
   calculateCartTotals, //calculating the totals order price and products amount
   deleteEmptyCart, //in case there is no single product in the cart deleting the order (orders)
   checkIfCartDeleted, //checking if the cart was deleted (if yes, resting the order req info)
-  getClientsPoints, //getting the amount of points the client has
-  updateCartTotals, //calculating final price (after shipping and points)
+  updateCartTotals, //updating cart totals without points and shipping
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -110,7 +108,10 @@ router.get(
   getCartItems, //getting all the current cart items by cartOrderId
   getCartTotals, //getting all the totals(order price-before points and shipping, final amount of products)
   getClientsPoints, //getting the amount of points the client has
-  calculateOrderSummary,//saving all the calucaltes results for displaying in FE
+  getShippingSettings,
+  getPointsSettings,
+  getActivePromotion,
+  calculateOrderSummary, //saving all the calucaltes results for displaying in FE
   (req, res) => {
     return res.status(200).json({
       success: true,

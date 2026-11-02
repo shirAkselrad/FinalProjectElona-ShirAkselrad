@@ -12,6 +12,7 @@ function PointsSettings() {
   });
   const [errors, setErrors] = useState({});
   const [popup, setPopup] = useState(null);
+  const [originalSettings, setOriginalSettings] = useState(null);
 
   useEffect(() => {
     const getPointsSettings = async () => {
@@ -22,7 +23,11 @@ function PointsSettings() {
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
-        if (data.success && data.settings) setSettings(data.settings);
+        console.log("Points settings response:", data);
+        if (data.success && data.settings) {
+          setSettings(data.settings);
+          setOriginalSettings(data.settings);
+        }
       } catch (error) {
         console.error("Error getting points settings: ", error);
         setPopup({
@@ -35,14 +40,12 @@ function PointsSettings() {
   }, []);
 
   const handleChange = (field, value) => {
-    setSettings((prev) => ({
-      ...prev,
+    const updatedSettings = {
+      ...settings,
       [field]: value,
-    }));
-    setErrors((prev) => ({
-      ...prev,
-      [field]: "",
-    }));
+    };
+    setSettings(updatedSettings);
+    setErrors(validatePointsSettings(updatedSettings));
   };
 
   const handleSave = async () => {
@@ -64,12 +67,13 @@ function PointsSettings() {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      if (data.success)
+      if (data.success) {
+        setOriginalSettings({ ...settings });
         setPopup({
           type: "success",
           message: "Points settings updated successfully!",
         });
-      else throw new Error("Couldn't update points settings");
+      } else throw new Error("Couldn't update points settings");
     } catch (error) {
       console.error("Error updating points settings: ", error);
       setPopup({
@@ -79,6 +83,24 @@ function PointsSettings() {
     }
   };
 
+  const isValid = Object.keys(validatePointsSettings(settings)).length === 0;
+  const hasChanges =
+    originalSettings !== null &&
+    (Number(settings.min_order_price) !==
+      Number(originalSettings.min_order_price) ||
+      Number(settings.earning_percentage) !==
+        Number(originalSettings.earning_percentage));
+
+  const isSavedDisabled = !isValid || !hasChanges;
+
+  console.log({
+    settings,
+    originalSettings,
+    isValid,
+    hasChanges,
+    isSavedDisabled,
+    validationErrors: validatePointsSettings(settings),
+  });
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -93,6 +115,7 @@ function PointsSettings() {
           error={errors.min_order_price}
           value={settings.min_order_price}
           onChange={(e) => handleChange("min_order_price", e.target.value)}
+          onFocus={(e) => e.target.select()}
         />
 
         <InputField
@@ -101,18 +124,23 @@ function PointsSettings() {
           step="0.01"
           error={errors.earning_percentage}
           value={settings.earning_percentage}
+          onFocus={(e) => e.target.select()}
           onChange={(e) => handleChange("earning_percentage", e.target.value)}
         />
       </div>
       <div className={styles.actions}>
-        <GeneralBtn text="SAVE CHANGES" onClick={handleSave} />
+        <GeneralBtn
+          text="SAVE CHANGES"
+          onClick={handleSave}
+          disabled={isSavedDisabled}
+        />
       </div>
       {popup && (
         <MessagePopup
           message={popup.message}
           type={popup.type}
           onClose={() => setPopup(null)}
-          autoClose={popup.type === "success"}
+          autoClose={false}
         />
       )}
     </div>

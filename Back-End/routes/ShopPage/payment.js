@@ -4,10 +4,13 @@ const { sendConfirmationEmail } = require("./paymentEmailMiddleware");
 const {
   getOrderItems,
   updateInventory,
-  updateProductsStatus
+  updateProductsStatus,
 } = require("./updateInventoryMiddleware");
 const {
   checkUserLoggedIn,
+  beginPaymentTransaction,
+  commitPaymentTransaction,
+  rollbackPaymentTransaction,
   verifyPayment,
   updateOrderStatus,
   updateClientPoints,
@@ -18,12 +21,13 @@ const {
   recoverPayPalOrder,
   checkPayPalOrderStatus,
 } = require("./paymentMiddleware");
+const { getShippingSettings, getPointsSettings } = require("./cartMiddleware");
 
 const handlePaymentError = (err, req, res, next) => {
   console.error("Payment processing error: ", err);
   return res.status(500).json({
     success: false,
-    message: "Payment was captured, but order processing failed",
+    message: "Payment processing failed. Please check your order status",
   });
 };
 
@@ -39,19 +43,28 @@ router.post(
   checkUserLoggedIn,
   checkPayPalOrderId,
   getProcessingOrder,
+  getShippingSettings,
+  getPointsSettings,
   verifyPayment,
+  beginPaymentTransaction,
+  updateOrderStatus,
   getOrderItems,
   updateInventory,
   updateProductsStatus,
-  updateOrderStatus,
   updateClientPoints,
+  commitPaymentTransaction,
   sendConfirmationEmail,
   completedPayment,
+  rollbackPaymentTransaction,
   handlePaymentError,
 );
 
 // Temporary route to check an existing PayPal order status
-router.get("/checkPayPalOrder/:paypalOrderId",checkUserLoggedIn,checkPayPalOrderStatus);
+router.get(
+  "/checkPayPalOrder/:paypalOrderId",
+  checkUserLoggedIn,
+  checkPayPalOrderStatus,
+);
 
 // Check whether an existing PayPal order can be recovered
 router.post(
@@ -59,7 +72,20 @@ router.post(
   checkUserLoggedIn,
   checkPayPalOrderId,
   getProcessingOrder,
+  getShippingSettings,
+  getPointsSettings,
   recoverPayPalOrder,
+  beginPaymentTransaction,
+  updateOrderStatus,
+  getOrderItems,
+  updateInventory,
+  updateProductsStatus,
+  updateClientPoints,
+  commitPaymentTransaction,
+  sendConfirmationEmail,
+  completedPayment,
+  rollbackPaymentTransaction,
+  handlePaymentError,
 );
 
 module.exports = router;

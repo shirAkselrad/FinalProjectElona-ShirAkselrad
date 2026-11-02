@@ -4,7 +4,6 @@ import InputField from "../../../General/InputField/InputField";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn";
 import { emptyPromotion, validatePromotion } from "./generalPromotions.js";
 import GeneralPromotionsTable from "../GeneralPromotionsTable/GeneralPromotionsTable.jsx";
-import CheckBoxField from "../../../General/CheckBoxField/CheckBoxField.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 function GeneralPromotions() {
   const [promotion, setPromotion] = useState({ ...emptyPromotion });
@@ -63,6 +62,7 @@ function GeneralPromotions() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...promotion,
+          status: "Not Active",
           start_date: promotion.start_date.replace("T", " "),
           end_date: promotion.end_date.replace("T", " "),
         }),
@@ -72,11 +72,12 @@ function GeneralPromotions() {
       const data = await response.json();
       if (!data.success) throw new Error("Couldn't create promotion");
       setPromotions((prev) => [
-        ...prev.map((item) => ({
-          ...item,
-          status: promotion.status === "Active" ? "Not Active" : item.status,
-        })),
-        { ...promotion, promotion_id: data.promotion_id },
+        ...prev,
+        {
+          ...promotion,
+          status: "Not Active",
+          promotion_id: data.promotion_id,
+        },
       ]);
       setPromotion({ ...emptyPromotion });
       setErrors({});
@@ -93,8 +94,7 @@ function GeneralPromotions() {
     }
   };
 
-  const handleActivate = async (index) => {
-    const promotion_id = promotions[index].promotion_id;
+  const handleActivate = async (promotion_id) => {
     try {
       const response = await fetch("/api/manager/activatePromotion", {
         method: "PUT",
@@ -109,9 +109,9 @@ function GeneralPromotions() {
       const data = await response.json();
       if (!data.success) throw new Error("Couldn't activate promotion");
       setPromotions((prev) =>
-        prev.map((item, i) => ({
+        prev.map((item) => ({
           ...item,
-          status: i === index ? "Active" : "Not Active",
+          status: item.promotion_id === promotion_id ? "Active" : "Not Active",
         })),
       );
       setPopup({
@@ -127,8 +127,7 @@ function GeneralPromotions() {
     }
   };
 
-  const handleDeactivate = async (index) => {
-    const promotion_id = promotions[index].promotion_id;
+  const handleDeactivate = async (promotion_id) => {
     try {
       const response = await fetch("/api/manager/deactivatePromotion", {
         method: "PUT",
@@ -145,8 +144,8 @@ function GeneralPromotions() {
       if (!data.success) throw new Error("Couldn't deactivate promotion");
 
       setPromotions((prev) =>
-        prev.map((item, i) =>
-          i === index ? { ...item, status: "Not Active" } : item,
+        prev.map((item) =>
+          item.promotion_id === promotion_id ? { ...item, status: "Not Active" } : item,
         ),
       );
 
@@ -163,6 +162,19 @@ function GeneralPromotions() {
     }
   };
 
+  const now = new Date();
+  const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+  const isFormValid =
+    Object.keys(validatePromotion(promotion, promotions)).length == 0;
+
+  const currentPromotions = promotions.filter(
+    (item) => new Date(item.end_date) >= new Date(),
+  );
+  const promotionHistory = promotions.filter(
+    (item) => new Date(item.end_date) < new Date(),
+  );
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -180,6 +192,8 @@ function GeneralPromotions() {
           <InputField
             label="Discount Percentage (%)"
             type="number"
+            min="1"
+            max="100"
             step="1"
             error={errors.discount_percentage}
             value={promotion.discount_percentage}
@@ -192,6 +206,7 @@ function GeneralPromotions() {
             label="Minimum Order Price (₪)"
             type="number"
             step="0.01"
+            min="0"
             error={errors.min_order_price}
             value={promotion.min_order_price}
             onChange={(e) => handleChange("min_order_price", e.target.value)}
@@ -200,6 +215,8 @@ function GeneralPromotions() {
           <InputField
             label="Start Date"
             type="datetime-local"
+            min={localNow}
+            max={promotion.end_date || undefined}
             value={promotion.start_date}
             error={errors.start_date}
             onChange={(e) => handleChange("start_date", e.target.value)}
@@ -208,35 +225,37 @@ function GeneralPromotions() {
           <InputField
             label="End Date"
             type="datetime-local"
+            min={
+              promotion.start_date && promotion.start_date > localNow
+                ? promotion.start_date
+                : localNow
+            }
             value={promotion.end_date}
             error={errors.end_date}
             onChange={(e) => handleChange("end_date", e.target.value)}
           />
-
-          <div className={styles.checkBox}>
-            <CheckBoxField
-              text="Activate promotion upon creation"
-              checked={promotion.status === "Active"}
-              onChange={(e) =>
-                handleChange(
-                  "status",
-                  e.target.checked ? "Active" : "Not Active",
-                )
-              }
-            />
-          </div>
         </div>
 
         <div className={styles.actions}>
-          <GeneralBtn text="CREATE PROMOTION" onClick={handleAdd} />
+          <GeneralBtn
+            text="CREATE PROMOTION"
+            onClick={handleAdd}
+            disabled={!isFormValid}
+          />
         </div>
 
         <div className={styles.list}>
-          <h3>Existing Promotions</h3>
+          <h3>Current & Upcoming Promotions</h3>
           <GeneralPromotionsTable
-            promotions={promotions}
+            promotions={currentPromotions}
             onActivate={handleActivate}
             onDeactivate={handleDeactivate}
+          />
+
+          <h3>Promotions History</h3>
+          <GeneralPromotionsTable
+            promotions={promotionHistory}
+            readOnly={true}
           />
         </div>
       </div>

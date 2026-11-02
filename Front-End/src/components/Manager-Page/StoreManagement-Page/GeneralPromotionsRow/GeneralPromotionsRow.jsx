@@ -1,15 +1,34 @@
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn";
 import styles from "./generalPromotionsRow.module.css";
 
-function GeneralPromotionsRow({ promotion, index, onActivate, onDeactivate }) {
+function GeneralPromotionsRow({
+  promotion,
+  onActivate,
+  onDeactivate,
+  readOnly = false,
+}) {
   const isActive = promotion.status === "Active";
+
+  const now = new Date();
+  const canActivate =
+    new Date(promotion.start_date) <= now && new Date(promotion.end_date) > now;
+
+  const formateDate = (date) =>
+    new Date(date).toLocaleString("he-IL", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
   return (
-    <tr>
+    <tr className={styles.row}>
       <td>{promotion.name}</td>
       <td>{promotion.discount_percentage}%</td>
       <td>₪{promotion.min_order_price}</td>
-      <td>{new Date(promotion.start_date).toLocaleString("he-IL")}</td>
-      <td>{new Date(promotion.end_date).toLocaleString("he-IL")}</td>
+      <td>{formateDate(promotion.start_date)}</td>
+      <td>{formateDate(promotion.end_date)}</td>
 
       <td>
         <span
@@ -20,14 +39,21 @@ function GeneralPromotionsRow({ promotion, index, onActivate, onDeactivate }) {
           {promotion.status}
         </span>
       </td>
-
-      <td>
-        <GeneralBtn
-          text={isActive ? "DEACTIVATE" : "ACTIVATE"}
-          onClick={() => (isActive ? onDeactivate(index) : onActivate(index))}
-        />
-      </td>
+      {!readOnly && (
+        <td>
+          <GeneralBtn
+            className={styles.actionBtn}
+            text={isActive ? "DEACTIVATE" : "ACTIVATE"}
+            disabled={!isActive && !canActivate}
+            onClick={() =>
+              isActive
+                ? onDeactivate(promotion.promotion_id)
+                : onActivate(promotion.promotion_id)
+            }
+          />
+        </td>
+      )}
     </tr>
   );
 }
-export default GeneralPromotionsRow; 
+export default GeneralPromotionsRow;
