@@ -1,12 +1,26 @@
+
 .container {
   min-height: 80vh;
   width: 100%;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   padding: 40px 20px;
   box-sizing: border-box;
+
+ 
+
+background-color: #4b1426;
+background-image: url("/backgrounds/background.png");
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+
+
 }
+
 
 .successCard {
   width: 100%;
@@ -20,10 +34,11 @@
   text-align: center;
   gap: 18px;
 
-  background-color: #fff;
-  border: 1px solid #e8e0d9;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(45, 30, 20, 0.08);
+  background-color: #f6f0e9;
+  border: 1px solid #e8d7d2;
+  border-radius: 10px;
+
+  box-shadow: 0 12px 40px rgba(25, 5, 13, 0.2);
 }
 
 .successIcon {
@@ -42,14 +57,12 @@
 
 .successIcon::before {
   content: "";
-
   position: absolute;
 
   width: 52px;
   height: 52px;
 
-  border: 1.5px solid #c9a15f;
-
+  border: 1.5px solid #c9a9ad;
   transform: rotate(45deg);
 }
 
@@ -61,30 +74,59 @@
   font-size: 36px;
   font-weight: 500;
 
-  color: #c9a15f;
+  color: #6b2939;
 }
 
 .successCard h1 {
   margin: 0;
-  color: #38291f;
+
+  font-family: "Playfair Display", serif;
   font-size: 30px;
-  font-weight: 500;
+  font-weight: 400;
+
+  color: #4b1426;
 }
 
 .successCard p {
   margin: 0;
-  color: #6c5b50;
-  font-size: 15px;
-  line-height: 1.7;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 13px;
+  line-height: 1.8;
+
+  color: #765563;
 }
 
 .successCard strong {
-  color: #38291f;
+  color: #4b1426;
   font-weight: 600;
 }
 
 .backButton {
   margin-top: 20px;
   min-width: 190px;
+
+  background-color: #4b1426;
+  border: 1px solid #4b1426;
+
+  color: #f6f0e9;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  letter-spacing: 2px;
 }
 
+.backButton:not(:disabled):hover {
+  background-color: #6b2939;
+  border-color: #6b2939;
+}
+
+@media (max-width: 600px) {
+  .successCard {
+    padding: 40px 24px;
+  }
+
+  .successCard h1 {
+    font-size: 26px;
+  }
+}

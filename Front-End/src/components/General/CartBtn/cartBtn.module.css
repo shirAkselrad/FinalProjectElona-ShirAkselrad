@@ -1,13 +1,21 @@
+
 .cart {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+
   background: none;
   border: none;
-  color: #e8c4a3;
+  color: #f6f0e9;
   padding: 5px;
   cursor: pointer;
+
+  transition: color 0.25s ease;
+}
+
+.cart:hover {
+  color: #e8d7d2;
 }
 
 .cart svg {
@@ -30,8 +38,8 @@
   justify-content: center;
 
   border-radius: 50%;
-  background-color: #d8afa6;
-  color: #382116;
+  background-color: #e8d7d2;
+  color: #4b1426;
 
   font-family: "Libre Baskerville", serif;
   font-size: 10px;
@@ -44,6 +52,6 @@
   width: 100%;
   height: 100%;
 
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(25, 5, 13, 0.55);
   z-index: 1000;
 }

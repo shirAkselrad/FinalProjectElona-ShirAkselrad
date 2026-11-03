@@ -1,8 +1,9 @@
-.plusBtn {
-  width: 32px;
-  height: 32px;
 
-  border: 1px solid #d9c4b5;
+.plusBtn {
+  width: 34px;
+  height: 34px;
+
+  border: 1px solid #6b2939;
   border-radius: 50%;
 
   background-color: transparent;
@@ -10,30 +11,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 300;
-  color: #8a6f60;
+  color: #4b1426;
 
   cursor: pointer;
 
-  transition: all 0.3s ease;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
 }
 
-.plusBtn:hover {
-  background-color: #8a6f60;
-  color: white;
-  border-color: #8a6f60;
+.plusBtn:hover:not(:disabled) {
+  background-color: #4b1426;
+  color: #f6f0e9;
+  border-color: #4b1426;
 }
-
 
 .plusBtn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-}
-
-.plusBtn:disabled:hover {
-  background-color: transparent;
-  color: #8a6f60;
-  border-color: #d9c4b5;
 }

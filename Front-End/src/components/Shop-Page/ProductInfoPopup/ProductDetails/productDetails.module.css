@@ -1,60 +1,80 @@
+
 .container {
   width: 100%;
 }
 
 .header {
   padding-bottom: 20px;
-  border-bottom: 1px solid #eaded7;
+  border-bottom: 1px solid #e8d7d2;
 }
 
 .category {
   display: block;
-  margin-bottom: 8px;
-  color: #b58a6c;
-  font-size: 9px;
-  letter-spacing: 3px;
+  margin-bottom: 10px;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 2px;
   text-transform: uppercase;
+
+  color: #997783;
 }
 
 .name {
-  max-width: 330px;
-  margin: 0 0 16px;
-  color: #a36f55;
-  font-size: 22px;
+  max-width: 400px;
+  margin: 0 0 18px;
+
+  font-family: "Playfair Display", serif;
+  font-size: 30px;
   line-height: 1.3;
-  font-weight: 600;
+  font-weight: 400;
+
+  color: #4b1426;
 }
 
+
 .price {
-  margin-top: 4px;
+  margin-top: 12px;
 }
+
 
 .options {
   display: flex;
   flex-direction: column;
   gap: 22px;
+
   padding: 24px 0;
-  border-bottom: 1px solid #eaded7;
+  border-bottom: 1px solid #e8d7d2;
 }
 
+
 .description {
-  margin: 20px 0 0;
-  color: #6b554a;
+  margin: 22px 0;
+
+  font-family: "Libre Baskerville", serif;
   font-size: 13px;
-  line-height: 1.7;
+  font-weight: 400;
+  line-height: 1.9;
+
+  color: #6b4554;
 }
+
+
 .limitedStock {
   display: inline-block;
   width: fit-content;
+
   margin: 6px 0 8px;
-  padding: 5px 10px;
+  padding: 6px 12px;
 
-  background-color: #a66c4f;
-  color: #fff;
+  background-color: #6b2939;
+  color: #f6f0e9;
 
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1px;
 
   border-radius: 2px;
 }
@@ -62,21 +82,30 @@
 .availableStock {
   display: inline-block;
   width: fit-content;
-  margin-top: 12px;
-  padding: 7px 12px;
 
-  background-color: #f5eee9;
-  border: 1px solid #eaded7;
+  margin-top: 14px;
+  padding: 8px 12px;
+
+  background-color: #f0e4e1;
+  border: 1px solid #d8b8b5;
   border-radius: 2px;
 
-  color: #8a624d;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  color: #6b2939;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
 .outOfStock {
-  background-color: #f3e0d8;
-  border-color: #d9ab98;
-  color: #a3543d;
+  background-color: #e8d7d2;
+  border-color: #c9a9ad;
+  color: #4b1426;
+}
+
+@media (max-width: 768px) {
+  .name {
+    font-size: 26px;
+  }
 }

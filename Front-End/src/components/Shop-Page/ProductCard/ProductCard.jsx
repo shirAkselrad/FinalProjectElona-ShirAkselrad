@@ -15,8 +15,8 @@ function ProductCard({
   onAddToCart,
   previewMode = false,
 }) {
-  const isOutOfStock = (product.status =
-    "Active" && Number(product.quantity) <= 0);
+  const isOutOfStock =
+    product.status === "Active" && Number(product.quantity) <= 0;
   return (
     <div className={styles.productCard}>
       <div className={styles.imageContainer}>

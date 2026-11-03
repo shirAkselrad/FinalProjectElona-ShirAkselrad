@@ -1,20 +1,21 @@
+
 .shop {
   background: transparent;
   border: none;
-  padding: 6px;
+  padding: 10px;
 
   font-family: "Libre Baskerville", serif;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 400;
 
   letter-spacing: 0.5px;
-  color: #e8c4a3;
+  color: #f6f0e9;
+  text-decoration: none;
 
   cursor: pointer;
-
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
 
 .shop:hover {
-  color: #ad7949;
+  color: #e8d7d2;
 }

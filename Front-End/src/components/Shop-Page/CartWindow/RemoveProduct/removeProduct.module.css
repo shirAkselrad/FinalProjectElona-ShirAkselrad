@@ -1,14 +1,22 @@
+
 .removeProduct {
-  background: none;
+  background: transparent;
   border: none;
-  color: #c5aa96;
-  font-size: 22px;
+
+  color: #997783;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+
   cursor: pointer;
   padding: 4px;
-  line-height: 1;
-  transition: color 0.2s ease;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
 }
 
 .removeProduct:hover {
-  color: #875b43;
+  color: #4b1426;
+  transform: scale(1.1);
 }

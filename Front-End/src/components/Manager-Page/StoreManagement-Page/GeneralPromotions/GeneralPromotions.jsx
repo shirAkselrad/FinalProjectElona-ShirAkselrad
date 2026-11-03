@@ -5,6 +5,7 @@ import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn";
 import { emptyPromotion, validatePromotion } from "./generalPromotions.js";
 import GeneralPromotionsTable from "../GeneralPromotionsTable/GeneralPromotionsTable.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
+import DateTimePicker from "../../../General/DateTimePicker/DateTimePicker.jsx";
 function GeneralPromotions() {
   const [promotion, setPromotion] = useState({ ...emptyPromotion });
   const [promotions, setPromotions] = useState([]);
@@ -62,7 +63,6 @@ function GeneralPromotions() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...promotion,
-          status: "Not Active",
           start_date: promotion.start_date.replace("T", " "),
           end_date: promotion.end_date.replace("T", " "),
         }),
@@ -145,7 +145,9 @@ function GeneralPromotions() {
 
       setPromotions((prev) =>
         prev.map((item) =>
-          item.promotion_id === promotion_id ? { ...item, status: "Not Active" } : item,
+          item.promotion_id === promotion_id
+            ? { ...item, status: "Not Active" }
+            : item,
         ),
       );
 
@@ -212,27 +214,26 @@ function GeneralPromotions() {
             onChange={(e) => handleChange("min_order_price", e.target.value)}
           />
 
-          <InputField
+          <DateTimePicker
             label="Start Date"
-            type="datetime-local"
-            min={localNow}
-            max={promotion.end_date || undefined}
             value={promotion.start_date}
+            onChange={(value) => handleChange("start_date", value)}
+            minDate={new Date()}
+            maxDate={promotion.end_date || undefined}
             error={errors.start_date}
-            onChange={(e) => handleChange("start_date", e.target.value)}
           />
 
-          <InputField
+          <DateTimePicker
             label="End Date"
-            type="datetime-local"
-            min={
-              promotion.start_date && promotion.start_date > localNow
-                ? promotion.start_date
-                : localNow
-            }
             value={promotion.end_date}
+            onChange={(value) => handleChange("end_date", value)}
+            minDate={
+              promotion.start_date &&
+              new Date(promotion.start_date) > new Date()
+                ? promotion.start_date
+                : new Date()
+            }
             error={errors.end_date}
-            onChange={(e) => handleChange("end_date", e.target.value)}
           />
         </div>
 

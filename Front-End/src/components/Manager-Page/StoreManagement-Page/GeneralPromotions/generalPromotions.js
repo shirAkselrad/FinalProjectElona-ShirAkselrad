@@ -4,7 +4,6 @@ export const emptyPromotion = {
   min_order_price: "",
   start_date: "",
   end_date: "",
-  status: "Not Active",
 };
 
 export const validatePromotion = (promotion) => {

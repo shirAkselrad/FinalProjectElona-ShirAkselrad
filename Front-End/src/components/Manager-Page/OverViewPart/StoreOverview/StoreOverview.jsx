@@ -7,6 +7,7 @@ import LowStock from "../LowStockPart/LowStock/LowStock.jsx";
 import { useOutletContext } from "react-router-dom";
 import EditInventoryPopup from "../../../Employee-Page/InventoryPage/EditInventoryPopup/EditInventoryPopup.jsx";
 import OrderPopupEdit from "../../../Employee-Page/OrdersPage/OrderPopupEdit-Window/OrderPopupEdit/OrderPopupEdit.jsx";
+import PromotionAlerts from "../PromotionAlerts/PromotionAlerts.jsx"; 
 
 function StoreOverview() {
   const { inventory, onSave, managerOrders, setManagerOrders } =
@@ -73,6 +74,9 @@ function StoreOverview() {
 
       <div className={styles.lowStock}>
         <LowStock products={stockAlerts} onEdit={setSelectedProduct} />
+      </div>
+      <div>
+        <PromotionAlerts/>
       </div>
       {selectedProduct && (
         <EditInventoryPopup

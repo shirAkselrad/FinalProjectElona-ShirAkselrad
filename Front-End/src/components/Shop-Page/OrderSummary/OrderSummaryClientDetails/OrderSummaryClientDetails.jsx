@@ -137,7 +137,7 @@ function OrderSummaryClientDetails({
 
         <div className={styles.save}>
           <div
-            className={`${styles.actions}${mode === "account" ? styles.singleAction : ""}`}
+            className={`${styles.actions} ${mode === "account" ? styles.singleAction : ""}`}
           >
             {mode === "checkout" && (
               <GeneralBtn

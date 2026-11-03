@@ -1,17 +1,21 @@
 .shopPage {
   width: 100%;
   min-height: 100vh;
+  box-sizing: border-box;
 
- background: transparent;
+  background-color: #4b1426;
+  background-image: url("../../../assets//backgrounds/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 
-  padding: 40px 0 70px;
+  padding: 55px 35px 90px;
 }
-
 .controls {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
 
-  margin: 0 auto 40px;
+  margin: 0 auto 55px;
 
   display: flex;
   flex-direction: column;
@@ -22,8 +26,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
 
-  gap: 10px;
+  gap: 14px;
+  margin-top: 30px;
+}
 
-  margin-top: 24px;
+@media (max-width: 768px) {
+  .shopPage {
+    padding: 35px 16px 60px;
+  }
+
+  .controls {
+    margin-bottom: 35px;
+  }
+
+  .categories {
+    gap: 10px;
+    margin-top: 22px;
+  }
 }

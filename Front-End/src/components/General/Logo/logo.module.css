@@ -1,3 +1,4 @@
+/* 
 .logoContainer {
   display: flex;
   align-items: center;
@@ -5,7 +6,59 @@
 }
 
 .logo {
-  width: 400px;
+  width: 340px;
+  max-width: 100%;
   height: auto;
   display: block;
+} */
+
+
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.brandName {
+  font-family: "Playfair Display", serif;
+  font-size: 64px;
+  font-weight: 400;
+  line-height: 1;
+
+  letter-spacing: 8px;
+  color: #f6f0e9;
+}
+
+.slogan {
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #e8d7d2;
+}
+
+@media (max-width: 768px) {
+  .brandName {
+    font-size: 42px;
+    letter-spacing: 5px;
+  }
+
+  .slogan {
+    font-size: 7px;
+    letter-spacing: 1px;
+    text-align: center;
+    white-space: normal;
+  }
 }

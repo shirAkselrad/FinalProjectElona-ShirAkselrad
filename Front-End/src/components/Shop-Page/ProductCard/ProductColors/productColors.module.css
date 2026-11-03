@@ -1,22 +1,26 @@
+
 .container {
   display: flex;
   align-items: center;
   gap: 14px;
 
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .label {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
   letter-spacing: 1.5px;
-  color: #51453f;
+
+  color: #765563;
 }
 
 .colors {
   display: flex;
   align-items: center;
-  gap: 7px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .color {
@@ -24,7 +28,9 @@
   height: 18px;
 
   border-radius: 50%;
-  border: 1px solid #cfc6c1;
+  border: 1px solid #c9a9ad;
 
   box-sizing: border-box;
+
+  box-shadow: 0 0 0 2px #f6f0e9;
 }

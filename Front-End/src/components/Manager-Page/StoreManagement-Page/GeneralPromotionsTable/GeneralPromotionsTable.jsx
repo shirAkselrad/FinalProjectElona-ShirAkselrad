@@ -6,34 +6,34 @@ function GeneralPromotionsTable({
   onActivate,
   onDeactivate,
   readOnly = false,
+  variant = "default",
 }) {
   return (
     <div className={styles.tableContainer}>
-      <table className={styles.table}>
+      <table className={`${styles.table} ${variant==="overview"? styles.overview:""}`}>
         <thead>
           <tr>
-            <th>Promotion Name</th>
-            <th>Discount</th>
-            <th>Minimum Order</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Status</th>
+            <th>PROMOTION NAME</th>
+            <th>DISCOUNT</th>
+            <th>MINIMUM ORDER</th>
+            <th>START DATE</th>
+            <th>END DATE</th>
+            <th>STATUS</th>
             {!readOnly && <th>Actions</th>}
           </tr>
         </thead>
         <tbody>
           {promotions.length === 0 ? (
             <tr>
-              <td colSpan={readOnly?6:7} className={styles.empty}>
+              <td colSpan={readOnly ? 6 : 7} className={styles.empty}>
                 No promotions avaliable.
               </td>
             </tr>
           ) : (
-            promotions.map((promotion, index) => (
+            promotions.map((promotion) => (
               <GeneralPromotionsRow
                 key={promotion.promotion_id}
                 promotion={promotion}
-                index={index}
                 onActivate={onActivate}
                 onDeactivate={onDeactivate}
                 readOnly={readOnly}

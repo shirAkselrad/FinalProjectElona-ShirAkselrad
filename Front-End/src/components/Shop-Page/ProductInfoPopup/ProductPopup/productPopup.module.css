@@ -1,14 +1,18 @@
+
 .overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+
+  background-color: rgba(25, 5, 13, 0.65);
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   z-index: 1000;
 }
 
-/* Preview mode - without an additional overlay */
+/* Preview mode - without additional overlay */
 .previewWrapper {
   position: relative;
   width: 100%;
@@ -18,44 +22,35 @@
 .popup,
 .previewPopup {
   position: relative;
+
   width: 85%;
   max-width: 1100px;
   max-height: 90vh;
   overflow-y: auto;
 
-  background-color: #fbf8f5;
-  border-radius: 10px;
+  background-color: #f6f0e9;
+  border-radius: 6px;
 
   padding: 42px 48px;
   box-sizing: border-box;
 
-  box-shadow: 0 18px 55px rgba(45, 27, 18, 0.18);
-}
-
-/* Preview mode adjustments */
-.previewPopup {
-  width: 100%;
-  max-width: none;
-  max-height: none;
-  box-shadow: none;
+  box-shadow: 0 18px 55px rgba(25, 5, 13, 0.25);
 }
 
 /* Decorative inner border */
-.popup::before,
-.previewPopup::before {
+.popup::before {
   content: "";
   position: absolute;
   inset: 12px;
 
-  border: 1px solid #e3d1c4;
-  border-radius: 5px;
+  border: 1px solid #d8b8b5;
+  border-radius: 3px;
 
   pointer-events: none;
 }
 
-/* Decorative star */
-.popup::after,
-.previewPopup::after {
+Decorative star
+.popup::after {
   content: "✦";
   position: absolute;
   top: 3px;
@@ -63,9 +58,9 @@
   transform: translateX(-50%);
 
   padding: 0 12px;
-  background-color: #fbf8f5;
+  background-color: #f6f0e9;
 
-  color: #b58a6c;
+  color: #997783;
   font-size: 15px;
 
   pointer-events: none;
@@ -98,13 +93,15 @@
   position: absolute;
   left: 0;
   top: 10%;
+
   height: 80%;
   width: 1px;
+
   background: linear-gradient(
     to bottom,
     transparent,
-    #c9aa94 20%,
-    #c9aa94 80%,
+    #c9a9ad 20%,
+    #c9a9ad 80%,
     transparent
   );
 }
@@ -124,10 +121,11 @@
 }
 
 .quantityLabel {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: #5b4b43;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: #765563;
 }
 
 .outOfStock {
@@ -135,27 +133,58 @@
   padding: 14px 20px;
   text-align: center;
 
-  background-color: #f5f0eb;
-  color: #6b5548;
-  border: 1px solid #d9c9bd;
+  background-color: #e8d7d2;
+  color: #4b1426;
+  border: 1px solid #c9a9ad;
 
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 1.5px;
 }
 
-
+/* Preview mode - preserve staff layout */
 .previewPopup {
   width: 100%;
   max-width: none;
   max-height: none;
+
   box-shadow: none;
   border: none;
   background: transparent;
+
   padding: 15px 0;
 }
 
 .previewPopup::before,
 .previewPopup::after {
   display: none;
+}
+
+@media (max-width: 768px) {
+  .popup {
+    width: 95%;
+    padding: 35px 24px;
+  }
+
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+  gap: 20px;
+}
+
+
+.productInfo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+
+  padding-left: 20px;
+}
+
+
+  .productInfo::before {
+    display: none;
+  }
 }

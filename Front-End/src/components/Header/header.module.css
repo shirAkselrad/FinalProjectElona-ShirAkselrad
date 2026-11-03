@@ -1,47 +1,30 @@
+
 .header {
   width: 100%;
-  height: 210px;
+  height: 180px;
 
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
 
-  padding: 10px 45px;
+  padding: 15px 45px;
   box-sizing: border-box;
 
   position: relative;
-  background: transparent;
-  border: none;
+  background-color: #4b1426;
+  border-bottom: 1px solid #a47783;
 }
+
 .header::after {
-  content: "◇";
+  content: "";
   position: absolute;
-  bottom: -12px;
+  bottom: -1px;
   left: 50%;
   transform: translateX(-50%);
 
-  width: 100%;
-  height: 24px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  color: #e8c4a3;
-  font-size: 22px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent 0%,
-      #ad7949 15%,
-      #e8c4a3 48%,
-      transparent 48%,
-      transparent 52%,
-      #e8c4a3 52%,
-      #ad7949 85%,
-      transparent 100%
-    ) center / 100% 1px no-repeat;
+  width: 110px;
+  height: 2px;
+  background-color: #e8d7d2;
 
   pointer-events: none;
 }
@@ -54,38 +37,36 @@
 
 .center {
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  transform: translateY(-5px);
+  justify-content: center;
 }
+
 .right {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
+  justify-content: flex-end;
+
   margin-right: 15px;
   gap: 8px;
   white-space: nowrap;
 }
 
 .diamond {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
 
-  background-color: #c9a56a;
+  background-color: #e8d7d2;
   transform: rotate(45deg);
 
-  margin: 0 5px;
+  margin: 0 12px;
   flex-shrink: 0;
 }
 
-/* Keeps the system button and its diamond in the same row */
 .left > div {
   display: flex;
   align-items: center;
 }
 
-/* Manager / Employee button */
 .systemBtn {
   background: none;
   border: none;
@@ -93,14 +74,15 @@
   margin: 0;
 
   font-family: "Libre Baskerville", serif;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 400;
   letter-spacing: 0.5px;
-  color: #e8c4a3;
+  color: #f6f0e9;
 
   cursor: pointer;
+  transition: color 0.25s ease;
 }
 
 .systemBtn:hover {
-  opacity: 0.7;
+  color: #e8d7d2;
 }

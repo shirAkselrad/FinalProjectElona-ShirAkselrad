@@ -1,3 +1,4 @@
+
 .logout {
   display: flex;
   align-items: center;
@@ -8,14 +9,16 @@
   border: none;
   background: transparent;
 
-    color: #e8c4a3;
+  color: #f6f0e9;
+  text-decoration: none;
 
   font-family: "Libre Baskerville", serif;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 400;
   letter-spacing: 0.5px;
 
   cursor: pointer;
+  transition: color 0.25s ease;
 }
 
 .icon {
@@ -23,5 +26,5 @@
 }
 
 .logout:hover {
-  color: #ad7949;
+  color: #e8d7d2;
 }

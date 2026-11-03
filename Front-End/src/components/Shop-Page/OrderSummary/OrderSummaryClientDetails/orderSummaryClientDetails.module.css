@@ -1,100 +1,71 @@
 
 .container {
   width: 100%;
-  height: 100%;
-   padding: 22px 18px;
-  background-color: #ffffff;
-  border: 1px solid #e8ddd5;
-  border-radius: 10px;
-  box-shadow: 0 4px 18px rgba(80, 55, 40, 0.06);
+  height: auto;
+  padding: 28px;
+
+  background-color: #f6f0e9;
+  border: 1px solid #e8d7d2;
+  border-radius: 8px;
+
+  box-shadow: 0 4px 18px rgba(25, 5, 13, 0.1);
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
-}
-
-.title {
-  margin: 0 0 28px;
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  color: #382b26;
-}
-
-.form {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
 }
 
 .fields {
   display: grid;
-  grid-template-columns:1fr;
-  column-gap: 30px;
-   gap: 18px;
-  row-gap: 22px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
 }
 
-.field {
+.form {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  min-width: 0;
+  gap: 26px;
 }
 
-/* Action buttons */
+@media (max-width: 650px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 .actions {
-  margin-top: auto;
   display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  gap: 15px;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 12px;
   width: 100%;
 }
 
 .backButton {
-  width: 100%;
-  height: 60px;
-  padding: 0 12px;
-  box-sizing: border-box;
-
   background-color: transparent;
-  color: #382b26;
-  border: 1px solid #8a6a58;
-
-  letter-spacing: 2px;
-  font-size: 12px;
+  border: 1px solid #6b2939;
+  color: #4b1426;
 }
 
 .backButton:not(:disabled):hover {
-  background-color: #f5f0eb;
+  background-color: #e8d7d2;
+  color: #4b1426;
 }
 
 .paymentButton {
-  width: 100%;
-  min-width: 0;
-  height: 60px;
-  box-sizing: border-box;
-
-  letter-spacing: 3px;
+  background-color: #4b1426;
+  border: 1px solid #4b1426;
+  color: #f6f0e9;
 }
 
-@media (max-width: 650px) {
-  .actions {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
 
-  .paymentButton {
-    grid-row: 1;
-  }
+.title {
+  margin: 0 0 25px;
 
-  .backButton {
-    grid-row: 2;
-  }
-}
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 1px;
 
-.singleAction {
-  grid-template-columns: 1fr;
+  color: #4b1426;
 }

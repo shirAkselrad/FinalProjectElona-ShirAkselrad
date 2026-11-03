@@ -1,29 +1,31 @@
+
 .amount {
   width: 100%;
+  box-sizing: border-box;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  padding: 20px 24px;
+  padding: 24px;
 
-  background-color: #ffffff;
-
-  border-bottom: 1px solid #eadfd7;
+  background-color: #f6f0e9;
+  border-bottom: 1px solid #e8d7d2;
 }
 
 .title {
   margin: 0;
 
-  font-family: Arial, sans-serif;
-  font-size: 11px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
   font-weight: 400;
+  letter-spacing: 2px;
 
-  letter-spacing: 3px;
-
-  color: #6f5c52;
+  color: #4b1426;
 }
 
 .title span {
+  margin-left: 5px;
   letter-spacing: 1px;
+  color: #997783;
 }

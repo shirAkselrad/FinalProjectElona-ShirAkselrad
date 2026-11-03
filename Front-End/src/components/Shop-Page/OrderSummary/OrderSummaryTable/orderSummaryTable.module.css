@@ -1,10 +1,13 @@
+
 .orderSummaryTable {
   width: 100%;
   overflow-x: auto;
-  background-color: #ffffff;
-  border: 1px solid #e8ddd5;
+
+  background-color: #f6f0e9;
+  border: 1px solid #e8d7d2;
   border-radius: 10px;
-  box-shadow: 0 4px 18px rgba(80, 55, 40, 0.06);
+
+  box-shadow: 0 4px 18px rgba(25, 5, 13, 0.12);
 }
 
 .orderSummaryTable table {
@@ -14,25 +17,43 @@
 }
 
 .orderSummaryTable thead {
-  background-color: #f5eee8;
+  background-color: #e8d7d2;
 }
 
 .orderSummaryTable th {
   padding: 22px 14px;
-  color: #755b4c;
-  font-size: 12px;
-  font-weight: 700;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 11px;
+  font-weight: 600;
   letter-spacing: 1px;
+
+  color: #4b1426;
   white-space: nowrap;
+
+  border-bottom: 1px solid #d8b8b5;
 }
 
+
 .orderSummaryTable td {
-  padding: 25px 14px;
-  font-size: 14px;
-  color: #4c3b32;
-  border-bottom: 1px solid #f0e9e3;
+  padding: 20px 12px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 13px;
+  color: #4b1426;
+  border-bottom: 1px solid #e8d7d2;
 }
 
 .orderSummaryTable tbody tr:last-child td {
   border-bottom: none;
+}
+
+.orderSummaryTable tbody tr:hover {
+  background-color: #f0e4e1;
+}
+
+@media (max-width: 768px) {
+  .orderSummaryTable th,
+  .orderSummaryTable td {
+    padding: 16px 12px;
+  }
 }

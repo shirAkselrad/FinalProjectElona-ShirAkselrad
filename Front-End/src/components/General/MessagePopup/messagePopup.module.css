@@ -1,3 +1,4 @@
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -6,14 +7,14 @@
   align-items: center;
   justify-content: center;
 
-  background: rgba(45, 35, 30, 0.45);
-
+  background: rgba(25, 5, 13, 0.6);
   z-index: 2000;
 }
 
 .popup {
   width: 100%;
   max-width: 380px;
+  box-sizing: border-box;
 
   padding: 38px 42px;
 
@@ -21,18 +22,16 @@
   flex-direction: column;
   align-items: center;
 
-  background: #fbf8f5;
+  background: #f6f0e9;
+  border: 1px solid #e8d7d2;
+  border-radius: 6px;
 
-  border: 1px solid #e5ddd6;
-
-  box-shadow: 0 18px 45px rgba(42, 32, 27, 0.18);
-
+  box-shadow: 0 18px 45px rgba(25, 5, 13, 0.22);
   text-align: center;
 }
 
 .icon {
   position: relative;
-
   width: 78px;
   height: 78px;
 
@@ -45,18 +44,16 @@
 
 .icon::before {
   content: "";
-
   position: absolute;
 
   width: 52px;
   height: 52px;
 
-  border: 1.5px solid #c07a6d;
-
+  border: 1.5px solid #c9a9ad;
   transform: rotate(45deg);
 }
 
-/* ERROR ICON */
+/* Error icon */
 
 .exclamation {
   position: relative;
@@ -64,18 +61,15 @@
   width: 5px;
   height: 28px;
 
-  background: #c07a6d;
-
+  background: #a94442;
   border-radius: 3px;
 
   z-index: 1;
-
   transform: translateY(-3px);
 }
 
 .exclamation::after {
   content: "";
-
   position: absolute;
 
   width: 6px;
@@ -86,89 +80,85 @@
 
   transform: translateX(-50%);
 
-  background: #c07a6d;
-
+  background: #a94442;
   border-radius: 50%;
 }
 
-/* SUCCESS ICON */
+/* Success icon */
 
 .check {
   position: relative;
-
   z-index: 1;
 
   font-family: Arial, sans-serif;
   font-size: 36px;
   font-weight: 500;
 
-  color: #c9a15f;
+  color: #6b2939;
 }
 
 .title {
   margin: 0 0 12px;
 
-  font-family: Georgia, serif;
+  font-family: "Libre Baskerville", serif;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: 3px;
 
-  letter-spacing: 4px;
-
-  color: #3f332d;
+  color: #4b1426;
 }
 
 .message {
   margin: 0 0 28px;
 
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  line-height: 1.8;
 
-  color: #6a5d56;
+  color: #765563;
 }
 
 .button {
   width: 100%;
-
   padding: 13px 20px;
 
-  border: none;
+  border: 1px solid #4b1426;
+  background: #4b1426;
 
-  background: #3f332d;
-
-  font-family: Arial, sans-serif;
+  font-family: "Libre Baskerville", serif;
   font-size: 12px;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
 
-  color: #ffffff;
-
+  color: #f6f0e9;
   cursor: pointer;
 
-  transition: background 0.2s ease;
+  transition: background-color 0.25s ease;
 }
 
 .button:hover {
-  background: #51453e;
+  background: #6b2939;
 }
 
-/* SUCCESS */
+/* Success */
 
 .success .icon::before {
-  border-color: #c9a15f;
+  border-color: #c9a9ad;
 }
 
-/* ERROR */
+/* Error */
 
 .error .icon::before {
-  border-color: #c07a6d;
+  border-color: #a94442;
 }
 
+/* Auto-close toast */
 
 .toastOverlay {
   position: fixed;
   top: 50%;
   left: 50%;
   right: auto;
+
   transform: translate(-50%, -50%);
   z-index: 2000;
 
@@ -178,7 +168,8 @@
 .toastOverlay .popup {
   width: 280px;
   padding: 20px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+
+  box-shadow: 0 8px 25px rgba(25, 5, 13, 0.18);
   animation: slideIn 0.3s ease;
 }
 
@@ -192,6 +183,7 @@
 
 .toastOverlay .message {
   font-size: 13px;
+  margin-bottom: 0;
 }
 
 @keyframes slideIn {
@@ -206,4 +198,15 @@
   }
 }
 
+@media (max-width: 480px) {
+  .popup {
+    max-width: calc(100vw - 32px);
+    padding: 30px 24px;
+  }
+}
 
+@media (prefers-reduced-motion: reduce) {
+  .toastOverlay .popup {
+    animation: none;
+  }
+}

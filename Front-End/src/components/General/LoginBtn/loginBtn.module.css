@@ -1,16 +1,22 @@
+
 .login {
   background: transparent;
   border: none;
   cursor: pointer;
 
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Libre Baskerville", serif;
   font-size: 14px;
+  font-weight: 400;
 
- color: #e8c4a3;
-  letter-spacing: 3px;
+  color: #f6f0e9;
+  letter-spacing: 2px;
+  text-decoration: none;
 
-  padding: 6px;
+  padding: 10px;
+
+  transition: color 0.25s ease;
 }
+
 .login:hover {
-  opacity: 0.6;
+  color: #e8d7d2;
 }

@@ -550,20 +550,24 @@ const calculateOrderSummary = (req, res, next) => {
     0,
   );
 
-const totalPrice = Number(req.cartTotals.total_price);
-const promotion = req.activePromotion;
+  const totalPrice = Number(req.cartTotals.total_price);
+  const promotion = req.activePromotion;
 
-const generalDiscount =
-  promotion && totalPrice >= Number(promotion.min_order_price)
-    ? Number(
-        ((totalPrice * Number(promotion.discount_percentage)) / 100).toFixed(2),
-      )
-    : 0;
+  const generalDiscount =
+    promotion && totalPrice >= Number(promotion.min_order_price)
+      ? Number(
+          ((totalPrice * Number(promotion.discount_percentage)) / 100).toFixed(
+            2,
+          ),
+        )
+      : 0;
 
-const totalAfterPromotions = Number((totalPrice - generalDiscount).toFixed(2));
-const promotionsDiscount = Number(
-  (originalTotal - totalAfterPromotions).toFixed(2),
-);
+  const totalAfterPromotions = Number(
+    (totalPrice - generalDiscount).toFixed(2),
+  );
+  const promotionsDiscount = Number(
+    (originalTotal - totalAfterPromotions).toFixed(2),
+  );
 
   const shipping = Number(req.shippingSettings.shipping_price);
 
@@ -591,7 +595,7 @@ const promotionsDiscount = Number(
   where order_id=? and client_email=? and status='PROCESSING'`;
   db.query(
     query,
-    [ shipping, finalTotal, pointsUsed, req.cartOrderId, req.session.user.email],
+    [shipping, finalTotal, pointsUsed, req.cartOrderId, req.session.user.email],
     (err, results) => {
       if (err) {
         return res.status(500).json({
@@ -673,7 +677,7 @@ const getPointsSettings = (req, res, next) => {
 
 const getActivePromotion = (req, res, next) => {
   const query =
-    "select * from promotions_settings where status='Active' limit 1";
+    "select * from promotions_settings where status='Active' and start_date<= now() and end_date> now() limit 1";
   db.query(query, (err, results) => {
     if (err)
       return res.status(500).json({

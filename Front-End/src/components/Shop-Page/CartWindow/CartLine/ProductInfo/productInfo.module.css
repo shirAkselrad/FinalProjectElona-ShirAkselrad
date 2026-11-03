@@ -1,3 +1,4 @@
+
 .productInfo {
   display: flex;
   align-items: flex-start;
@@ -10,35 +11,32 @@
   flex-direction: column;
   flex: 1;
   min-width: 0;
-  gap: 8px;
+  gap: 10px;
 }
-
 
 .image {
-  width: 60px;
-  height: 60px;
-  min-width: 60px;
-  flex: 0 0 60px;
+  width: 75px;
+  height: 75px;
+  min-width: 75px;
+  flex: 0 0 75px;
+
   object-fit: cover;
+
+  border: 1px solid #e8d7d2;
+  box-sizing: border-box;
 }
+
 .name {
   margin: 0;
+
   white-space: normal;
   overflow-wrap: break-word;
   word-break: normal;
 
-  font-family: Georgia, serif;
-  font-size: 15px;
+  font-family: "Playfair Display", serif;
+  font-size: 17px;
   font-weight: 400;
-  color: #51453e;
-}
+  line-height: 1.4;
 
-.price {
-  margin: 0;
-
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-
-  color: #c49a5a;
+  color: #4b1426;
 }

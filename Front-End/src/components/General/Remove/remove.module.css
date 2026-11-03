@@ -1,7 +1,9 @@
+
 .remove {
-  background: none;
+  background: transparent;
   border: none;
-  color: #c5aa96;
+
+  color: #997783;
 
   font-size: 48px;
   font-weight: 300;
@@ -9,8 +11,13 @@
 
   cursor: pointer;
   padding: 0;
+
+  transition:
+    color 0.25s ease,
+    transform 0.25s ease;
 }
 
 .remove:hover {
-  color: #875b43;
+  color: #4b1426;
+  transform: scale(1.05);
 }

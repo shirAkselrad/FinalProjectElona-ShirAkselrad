@@ -1,3 +1,4 @@
+
 .imageContainer {
   width: 100%;
   height: 270px;
@@ -8,6 +9,12 @@
   cursor: pointer;
 }
 
+.imageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
 .productImage {
   width: 100%;
   height: 100%;
@@ -15,7 +22,7 @@
   display: block;
   object-fit: cover;
 
-  transition: transform 0.4s ease;
+  transition: transform 0.45s ease;
 }
 
 .imageOverlay {
@@ -26,21 +33,22 @@
   align-items: center;
   justify-content: center;
 
-  background-color: rgba(45, 30, 20, 0.35);
-
+  background-color: rgba(75, 20, 38, 0.45);
   opacity: 0;
 
   transition: opacity 0.3s ease;
 }
 
 .imageOverlay span {
-  color: #ffffff;
+  color: #f6f0e9;
 
-  font-family: Arial, sans-serif;
+  font-family: "Libre Baskerville", serif;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: 2px;
 
-  letter-spacing: 3px;
+  padding: 12px 20px;
+  border: 1px solid #e8d7d2;
 }
 
 .imageContainer:hover .imageOverlay {
@@ -61,25 +69,25 @@
 
   box-sizing: border-box;
 
-  background-color: #fdfbf9;
-  border: 1px dashed #d8c6bb;
+  background-color: #f6f0e9;
+  border: 1px dashed #c9a9ad;
 
   text-align: center;
 }
 
 .emptyImage span {
-  color: #a36f55;
+  color: #765563;
 
-  font-family: Arial, sans-serif;
+  font-family: "Libre Baskerville", serif;
   font-size: 11px;
-  font-weight: 500;
-
-  letter-spacing: 2px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
   line-height: 1.8;
 }
 
-.imageWrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
+@media (prefers-reduced-motion: reduce) {
+  .productImage,
+  .imageOverlay {
+    transition: none;
+  }
 }

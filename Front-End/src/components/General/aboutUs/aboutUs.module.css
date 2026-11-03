@@ -1,18 +1,21 @@
+
 .aboutUs {
   background: transparent;
   border: none;
   cursor: pointer;
 
   font-family: "Libre Baskerville", serif;
-  font-size: 22px;
+  font-size: 19px;
   font-weight: 400;
 
- color: #e8c4a3;
+  color: #f6f0e9;
   letter-spacing: 0.5px;
+  text-decoration: none;
 
   padding: 10px;
+  transition: color 0.25s ease;
 }
 
 .aboutUs:hover {
-  opacity: 0.8;
+  color: #e8d7d2;
 }

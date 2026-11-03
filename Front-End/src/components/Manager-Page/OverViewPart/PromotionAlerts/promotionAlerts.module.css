@@ -1,0 +1,126 @@
+.container {
+  width: 100%;
+  background-color: transparent;
+  padding: 0;
+  margin-top: 32px;
+}
+
+/* Header */
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #382116;
+  white-space: nowrap;
+}
+
+.title::before {
+  content: "";
+  width: 3px;
+  height: 16px;
+  background-color: #c99a5b;
+  flex-shrink: 0;
+}
+
+.title::after {
+  content: "";
+  height: 1px;
+  background-color: #e5d8cf;
+  flex: 1;
+}
+
+/* Promotions List */
+
+.promotionsList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.promotionRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  min-height: 48px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #e5d8cf;
+}
+
+.promotionInfo {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.promotionName {
+  min-width: 220px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  color: #382116;
+}
+
+.discount {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  color: #76503a;
+  background-color: transparent;
+  padding: 0;
+}
+
+/* Activate Button */
+
+button.activateBtn {
+  width: 110px;
+  height: 34px;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+/* Empty State */
+
+.empty {
+  margin: 0;
+  padding: 14px 12px;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  color: #9a7868;
+}
+
+/* Responsive */
+
+@media (max-width: 650px) {
+  .title {
+    white-space: normal;
+  }
+
+  .promotionRow {
+    flex-wrap: wrap;
+  }
+
+  .promotionInfo {
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .promotionName {
+    min-width: 0;
+  }
+}

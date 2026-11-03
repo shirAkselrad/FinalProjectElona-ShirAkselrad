@@ -1,3 +1,4 @@
+
 .container {
   display: grid;
   grid-template-columns: 90px minmax(0, 1fr);
@@ -9,17 +10,20 @@
 }
 
 .label {
-  font-size: 11px;
-  font-weight: 600;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
   letter-spacing: 1.5px;
-  color: #51453f;
+  color: #765563;
 }
+
 .sizes {
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: 3px;
   flex-wrap: nowrap;
 }
+
 .size {
   min-width: 27px;
   height: 27px;
@@ -28,32 +32,37 @@
   align-items: center;
   justify-content: center;
 
-  padding: 0 3px;
+  padding: 0 4px;
   box-sizing: border-box;
 
-  border: 1px solid #d8c8bf;
+  border: 1px solid #d8b8b5;
+  background-color: transparent;
 
+  font-family: "Libre Baskerville", serif;
   font-size: 9px;
-  color: #9a8b84;
+  color: #765563;
 }
+
 .selected {
-  background-color: #a77d6d;
-  border-color: #a77d6d;
-  color: #ffffff;
+  background-color: #4b1426;
+  border-color: #4b1426;
+  color: #f6f0e9;
 }
+
 .compact {
   grid-template-columns: 40px minmax(0, 1fr);
   column-gap: 4px;
   margin-top: 16px;
 }
+
 .compact .sizes {
   flex-wrap: wrap;
-  gap: 2px;
+  gap: 3px;
 }
 
 .compact .size {
   min-width: 23px;
   height: 23px;
   font-size: 8px;
-  padding: 0 2px;
+  padding: 0 3px;
 }

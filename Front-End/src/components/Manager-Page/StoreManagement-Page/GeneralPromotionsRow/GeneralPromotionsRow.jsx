@@ -13,7 +13,7 @@ function GeneralPromotionsRow({
   const canActivate =
     new Date(promotion.start_date) <= now && new Date(promotion.end_date) > now;
 
-  const formateDate = (date) =>
+  const formatDate = (date) =>
     new Date(date).toLocaleString("he-IL", {
       day: "2-digit",
       month: "2-digit",
@@ -27,8 +27,8 @@ function GeneralPromotionsRow({
       <td>{promotion.name}</td>
       <td>{promotion.discount_percentage}%</td>
       <td>₪{promotion.min_order_price}</td>
-      <td>{formateDate(promotion.start_date)}</td>
-      <td>{formateDate(promotion.end_date)}</td>
+      <td>{formatDate(promotion.start_date)}</td>
+      <td>{formatDate(promotion.end_date)}</td>
 
       <td>
         <span

@@ -1,3 +1,4 @@
+
 .userBtn {
   width: 36px;
   height: 36px;
@@ -8,14 +9,12 @@
 
   border: none;
   background: transparent;
-
   padding: 0;
 
-    color: #e8c4a3;
-
+  color: #f6f0e9;
   cursor: pointer;
 
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
 
 .userBtn svg {
@@ -24,5 +23,5 @@
 }
 
 .userBtn:hover {
-  color: #ad7949;
+  color: #e8d7d2;
 }

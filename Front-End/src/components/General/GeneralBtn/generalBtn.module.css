@@ -1,27 +1,33 @@
+
 .button {
   width: 100%;
   height: 60px;
 
-  border: none;
-  background-color: #1c120c;
+  border: 1px solid #4b1426;
+  background-color: #4b1426;
 
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 13px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
   font-weight: 400;
-  letter-spacing: 5px;
-  color: #ffffff;
+  letter-spacing: 3px;
+  color: #f6f0e9;
 
   cursor: pointer;
 
-  transition: background-color 0.25s ease;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
 }
 
 .button:not(:disabled):hover {
-  background-color: #38251a;
+  background-color: #6b2939;
+  border-color: #6b2939;
 }
 
 .button:disabled {
-  background-color: #b8afa9;
-  color: #ffffff;
+  background-color: #d8b8b5;
+  border-color: #d8b8b5;
+  color: #765563;
   cursor: not-allowed;
 }

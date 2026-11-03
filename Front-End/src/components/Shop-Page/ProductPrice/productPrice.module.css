@@ -1,40 +1,43 @@
+
 .container {
   display: flex;
   align-items: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 14px;
 }
-
 .label {
   margin: 0;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: #3f2922;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: #765563;
 }
-
 .price {
   margin: 0;
-  font-family: Georgia, serif;
-  font-size: 17px;
-  font-weight: 400;
-  color: #7d6d64;
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: #4b1426;
 }
 
 .oldPrice {
   margin: 0;
-  font-family: Georgia, serif;
+  font-family: "Playfair Display", serif;
   font-size: 17px;
   font-weight: 400;
-  color: #7d6d64;
+  color: #997783;
+
   text-decoration: line-through;
-  text-decoration-color: #a66c4f;
-  text-decoration-thickness: 1.5px;
+  text-decoration-color: #997783;
+  text-decoration-thickness: 1px;
 }
+
 
 .discountPrice {
   margin: 0;
-  font-family: Georgia, serif;
-  font-size: 17px;
-  font-weight: 400;
-  color: #a66c4f;
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: #6b2939;
 }

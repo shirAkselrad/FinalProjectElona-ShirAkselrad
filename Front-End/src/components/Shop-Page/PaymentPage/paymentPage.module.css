@@ -1,19 +1,33 @@
 .container {
-  min-height: 65vh;
+  width: 100%;
+  min-height: 75vh;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 60px 20px;
-  background-color: #faf8f6;
+
+  padding: 70px 20px;
+  box-sizing: border-box;
+
+  background-color: #4b1426;
+  background-image: url("../../../assets/elonaBackground.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .paymentCard {
   width: 100%;
   max-width: 520px;
+
   padding: 45px 45px 35px;
-  background-color: #fffdfb;
-  border: 1px solid #e9dfd6;
-  box-shadow: 0 8px 30px rgba(83, 59, 44, 0.06);
+  box-sizing: border-box;
+
+  background-color: #f6f0e9;
+  border: 1px solid #d8b8b5;
+  border-radius: 6px;
+
+  box-shadow: 0 15px 45px rgba(25, 5, 13, 0.2);
 }
 
 .heading {
@@ -23,30 +37,41 @@
 .subtitle {
   display: block;
   margin-bottom: 14px;
-  font-size: 11px;
-  letter-spacing: 2.5px;
-  color: #b99575;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 2px;
+
+  color: #997783;
 }
 
 .heading h1 {
   margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
+
+  font-family: "Playfair Display", serif;
   font-size: 30px;
   font-weight: 400;
-  letter-spacing: 1px;
-  color: #654b3d;
+  letter-spacing: 0.5px;
+
+  color: #4b1426;
 }
 
 .heading p {
-  margin-top: 13px;
-  font-size: 13px;
-  color: #99877a;
+  margin: 13px 0 0;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  line-height: 1.7;
+
+  color: #765563;
 }
 
 .divider {
   height: 1px;
-  background-color: #e9dfd6;
   margin: 30px 0;
+
+  background-color: #e8d7d2;
 }
 
 .paymentButtons {
@@ -60,30 +85,42 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  margin-top: 24px;
-  color: #a18c7c;
+
+  margin-top: 28px;
+
+  color: #765563;
 }
 
 .secureMessage span {
   font-size: 18px;
+  color: #997783;
 }
 
 .secureMessage p {
   margin: 0;
-  font-size: 11px;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
   letter-spacing: 0.3px;
+  line-height: 1.6;
 }
 
 @media (max-width: 600px) {
   .container {
-    padding: 35px 15px;
+    min-height: 70vh;
+    padding: 45px 15px;
   }
 
   .paymentCard {
-    padding: 30px 20px;
+    padding: 35px 24px;
   }
 
   .heading h1 {
-    font-size: 25px;
+    font-size: 26px;
+  }
+
+  .subtitle {
+    font-size: 9px;
+    letter-spacing: 1.5px;
   }
 }
