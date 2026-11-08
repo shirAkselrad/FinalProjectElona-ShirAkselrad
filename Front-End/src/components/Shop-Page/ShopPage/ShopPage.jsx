@@ -6,14 +6,32 @@ import ProductsGrid from "../ProductsGrid/ProductsGrid.jsx";
 import { useState, useEffect } from "react";
 import { useCart } from "../../../context/CartContext.jsx";
 import ProductPopup from "../ProductInfoPopup/ProductPopup/ProductPopup.jsx";
+import PromotionBanner from "../PromotionBanner/PromotionBanner.jsx";
+import FilterPanel from "../Filter/FilterPanel/FilterPanel.jsx";
+import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 function ShopPage() {
-  const [selectedCategory, setSelectedCategory] = useState("ALL");
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    category_id: "",
+    type_id: "",
+    search: "",
+    sort: "",
+    minPrice: "",
+    maxPrice: "",
+    colors: [],
+  });
+  const [filterOptions, setFilterOptions] = useState({
+    minPrice: 0,
+    maxPrice: 0,
+    colors: [],
+  });
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [frontImgs, setFrontImgs] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [selectedProductImgs, setSelectedProductImgs] = useState([]);
+
   const { getCartAmount } = useCart();
+
   const [popup, setPopup] = useState({
     show: false,
     message: "",
@@ -30,26 +48,53 @@ function ShopPage() {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      setCategories(data.categories);
+      setCategories(
+        data.categories
+          .filter((category) => category.status === "Active")
+          .map((category) => ({
+            ...category,
+            types: category.types.filter((type) => type.status === "Active"),
+          })),
+      );
     } catch (error) {
       console.error("Couldn't get categories: ", error);
     }
   }
 
-  //getting all the products from back end to front-end to be presented to the user
-  async function getProducts(category) {
+  //get avaliable filter options
+  async function getFilterOptions() {
     try {
-      const response = await fetch(
-        `/api/shop/getProducts?category=${category}`,
-        {
-          method: "GET",
-        },
-      );
+      const response = await fetch("/api/shop/getFilterOptions", {
+        method: "GET",
+      });
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      console.log("Products:", data.products);
-      if (!response.ok || !data.success) {
+      console.log("Filter options:", data);
+      if (data.success) {
+        setFilterOptions({
+          minPrice: data.minPrice,
+          maxPrice: data.maxPrice,
+          colors: data.colors,
+        });
+      }
+    } catch (error) {
+      console.error("Couldn't get filter options: ", error);
+    }
+  }
+
+  //getting all the products from back end to front-end to be presented to the user
+  async function getProducts() {
+    try {
+      const url = `/api/shop/getProducts?category_id=${filters.category_id}&type_id=${filters.type_id}&search=${encodeURIComponent(filters.search)}&sort=${filters.sort}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&colors=${filters.colors.join(",")}`;
+      const response = await fetch(url, {
+        method: "GET",
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      const data = await response.json();
+      if (!data.success) {
         setPopup({
           show: true,
           message: data.message,
@@ -83,7 +128,6 @@ function ShopPage() {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      console.log("Front images:", data.imgs);
       setFrontImgs(data.imgs);
     } catch (error) {
       console.log("Error getting front imgs, error: ", error);
@@ -104,17 +148,16 @@ function ShopPage() {
           message: data.message,
           type: "error",
         });
-        return false;
+        return null;
       }
-      setSelectedProductImgs(data.imgs);
-      return true;
+      return data.imgs;
     } catch (error) {
       setPopup({
         show: true,
         message: "Couldn't get product images",
         type: "error",
       });
-      return false;
+      return null;
     }
   }
 
@@ -140,11 +183,10 @@ function ShopPage() {
         });
         return;
       }
-      console.log("Card order id: ", data.order_id);
+
       await getCartAmount();
       if (selectedProduct) {
         setSelectedProduct(null);
-        setSelectedProductImgs([]);
       } else showAddToCartMessage();
     } catch (error) {
       console.error("Error adding product to cart: ", error);
@@ -159,18 +201,27 @@ function ShopPage() {
 
   //this function gets a product and save the product as the selected product to view all of it's details in the productInfoPopup
   async function handleViewDetails(product) {
-    const success = await getProductImgs(product.product_id);
-    if (success) setSelectedProduct(product);
+    const images = await getProductImgs(product.product_id);
+    if (images) {
+      setSelectedProduct({
+        ...product,
+        images,
+      });
+    }
   }
 
   useEffect(() => {
     getFrontImgs();
     getCategories();
+    getFilterOptions();
   }, []);
 
   useEffect(() => {
-    getProducts(selectedCategory);
-  }, [selectedCategory]);
+    const timeout = setTimeout(() => {
+      getProducts();
+    }, 350);
+     return () => clearTimeout(timeout);
+  }, [filters]);
 
   //This function will display a popup which will be closed automaticly after the client added a product to the cart
   function showAddToCartMessage() {
@@ -182,64 +233,137 @@ function ShopPage() {
     });
   }
 
+  const handleCategoryChange = (categoryId) => {
+    setFilters((prev) => ({
+      ...prev,
+      category_id: categoryId,
+      type_id: "",
+    }));
+  };
+
+  const handleTypeChange = (typeId) => {
+    setFilters((prev) => ({
+      ...prev,
+      type_id: typeId,
+    }));
+  };
+
   return (
-    <div className={styles.shopPage}>
-      <div className={styles.controls}>
-        {/**opening a popup according to the success status  */}
-        {popup.show && (
-          <MessagePopup
-            message={popup.message}
-            type={popup.type}
-            autoClose={popup.autoClose}
-            onClose={() => {
-              setPopup({
-                show: false,
-                message: "",
-                type: "",
-                autoClose: false,
-              });
-            }}
+    <div>
+      <PromotionBanner />
+
+      <div className={styles.shopPage}>
+        {showFilters && (
+          <div className={styles.filterPanelWrapper}>
+            <FilterPanel
+              filters={filters}
+              setFilters={setFilters}
+              filterOptions={filterOptions}
+              onClose={() => setShowFilters(false)}
+            />
+          </div>
+        )}
+        <div className={styles.controls}>
+          {popup.show && (
+            <MessagePopup
+              message={popup.message}
+              type={popup.type}
+              autoClose={popup.autoClose}
+              onClose={() =>
+                setPopup({
+                  show: false,
+                  message: "",
+                  type: "",
+                  autoClose: false,
+                })
+              }
+            />
+          )}
+
+          <div className={styles.searchRow}>
+            <GeneralBtn
+              text="FILTER ☷"
+              type="button"
+              onClick={() => setShowFilters((prev) => !prev)}
+              className={styles.filterBtn}
+            />
+            <SearchBar
+              searchValue={filters.search}
+              setSearchValue={(search) =>
+                setFilters((prev) => ({ ...prev, search }))
+              }
+            />
+          </div>
+
+          <div className={styles.categories}>
+            <CategoryBtn
+              text="ALL"
+              active={filters.category_id === ""}
+              onClick={() => handleCategoryChange("")}
+            />
+
+            {categories.map((category) => (
+              <CategoryBtn
+                key={category.category_id}
+                text={category.name.toUpperCase()}
+                active={filters.category_id === category.category_id}
+                onClick={() => handleCategoryChange(category.category_id)}
+              />
+            ))}
+          </div>
+
+          {filters.category_id !== "" && (
+            <div className={styles.subcategories}>
+              <CategoryBtn
+                text="ALL TYPES"
+                active={filters.type_id === ""}
+                onClick={() => handleTypeChange("")}
+              />
+
+              {categories
+                .find(
+                  (category) => category.category_id === filters.category_id,
+                )
+                ?.types.filter((type) => type.status === "Active")
+                .map((type) => (
+                  <CategoryBtn
+                    key={type.type_id}
+                    text={type.name.toUpperCase()}
+                    active={filters.type_id == type.type_id}
+                    onClick={() => handleTypeChange(type.type_id)}
+                  />
+                ))}
+            </div>
+          )}
+        </div>
+
+        <div className={styles.productsSection}>
+          <div className={styles.productsArea}>
+            {products.length > 0 ? (
+              <ProductsGrid
+                products={products}
+                frontImgs={frontImgs}
+                onViewDetails={handleViewDetails}
+                onAddToCart={handleAddToCart}
+              />
+            ) : (
+              <div className={styles.noResults}>
+                <h3>NO MATCHING PRODUCTS</h3>
+                <p>Try adjusting your search or filters.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {selectedProduct && (
+          <ProductPopup
+            product={selectedProduct}
+            images={selectedProduct.images}
+            onAddToCart={handleAddToCart}
+            onClose={() => setSelectedProduct(null)}
           />
         )}
-        <SearchBar />
-
-        <div className={styles.categories}>
-          <CategoryBtn
-            text="ALL"
-            active={selectedCategory === "ALL"}
-            onClick={() => setSelectedCategory("ALL")}
-          />
-          {categories.map((category) => (
-            <CategoryBtn
-              key={category.category_id}
-              text={category.name.toUpperCase()}
-              active={selectedCategory === category.name}
-              onClick={() => setSelectedCategory(category.name)}
-            />
-          ))}
-        </div>
       </div>
-
-      {/**In case one of them is empty (the info didn't arrive yet from the back-end) */}
-      {products.length > 0 && frontImgs.length > 0 && (
-        <ProductsGrid
-          products={products}
-          frontImgs={frontImgs}
-          onViewDetails={handleViewDetails}
-          onAddToCart={handleAddToCart}
-        />
-      )}
-      {selectedProduct && (
-        <ProductPopup
-          product={selectedProduct}
-          images={selectedProductImgs}
-          onAddToCart={handleAddToCart}
-          onClose={() => {
-            setSelectedProduct(null);
-            setSelectedProductImgs([]);
-          }}
-        />
-      )}
     </div>
   );
 }

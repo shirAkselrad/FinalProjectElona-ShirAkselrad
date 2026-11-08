@@ -83,20 +83,7 @@ function InventoryRow({ inv, onEdit, onRemove, onImages, isManager = false }) {
       <td>{inv.price}₪</td>
       <td>{inv.cost_price}₪</td>
       <td>{inv.discount}%</td>
-      <td>
-        <div className={styles.quantityCell}>
-          {inv.status === "Active" && isOutOfStock ? (
-            <span className={styles.outOfStockLable}>Out Of Stock</span>
-          ) : (
-            <div>
-              <span>{inv.quantity}</span>
-              {inv.status === "Active" && isLowStock && (
-                <span className={styles.lowStockLabel}>Low Stock</span>
-              )}
-            </div>
-          )}
-        </div>
-      </td>
+      <td>{inv.quantity}</td>
       <td>{inv.min_stock ?? "-"}</td>
       <td>{inv.restock_required ? "Yes" : "No"}</td>
       <td>

@@ -1,11 +1,11 @@
 
 .row {
   display: grid;
-  grid-template-columns: 1.1fr 2.5fr 0.6fr 1fr 1fr;
+  grid-template-columns: 1.1fr 2.5fr 1.3fr 1.3fr 0.8fr;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 
-  padding: 18px 0;
+  padding: 18px 12px;
   border-bottom: 1px solid #eee4dc;
 
   font-family: Georgia, "Times New Roman", serif;
@@ -18,13 +18,10 @@
   white-space: nowrap;
 }
 
-.row span:nth-child(3) {
-  text-align: center;
-}
-
+.row span:nth-child(3),
 .row span:nth-child(4),
 .row span:nth-child(5) {
-  text-align: right;
+  text-align: center;
   white-space: nowrap;
 }
 
@@ -40,4 +37,9 @@
 
 .total {
   color: #c29a58;
+}
+
+.inactive {
+  opacity: 0.45;
+  text-decoration: line-through;
 }

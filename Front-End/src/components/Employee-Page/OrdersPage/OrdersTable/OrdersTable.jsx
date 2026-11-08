@@ -12,7 +12,15 @@ import OrderPopupEdit from "../OrderPopupEdit-Window/OrderPopupEdit/OrderPopupEd
  * @param {orders} orders which shown to the user
  * @returns OrdersTable
  */
-function OrdersTable({ onSave, orders, onStatusChange, isManager = false }) {
+function OrdersTable({
+  onSave,
+  orders,
+  onStatusChange,
+  onApprove,
+  onReject,
+  isManager = false,
+  isRefunds = false,
+}) {
   //state variable which is the selectedOrder to have changes in, by default null
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [openStatusOrderId, setOpenStatusOrderId] = useState(null);
@@ -20,6 +28,22 @@ function OrdersTable({ onSave, orders, onStatusChange, isManager = false }) {
   //state variable which tells which order clicked to be change, by default false because none of the orders are clicked to be edited
   const [editOrder, setEditOrder] = useState(false);
 
+  const handleSave = async (editedOrder) => {
+    const success = await onSave(editedOrder);
+    if (success) {
+      setSelectedOrder(null);
+      setEditOrder(false);
+    }
+  };
+
+  const handleApprove = async (orderId) => {
+    const success = await onApprove(orderId);
+    if (success) setSelectedOrder(null);
+  };
+  const handleReject = async (orderId) => {
+    const success = await onReject(orderId);
+    if (success) setSelectedOrder(null);
+  };
   return (
     <div>
       <table className={styles.table}>
@@ -29,7 +53,9 @@ function OrdersTable({ onSave, orders, onStatusChange, isManager = false }) {
             <th>Client</th>
             <th>Client's Email</th>
             <th>Items</th>
-            <th>Date</th>
+            <th>Order Date</th>
+            <th>Delivery Window</th>
+            <th>Promotion</th>
             <th>Total</th>
             <th>Status</th>
             <th>Details</th>
@@ -58,7 +84,10 @@ function OrdersTable({ onSave, orders, onStatusChange, isManager = false }) {
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
           onEdit={() => setEditOrder(true)}
+          onApprove={() => handleApprove(selectedOrder.order_id)}
+          onReject={() => handleReject(selectedOrder.order_id)}
           isManager={isManager}
+          isRefunds={isRefunds}
         />
       )}
 
@@ -66,7 +95,7 @@ function OrdersTable({ onSave, orders, onStatusChange, isManager = false }) {
       {selectedOrder && editOrder && (
         <OrderPopupEdit
           order={selectedOrder}
-          onSave={onSave}
+          onSave={handleSave}
           onClose={() => {
             setSelectedOrder(null);
             setEditOrder(false);

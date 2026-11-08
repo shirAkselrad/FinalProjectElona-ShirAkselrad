@@ -25,67 +25,67 @@ function Header() {
     else if (user?.role === "Employee") navigate("/employeePage");
   }
 
-  function openMyAccount()
-  {
-    if(!user)
-    {
+  function openMyAccount() {
+    if (!user) {
       navigate("/loginPage");
       return;
     }
-    navigate("/myAccount"); 
+    navigate("/myAccount");
   }
   return (
-    <header className={styles.header}>
-      <div className={styles.left}>
-        <AboutUs />
+    <div>
+      <header className={styles.header}>
+        <div className={styles.left}>
+          <AboutUs />
 
-        <span className={styles.diamond}></span>
+          <span className={styles.diamond}></span>
 
-        <ShopBtn />
+          <ShopBtn />
 
-        {showBackToSystem && (
-          <div>
-            <span className={styles.diamond}></span>
+          {showBackToSystem && (
+            <div>
+              <span className={styles.diamond}></span>
 
-            <button
-              type="button"
-              onClick={backToSystem}
-              className={styles.systemBtn}
-            >
-              {user.role === "Manager" ? "Manager" : "Employee"}
-            </button>
-          </div>
-        )}
-      </div>
+              <button
+                type="button"
+                onClick={backToSystem}
+                className={styles.systemBtn}
+              >
+                {user.role === "Manager" ? "Manager" : "Employee"}
+              </button>
+            </div>
+          )}
+        </div>
 
-      <div className={styles.center}>
-        <Logo />
-      </div>
+        <div className={styles.center}>
+          <Logo />
+        </div>
 
-      <div className={styles.right}>
-        <CartBtn />
+        <div className={styles.right}>
+          <CartBtn />
 
-        <span className={styles.diamond}></span>
+          <span className={styles.diamond}></span>
 
-        <Welcome name={user?.firstName} />
+          <Welcome name={user?.firstName} />
 
-        <span className={styles.diamond}></span>
+          <span className={styles.diamond}></span>
 
-        {user&&<UserBtn onClick={openMyAccount} />}
+          {user && <UserBtn onClick={openMyAccount} />}
 
-        {!user && (
-          <div>
-            <Login />
+          {!user && (
+            <div>
+              <Login />
 
-            <span className={styles.diamond}></span>
+              <span className={styles.diamond}></span>
 
-            <SignIn />
-          </div>
-        )}
+              <SignIn />
+            </div>
+          )}
 
-        {user && <Logout out={logout} />}
-      </div>
-    </header>
+          {user && <Logout out={logout} />}
+        </div>
+      </header>
+    </div>
   );
 }
 

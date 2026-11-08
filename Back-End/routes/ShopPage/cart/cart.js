@@ -3,10 +3,14 @@ const router = express.Router();
 
 const {
   checkingRole,
-  checkExisitingCart,
-  createCartIfNeeded,
   checkProduct,
   checkExistingCartItem,
+  checkCartItemForUpdate,
+} = require("./cartValidationMiddleware");
+
+const {
+  checkExisitingCart,
+  createCartIfNeeded,
   addOrUpdateCartItem,
   calculateCartTotals,
   deleteEmptyCart,
@@ -14,17 +18,22 @@ const {
   updateCartTotals,
   getCartItems,
   getCartTotals,
-  checkNewQuantity,
-  checkCartItemForUpdate,
   updateCartItemQuantity,
   removeCartItem,
+} = require("./cartMiddleware");
+
+const {
   getClientsPoints,
   calculateOrderSummary,
+  saveOrderSummary,
   checkProcessingOrder,
+} = require("./orderSummaryMiddleware");
+
+const {
   getShippingSettings,
   getPointsSettings,
-  getActivePromotion
-} = require("./cartMiddleware");
+  getActivePromotion,
+} = require("./orderSettingsMiddleware");
 
 router.post(
   "/addToCart",
@@ -65,7 +74,6 @@ router.get(
 router.put(
   "/updateQuantity",
   checkingRole, //checking that the user's role is "Client"
-  checkNewQuantity, //saving the new requested amount of product to add to the current requested amount
   checkProduct, //checking that the requested amount of product exists in stock
   checkExisitingCart, //checking if the client already have a cart
   checkCartItemForUpdate, //checking if the product already exists in the cart
@@ -112,6 +120,7 @@ router.get(
   getPointsSettings,
   getActivePromotion,
   calculateOrderSummary, //saving all the calucaltes results for displaying in FE
+  saveOrderSummary,
   (req, res) => {
     return res.status(200).json({
       success: true,

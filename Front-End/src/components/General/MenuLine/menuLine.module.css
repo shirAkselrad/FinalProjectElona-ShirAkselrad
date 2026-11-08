@@ -8,17 +8,27 @@
   gap: 16px;
   padding: 0 28px;
 
-  color: #786c64;
-
+  color: #76503a;
   font-size: 15px;
 
+  border-left: 3px solid transparent;
   cursor: pointer;
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease;
 }
+
+.menuLine:hover {
+  background-color: #f0e7e1;
+  color: #4b1426;
+}
+
 .icon {
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 17px;
 }
 
@@ -27,8 +37,12 @@
 }
 
 .active {
-  background-color: #f2e9df;
-  color: #21170f;
+  background-color: #f2e9e6;
+  color: #4b1426;
   font-weight: 600;
-  border-left: 3px solid #d3a65c;
+  border-left-color: #4b1426;
+}
+
+.active:hover {
+  background-color: #eadbd6;
 }

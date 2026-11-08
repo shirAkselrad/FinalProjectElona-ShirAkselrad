@@ -1,5 +1,6 @@
 .tableWrapper {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
 }
 
@@ -9,18 +10,16 @@
   border-collapse: collapse;
   border: 1px solid #ded3ca;
   background-color: #fffdfb;
-   width: 100%;
   table-layout: auto;
 }
 
 .table th,
 .table td {
-  padding: 14px 18px;
+  padding: 14px 16px;
   text-align: left;
   vertical-align: middle;
   white-space: nowrap;
 }
-
 th,
 td {
   white-space: nowrap;
@@ -127,4 +126,20 @@ td {
   font-size: 14px;
   font-weight: 600;
   color: #6f625b;
+}
+
+.tableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 16px;
+}
+
+.stockSummary {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
 }

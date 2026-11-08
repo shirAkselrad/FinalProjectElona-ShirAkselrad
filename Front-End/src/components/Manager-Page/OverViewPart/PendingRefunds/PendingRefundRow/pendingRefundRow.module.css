@@ -1,0 +1,50 @@
+
+.row {
+  height: 50px;
+
+  border-bottom: 1px solid #eee4dc;
+}
+
+.row td {
+  padding: 0 12px;
+
+  font-size: 14px;
+
+  color: #786c64;
+}
+
+.orderId {
+  color: #2d211a !important;
+}
+
+.points {
+  color: #9a8375 !important;
+}
+
+.action {
+  text-align: center;
+}
+
+.approveBtn {
+  padding: 8px 12px;
+
+  background-color: #4b1426;
+  color: #ffffff;
+
+  border: none;
+
+  font-size: 11px;
+  letter-spacing: 0.5px;
+
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.approveBtn:hover:not(:disabled) {
+  background-color: #713047;
+}
+
+.approveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

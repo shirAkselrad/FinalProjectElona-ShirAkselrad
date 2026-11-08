@@ -1,7 +1,7 @@
 import styles from "./orderSummaryTable.module.css";
 import OrderSummaryRow from "../OrderSummaryRow/OrderSummaryRow.jsx";
 
-function OrderSummaryTable({ items }) {
+function OrderSummaryTable({ items, isEditable = false, onQuantityChange }) {
   return (
     <div className={styles.orderSummaryTable}>
       <table>
@@ -19,11 +19,16 @@ function OrderSummaryTable({ items }) {
 
         <tbody>
           {items.map((product) => (
-            <OrderSummaryRow key={product.product_id} product={product} />
+            <OrderSummaryRow
+              key={product.order_item_id ?? product.product_id}
+              product={product}
+              isEditable={isEditable && product.status === "Active"}
+              onQuantityChange={onQuantityChange}
+            />
           ))}
         </tbody>
       </table>
     </div>
   );
 }
-export default OrderSummaryTable; 
+export default OrderSummaryTable;

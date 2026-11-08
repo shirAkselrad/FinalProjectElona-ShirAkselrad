@@ -1,52 +1,160 @@
-const path = require("path");
 const express = require("express");
-const multer = require("multer");
-
 const router = express.Router();
-
 const dbSingleton = require("../../dbSingleton");
 const db = dbSingleton.getConnection();
 
-//this middleware checks if the selected category exists
-const checkCategory = (req, res, next) => {
-  const { category } = req.query;
-  if (category === "ALL") return next();
-  const query = "select category_id from categories where name=?";
-  db.query(query, [category], (err, results) => {
+//this middleware returns the details of the active promotion
+const getActivePromotion = (req, res) => {
+  const query = `select name, discount_percentage, min_order_price, end_date from promotions_settings where status="Active" and start_date<=now() and end_date>now() limit 1`;
+  db.query(query, (err, results) => {
     if (err)
       return res.status(500).json({
         success: false,
-        message: "Couldn't check category",
+        message: "Couldn't get active promotion",
       });
-    if (results.length === 0)
-      return res.status(400).json({
+    return res.status(200).json({
+      success: true,
+      promotion: results[0] || null,
+    });
+  });
+};
+
+const getCategories = (req, res, next) => {
+  const query =
+    "select category_id, name, status from categories where status='Active' and name in(select category from inventory where status='Active')";
+
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
         success: false,
-        message: "Invalid category",
+        message: "Couldn't get categories",
       });
+
+    req.categories = results;
     next();
   });
 };
 
-//This path returns to front-end all products to be displays at the shop page
-router.get("/getProducts", checkCategory, (req, res) => {
-  const { category } = req.query;
+const getCategoryTypes = (req, res, next) => {
   const query =
-    "select * from inventory where status='Active' and (?='ALL' or category=?)";
-  db.query(query, [category, category], (err, results) => {
-    if (err) {
-      console.error("Couldn't get products, error: ", err);
+    "select type_id, category_id, name, status from category_types where status='Active' and name in(select type from inventory where status='Active')";
+
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get category types",
+      });
+
+    req.categoryTypes = results;
+    next();
+  });
+};
+
+const getProducts = (req, res) => {
+  const { category_id, type_id, search, sort, minPrice, maxPrice, colors } =
+    req.query;
+  let query = `select * from inventory where status='Active' and category in(
+  select name from categories where status='Active') and type in(select name from category_types where status='Active')`;
+  const values = [];
+  if (category_id) {
+    query += ` and category=(select name from categories where category_id=?)`;
+    values.push(category_id);
+  }
+  if (search?.trim()) {
+    query += " and name like ?";
+    values.push(`%${search.trim()}%`);
+  }
+  if (type_id) {
+    query += ` and type=(select name from category_types where type_id=?)`;
+    values.push(type_id);
+  }
+  if (minPrice) {
+    query += ` and price*(1-discount/100)>=?`;
+    values.push(minPrice);
+  }
+  if (maxPrice) {
+    query += ` and price*(1-discount/100) <=?`;
+    values.push(maxPrice);
+  }
+  if (colors) {
+    const selectedColors = colors.split(",");
+    query += ` and (`;
+    selectedColors.forEach((color, index) => {
+      if (index > 0) query += " or ";
+      query += "FIND_IN_SET(?, REPLACE(colors, ', ', ',')) > 0";
+      values.push(color);
+    });
+    query += ")";
+  }
+  if (sort === "price_asc") query += ` order by price*(1-discount/100) asc`;
+  else if (sort === "price_desc")
+    query += ` order by price*(1-discount/100) desc`;
+  db.query(query, values, (err, results) => {
+    if (err)
       return res.status(500).json({
         success: false,
         message: "Couldn't get products",
       });
-    }
-    console.log("products were sent successfully to front-end");
     return res.status(200).json({
       success: true,
       products: results,
     });
   });
-});
+};
+
+const getPriceRange = (req, res, next) => {
+  const query = `select min(price*(1-discount/100)) as minPrice,max(price*(1-discount/100)) as maxPrice from inventory where status='Active' and category in(select name from categories where status='Active') and type in(select name from category_types where status='Active' )`;
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get price range",
+      });
+    req.priceRange = results[0];
+    next();
+  });
+};
+
+const getAvailableColors = (req, res, next) => {
+  const query = `select colors from inventory where status='Active' and category in(select name from categories where status='Active') and type in(select name from category_types where status='Active')`;
+  db.query(query, (err, results) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't get available colors",
+      });
+    const colors = [];
+    results.forEach((product) => {
+      if (product.colors) {
+        product.colors.split(",").forEach((color) => {
+          const colorName = color.trim();
+          if (colorName && !colors.includes(colorName)) colors.push(colorName);
+        });
+      }
+    });
+    req.availableColors = colors.sort();
+    next();
+  });
+};
+//this path returns the current active promotion
+router.get("/getActivePromotion", getActivePromotion);
+
+router.get(
+  "/getFilterOptions",
+  getPriceRange,
+  getAvailableColors,
+  (req, res) => {
+    return res.status(200).json({
+      success: true,
+      minPrice: req.priceRange.minPrice ?? 0,
+      maxPrice: req.priceRange.maxPrice ?? 0,
+      colors: req.availableColors,
+    });
+  },
+);
+
+router.get("/getProducts", getProducts);
 
 router.get("/getFrontImgs", (req, res) => {
   const query = `
@@ -93,18 +201,16 @@ router.get("/getProductImgs/:product_id", (req, res) => {
 });
 
 //this middleware send to FE all the products categories
-router.get("/getCategories", (req, res) => {
-  const query = "select category_id, name from categories";
-  db.query(query, (err, results) => {
-    if (err)
-      return res.status(500).json({
-        success: false,
-        message: "Couldn't get categories",
-      });
-    return res.status(200).json({
-      success: true,
-      categories: results,
-    });
+router.get("/getCategories", getCategories, getCategoryTypes, (req, res) => {
+  const categories = req.categories.map((category) => ({
+    ...category,
+    types: req.categoryTypes.filter(
+      (type) => type.category_id === category.category_id,
+    ),
+  }));
+  return res.status(200).json({
+    success: true,
+    categories,
   });
 });
 module.exports = router;

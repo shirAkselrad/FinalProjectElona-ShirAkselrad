@@ -2,6 +2,7 @@ export const validatePointsSettings = (settings) => {
   const errors = {};
   const minPrice = Number(settings.min_order_price);
   const percenatge = Number(settings.earning_percentage);
+  const maxRedemption = Number(settings.max_redemption_percentage);
 
   if (
     settings.min_order_price === "" ||
@@ -19,5 +20,16 @@ export const validatePointsSettings = (settings) => {
     !/^\d+(\.\d{1,2})?$/.test(String(settings.earning_percentage))
   )
     errors.earning_percentage = "Enter a valid percentage between 0 and 100.";
+
+  if (
+    settings.max_redemption_percentage == null ||
+    settings.max_redemption_percentage === "" ||
+    !Number.isFinite(maxRedemption) ||
+    maxRedemption < 0 ||
+    maxRedemption > 100 ||
+    !/^\d+(\.\d{1,2})?$/.test(String(settings.max_redemption_percentage))
+  )
+    errors.max_redemption_percentage =
+      "Enter a valid percentage between 0 and 100.";
   return errors;
 };

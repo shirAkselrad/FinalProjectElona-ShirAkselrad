@@ -1,3 +1,4 @@
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -6,35 +7,40 @@
   align-items: center;
   justify-content: center;
 
+  padding: 20px;
   background-color: rgba(40, 35, 31, 0.35);
 
   z-index: 9999;
 }
 
+
+
 .orderPopup {
-  width: 760px;
+  width: max-content;
+  min-width: 950px;
   max-width: 95vw;
   max-height: 90vh;
   overflow-y: auto;
 
-  padding: 42px 42px 46px;
+  padding: 30px 40px;
 
   background-color: white;
   box-sizing: border-box;
 }
 
+
+
+
 .top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-
-  margin-bottom: 30px;
+  margin-bottom: 18px;
 }
 
 .actions {
   display: flex;
   align-items: center;
-
   gap: 10px;
 }
 
@@ -60,4 +66,58 @@
   font-size: 40px;
   line-height: 1;
   transform: translateY(-1px);
+}
+.summary {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.summary > :last-child {
+  align-self: stretch;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+}
+
+@media (max-width: 650px) {
+  .orderPopup {
+    padding: 25px 20px;
+  }
+
+  .summary > :last-child {
+    width: 100%;
+  }
+}
+
+
+.refundActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.refund {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 24px;
+
+  background-color: #f6f0e9;
+  border: 1px solid #e5d8cd;
+
+  font-family: "Playfair Display", serif;
+  color: #4b1426;
+}
+
+.refund strong {
+  font-size: 20px;
 }

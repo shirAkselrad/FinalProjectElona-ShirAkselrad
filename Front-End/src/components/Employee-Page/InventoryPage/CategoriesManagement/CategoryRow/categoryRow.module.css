@@ -1,0 +1,144 @@
+
+.container {
+  border-bottom: 1px solid #eee5de;
+}
+
+.container:last-child {
+  border-bottom: none;
+}
+
+/* Category row */
+.row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 180px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  transition: background-color 0.2s ease;
+}
+
+.row:hover {
+  background-color: #faf7f4;
+}
+
+/* Category name */
+.category {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  color: #4b1426;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.category svg {
+  font-size: 18px;
+  color: #76503a;
+  flex-shrink: 0;
+}
+
+/* Types count */
+.typesCount {
+  color: #76503a;
+  font-size: 14px;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+/* Add type button */
+.actionBtn {
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: transparent;
+  border: 1px solid #e5d8cd;
+  border-radius: 5px;
+  color: #4b1426;
+  cursor: pointer;
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.actionBtn:not(:disabled):hover {
+  background-color: #4b1426;
+  border-color: #4b1426;
+  color: #fff;
+}
+
+.actionBtn:not(:disabled):hover svg {
+  color: #fff;
+  stroke: #fff;
+}
+
+/* Status button */
+.statusBtn {
+  width: 105px;
+  min-width: 105px;
+  height: 30px;
+  padding: 0 10px;
+
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  text-align: center;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* Active */
+.statusBtn.active {
+  background-color: #edf3eb !important;
+  color: #517453 !important;
+  border: 1px solid #cbdcc9 !important;
+}
+
+.statusBtn.active:not(:disabled):hover {
+  background-color: #dcebd9 !important;
+  color: #517453 !important;
+  border-color: #b8d1b5 !important;
+}
+
+/* Not Active */
+.statusBtn.inactive {
+  background-color: #f7ebea !important;
+  color: #a05b59 !important;
+  border: 1px solid #e7cfcc !important;
+}
+
+.statusBtn.inactive:not(:disabled):hover {
+  background-color: #f0dcda !important;
+  color: #a05b59 !important;
+  border-color: #dcbab6 !important;
+}
+
+/* Employee view */
+.row.employee {
+  grid-template-columns: 2fr 1fr 180px;
+}
+
+.statusBtn:disabled {
+  opacity: 1 !important;
+  cursor: default;
+}

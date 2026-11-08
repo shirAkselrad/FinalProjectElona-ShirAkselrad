@@ -82,7 +82,8 @@ function Cart({ onClose }) {
             product_id={product.product_id}
             image={product.image}
             name={product.product_name}
-            price={product.product_price}
+            price={product.original_price}
+            discount={product.discount}
             quantity={product.quantity}
             onQuantityChange={updateQuantity}
             onRemoveProduct={removeProduct}
@@ -92,7 +93,7 @@ function Cart({ onClose }) {
 
       <CartTotal
         total={Number(cart.total_price)}
-        disabled={Number(cart.total_items)===0}
+        disabled={Number(cart.total_items) === 0}
         onClose={onClose}
       />
     </div>

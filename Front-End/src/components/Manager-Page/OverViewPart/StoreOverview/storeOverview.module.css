@@ -1,15 +1,15 @@
-.storeOverview {
-  width: 100%;
-}
-
 .overview {
-  margin-top: 35px;
+  margin-bottom: 40px;
 }
 
 .unshippedOrders {
-  margin-top: 35px;
+  margin-bottom: 45px;
+}
+
+.pendingRefunds {
+  margin-bottom: 45px;
 }
 
 .lowStock {
-  margin-top: 35px;
+  margin-bottom: 45px;
 }

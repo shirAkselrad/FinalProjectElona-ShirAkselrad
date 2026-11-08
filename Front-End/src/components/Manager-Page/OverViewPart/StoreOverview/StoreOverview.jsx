@@ -7,7 +7,8 @@ import LowStock from "../LowStockPart/LowStock/LowStock.jsx";
 import { useOutletContext } from "react-router-dom";
 import EditInventoryPopup from "../../../Employee-Page/InventoryPage/EditInventoryPopup/EditInventoryPopup.jsx";
 import OrderPopupEdit from "../../../Employee-Page/OrdersPage/OrderPopupEdit-Window/OrderPopupEdit/OrderPopupEdit.jsx";
-import PromotionAlerts from "../PromotionAlerts/PromotionAlerts.jsx"; 
+import PromotionAlerts from "../PromotionAlerts/PromotionAlerts.jsx";
+import PendingRefunds from "../PendingRefunds/PendingRefunds.jsx";
 
 function StoreOverview() {
   const { inventory, onSave, managerOrders, setManagerOrders } =
@@ -15,6 +16,8 @@ function StoreOverview() {
   const [openStatusOrderId, setOpenStatusOrderId] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [refundRefresh, setRefundRefresh] = useState(0);
+
   const totalProducts = inventory.length;
 
   const onStatusChange = (order_id, newStatus) => {
@@ -23,6 +26,7 @@ function StoreOverview() {
         order.order_id === order_id ? { ...order, status: newStatus } : order,
       ),
     );
+    if (newStatus === "CANCELED") setRefundRefresh((prev) => prev + 1);
   };
 
   const outOfStock = inventory.filter(
@@ -50,6 +54,7 @@ function StoreOverview() {
       ),
     );
   };
+
   return (
     <div className={styles.storeOverview}>
       <Title text="Store Overview" />
@@ -71,12 +76,15 @@ function StoreOverview() {
           setOpenStatusOrderId={setOpenStatusOrderId}
         />
       </div>
+      <div className={styles.pendingRefunds}>
+        <PendingRefunds refundRefresh={refundRefresh} />
+      </div>
 
       <div className={styles.lowStock}>
         <LowStock products={stockAlerts} onEdit={setSelectedProduct} />
       </div>
       <div>
-        <PromotionAlerts/>
+        <PromotionAlerts />
       </div>
       {selectedProduct && (
         <EditInventoryPopup

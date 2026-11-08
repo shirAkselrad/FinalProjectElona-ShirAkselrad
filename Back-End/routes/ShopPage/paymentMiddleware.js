@@ -128,10 +128,22 @@ const verifyPayment = async (req, res, next) => {
 };
 
 const updateOrderStatus = (req, res, next) => {
-  const query = `update orders set status="PAID", min_delivery_date=date_add(curdate(), interval ? day), max_delivery_date=date_add(curdate(), interval ? day) where order_id=? and client_email=? and status="PROCESSING"`;
+  const query = `
+  update orders
+  set status = "PAID",
+      min_delivery_date =date_add(date(created_at), interval ? day),
+      max_delivery_date = date_add(
+        date_add(date(created_at), interval ? day),
+        interval ? day
+      )
+  where order_id = ?
+    and client_email = ?
+    and status = "PROCESSING"
+`;
   req.paymentDb.query(
     query,
     [
+      req.shippingSettings.min_delivery_days,
       req.shippingSettings.min_delivery_days,
       req.shippingSettings.max_delivery_days,
       req.orderId,
@@ -149,11 +161,11 @@ const updateOrderStatus = (req, res, next) => {
 const updateClientPoints = (req, res, next) => {
   const order = req.order;
   const pointsUsed = Number(order.points_used);
-  const earnedPoints = Math.round(
-    ((Number(order.total_price) - pointsUsed) *
-      Number(req.pointsSettings.earning_percentage)) /
-      100,
-  );
+const earnedPoints = Math.round(
+  (Math.max(0, Number(order.final_price) - Number(order.shipping)) *
+    Number(req.pointsSettings.earning_percentage)) /
+    100,
+);
   const query = "update users set points=points-?+? where email=?";
   req.paymentDb.query(
     query,

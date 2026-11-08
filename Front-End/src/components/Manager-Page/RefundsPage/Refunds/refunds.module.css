@@ -1,0 +1,30 @@
+
+.refunds {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.refunds h2 {
+  margin: 0;
+
+  font-family: "Playfair Display", serif;
+  font-size: 28px;
+  font-weight: 500;
+
+  color: #4b1426;
+}
+
+.refunds p {
+  margin: 0;
+  padding: 35px 20px;
+
+  text-align: center;
+  font-family: "Libre Baskerville", serif;
+  font-size: 14px;
+
+  color: #8e7771;
+  background-color: #f7f2ed;
+  border: 1px solid #e5d8cd;
+}

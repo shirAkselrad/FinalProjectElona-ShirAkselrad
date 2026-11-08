@@ -1,0 +1,49 @@
+.row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  align-items: start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-top: 1px solid #eee5de;
+  background-color: #faf7f4;
+}
+
+
+.row > div:not(.actions) {
+  min-width: 0;
+}
+
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.actions button {
+  width: 95px;
+  min-width: 95px;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.cancelBtn {
+  background-color: transparent;
+  color: #4b1426;
+  border: 1px solid #e5d8cd;
+}
+.cancelBtn:hover {
+  background-color: #f5efea;
+}
+
+.typesTable {
+  max-height: 450px;
+  overflow-y: auto;
+  background-color: #fff;
+  border: 1px solid #e5d8cd;
+  border-radius: 6px;
+}

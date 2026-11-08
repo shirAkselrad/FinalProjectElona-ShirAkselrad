@@ -6,6 +6,7 @@ import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
 import AddCategoryPopup from "../../../Manager-Page/ProductCategory/AddCategoryPopup/AddCategoryPopup.jsx";
+import CategoriesTable from "../CategoriesManagement/CategoriesTable/CategoriesTable.jsx";
 import { useState, useEffect } from "react";
 
 /**
@@ -15,6 +16,7 @@ import { useState, useEffect } from "react";
  */
 function Inventory({ isManager = false }) {
   const [inventory, setInventory] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [popup, setPopup] = useState({
     show: false,
     message: "",
@@ -31,8 +33,27 @@ function Inventory({ isManager = false }) {
     const data = await response.json();
     if (data.success) setInventory(data.inventory);
   }
+
+  async function getCategories() {
+    try {
+      const url = isManager
+        ? "/api/manager/getCategories"
+        : "/api/employee/categories";
+      const response = await fetch(url, {
+        method: "GET",
+      });
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (data.success) setCategories(data.categories);
+    } catch (error) {
+      console.error("Error getting categories: ", error);
+    }
+  }
+
   useEffect(() => {
     getInventory();
+    getCategories();
   }, [isManager]);
 
   const [showPopupAdd, setShowPopupAdd] = useState(false);
@@ -64,10 +85,13 @@ function Inventory({ isManager = false }) {
 
   //This function save all the changes while clicking on the SAVE button
   const onSave = (editedInv) => {
-    const updatedInventory = inventory.map((inv) =>
-      inv.product_id === editedInv.product_id ? editedInv : inv,
+    setInventory((prev) =>
+      prev.map((inv) =>
+        inv.product_id === editedInv.product_id
+          ? { ...inv, ...editedInv }
+          : inv,
+      ),
     );
-    setInventory(updatedInventory);
   };
 
   //This function update the product images after pressing the save btn at the images popup
@@ -179,8 +203,12 @@ function Inventory({ isManager = false }) {
       )}
 
       {isManager && showPopupCategory && (
-        <AddCategoryPopup onClose={handleClosePopupCategory} />
+        <AddCategoryPopup
+          onClose={handleClosePopupCategory}
+          onCategoryAdded={getCategories}
+        />
       )}
+      <CategoriesTable categories={categories} isManager={isManager} onRefreshCategories={getCategories}/>
     </div>
   );
 }

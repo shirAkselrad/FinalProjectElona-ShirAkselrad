@@ -1,13 +1,12 @@
 import styles from "./orderPopupRowView.module.css";
 
-/**
- * Displays a product belonging to the selected order
- * @param {Object} product current product of the order
- * @returns {JSX.Element}
- */
 function OrderPopupRowView({ product }) {
   return (
-    <div className={styles.row}>
+    <div
+      className={`${styles.row} ${
+        product.status === "Inactive" ? styles.inactive : ""
+      }`}
+    >
       <span>{product.product_id}</span>
       <span className={styles.name}>{product.product_name}</span>
       <span>{product.quantity}</span>

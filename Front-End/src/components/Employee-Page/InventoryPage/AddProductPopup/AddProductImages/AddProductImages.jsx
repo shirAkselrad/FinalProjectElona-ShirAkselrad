@@ -12,7 +12,9 @@ function AddProductImages({
   onBack,
   onClose,
   onProductAdded,
-  isManager=false
+  isManager = false,
+  isEdit = false,
+  onSaveEdited,
 }) {
   const [popup, setPopup] = useState({
     show: false,
@@ -110,6 +112,17 @@ function AddProductImages({
       });
     }
   }
+
+  function handleSaveEdited() {
+    const numberedImgs = productImgs.map((img, index) => ({
+      ...img,
+      file_number: index + 1,
+    }));
+    onSaveEdited({
+      ...product,
+      images: numberedImgs,
+    });
+  }
   return (
     <div className={styles.container}>
       {popup.show && (
@@ -130,7 +143,7 @@ function AddProductImages({
         />
       )}
       <div className={styles.heading}>
-        <h2>Add Product Images</h2>
+        <h2>{isEdit ? "Edit Product Images" : "Add Product Images"}</h2>
         <p>Preview how the product will appear to customers</p>
       </div>
 
@@ -156,7 +169,10 @@ function AddProductImages({
         </div>
 
         <div className={styles.button}>
-          <GeneralBtn text="SAVE PRODUCT" onClick={handleSave} />
+          <GeneralBtn
+            text={isEdit ? "SAVE CHANGES" : "SAVE PRODUCT"}
+            onClick={isEdit ? handleSaveEdited : handleSave}
+          />
         </div>
       </div>
     </div>

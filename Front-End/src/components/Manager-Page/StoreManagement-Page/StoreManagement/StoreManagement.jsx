@@ -20,24 +20,28 @@ function StoreManagement() {
           text="SHIPPING SETTINGS"
           active={selectedSection === "shipping"}
           onClick={() => setSelectedSection("shipping")}
+          variant="light"
         />
 
         <CategoryBtn
           text="LOYALTY POINTS"
           active={selectedSection === "points"}
           onClick={() => setSelectedSection("points")}
+          variant="light"
         />
 
         <CategoryBtn
           text="GENERAL PROMOTIONS"
           active={selectedSection === "promotions"}
           onClick={() => setSelectedSection("promotions")}
+          variant="light"
         />
 
         <CategoryBtn
           text="PRODUCTS ON SALE"
           active={selectedSection === "products"}
           onClick={() => setSelectedSection("products")}
+          variant="light"
         />
       </div>
 

@@ -10,6 +10,7 @@ import { FaBox } from "react-icons/fa";
 import { FiClipboard } from "react-icons/fi";
 import { FaRegStar } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
+import { FiRotateCcw } from "react-icons/fi";
 
 function ManagerPage() {
   const [users, setUsers] = useState([]);
@@ -92,6 +93,12 @@ function ManagerPage() {
       value: "orders",
       path: "/managerPage/orders",
       icon: <FaBox />,
+    },
+    {
+      value: "refunds",
+      text: "Refunds",
+      icon: <FiRotateCcw />,
+      path: "/managerPage/refunds",
     },
     {
       text: "Customer Reviews",

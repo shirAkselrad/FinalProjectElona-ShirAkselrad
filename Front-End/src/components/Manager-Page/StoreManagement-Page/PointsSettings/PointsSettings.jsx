@@ -9,6 +9,7 @@ function PointsSettings() {
   const [settings, setSettings] = useState({
     min_order_price: 0,
     earning_percentage: 0,
+    max_redemption_percentage: 0,
   });
   const [errors, setErrors] = useState({});
   const [popup, setPopup] = useState(null);
@@ -84,12 +85,15 @@ function PointsSettings() {
   };
 
   const isValid = Object.keys(validatePointsSettings(settings)).length === 0;
+
   const hasChanges =
     originalSettings !== null &&
     (Number(settings.min_order_price) !==
       Number(originalSettings.min_order_price) ||
       Number(settings.earning_percentage) !==
-        Number(originalSettings.earning_percentage));
+        Number(originalSettings.earning_percentage) ||
+      Number(settings.max_redemption_percentage) !==
+        Number(originalSettings.max_redemption_percentage));
 
   const isSavedDisabled = !isValid || !hasChanges;
 
@@ -105,7 +109,7 @@ function PointsSettings() {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2>Loyalty Points Settings</h2>
-        <p>Manage loyalty points earning redemption requirements</p>
+        <p>Manage how customers earn and use loyalty points.</p>
       </div>
       <div className={styles.fields}>
         <InputField
@@ -127,6 +131,22 @@ function PointsSettings() {
           onFocus={(e) => e.target.select()}
           onChange={(e) => handleChange("earning_percentage", e.target.value)}
         />
+
+        <InputField
+          label="Maximum Points Redemption (%)"
+          type="number"
+          step="0.01"
+          error={errors.max_redemption_percentage}
+          value={settings.max_redemption_percentage}
+          onFocus={(e) => e.target.select()}
+          onChange={(e) =>
+            handleChange("max_redemption_percentage", e.target.value)
+          }
+        />
+      </div>
+      <div className={styles.pointsNote}>
+        <strong>Important Note:</strong> Earned loyalty points are always
+        rounded up to the nearest whole number.
       </div>
       <div className={styles.actions}>
         <GeneralBtn

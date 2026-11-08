@@ -32,8 +32,8 @@ function AddProductFrontImg({
 
     setProductImgs((prev) => [
       //in case the user decided to change the front image picture, then promising there is only one image that set as 1 and the other gets removed
-      ...prev.filter((image) => image.file_number !== 1),
       newFrontImg,
+      ...prev.filter((image) => image.file_number !== 1),
     ]);
   }
   return (

@@ -247,6 +247,20 @@ function GeneralPromotions() {
 
         <div className={styles.list}>
           <h3>Current & Upcoming Promotions</h3>
+          <div className={styles.promotionNote}>
+            <strong>Important Notes:</strong>
+            <ul>
+              <li>Only one promotion can be active at a time.</li>
+              <li>
+                Promotions can only be activated or deactivated during their
+                date range.
+              </li>
+              <li>
+                Promotions do not start automatically. Click ACTIVATE to enable
+                a promotion.
+              </li>
+            </ul>
+          </div>
           <GeneralPromotionsTable
             promotions={currentPromotions}
             onActivate={handleActivate}

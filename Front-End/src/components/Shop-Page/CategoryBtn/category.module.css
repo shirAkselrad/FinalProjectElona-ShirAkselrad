@@ -1,16 +1,13 @@
 
 .categoryBtn {
   padding: 12px 26px;
-
   background-color: transparent;
-  border: 1px solid #e8d7d2;
+  border: 1px solid;
   border-radius: 30px;
 
   font-family: "Libre Baskerville", serif;
   font-size: 13px;
   font-weight: 400;
-
-  color: #f6f0e9;
   letter-spacing: 1.5px;
 
   cursor: pointer;
@@ -22,20 +19,48 @@
     color 0.25s ease;
 }
 
-.categoryBtn:hover {
-  background-color: #e8d7d2;
+/* Customer interface - burgundy background */
+.dark {
+  color: #f6f0e9;
   border-color: #e8d7d2;
+}
+
+.dark:hover {
+  background-color: #e8d7d2;
   color: #4b1426;
 }
 
-.active {
+.dark.active {
   background-color: #f6f0e9;
   border-color: #f6f0e9;
   color: #4b1426;
 }
 
-.active:hover {
+.dark.active:hover {
   background-color: #e8d7d2;
   border-color: #e8d7d2;
+}
+
+/* Employee / Manager interface - light background */
+.light {
+  color: #76503a;
+  border-color: #d9c6ba;
+}
+
+.light:hover {
+  background-color: #f0e3dc;
+  border-color: #b89580;
   color: #4b1426;
+}
+
+.light.active {
+  background-color: #4b1426;
+  border-color: #4b1426;
+  color: #f6f0e9;
+}
+
+.light.active:hover {
+  background-color: #623044;
+  border-color: #623044;
+  color: #f6f0e9;
 }

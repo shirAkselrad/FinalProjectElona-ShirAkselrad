@@ -3,7 +3,7 @@ const router = express.Router();
 const dbSingleton = require("../../dbSingleton");
 const db = dbSingleton.getConnection();
 
-const { checkingRole } = require("../ShopPage/cartMiddleware");
+const { checkingRole } = require("../ShopPage/cart/cartValidationMiddleware");
 
 //this middleware gets all the clients details (first and last namae, address and contact addresses)
 const getClientDetails = (req, res, next) => {

@@ -12,8 +12,14 @@ import { colors } from "../../../../../data/colors.js";
 import { useEffect, useState } from "react";
 import useProductDetails from "./useProductDetails.js";
 
-function AddProductDetails({ savedDetails, onNext, isManager=false }) {
+function AddProductDetails({
+  savedDetails,
+  onNext,
+  isManager = false,
+  isEdit = false,
+}) {
   const [categories, setCategories] = useState([]);
+  const [salesSettingsChanged, setSalesSettingsChanged] = useState(false);
 
   useEffect(() => {
     async function getCategories() {
@@ -57,7 +63,7 @@ function AddProductDetails({ savedDetails, onNext, isManager=false }) {
     handleProductSizeChange,
     handleRestockRequiredChange,
     checkInputDetailsValidation,
-  } = useProductDetails(savedDetails);
+  } = useProductDetails(savedDetails, isEdit);
 
   const selectedCategory = categories.find(
     (category) => category.name === details.category,
@@ -67,13 +73,18 @@ function AddProductDetails({ savedDetails, onNext, isManager=false }) {
     (type) => type.name === details.type,
   );
 
-  const minSales = selectedType
+  const calculateMinSales = selectedType
     ? details.quantity === ""
       ? selectedType.min_sales
       : Math.min(selectedType.min_sales, Number(details.quantity))
     : "";
 
-  const salesCheckDate = selectedType
+  const minSales =
+    isEdit && !salesSettingsChanged
+      ? Math.min(Number(details.min_sales), Number(details.quantity))
+      : calculateMinSales;
+
+  const calculatedSalesCheckDate = selectedType
     ? (() => {
         const date = new Date();
         date.setDate(date.getDate() + Number(selectedType.sales_check_days));
@@ -86,9 +97,14 @@ function AddProductDetails({ savedDetails, onNext, isManager=false }) {
       })()
     : "";
 
+  const salesCheckDate =
+    isEdit && !salesSettingsChanged
+      ? details.sales_check_date
+      : calculatedSalesCheckDate;
+
   return (
     <div className={styles.container}>
-      <h2>Add Product</h2>
+      <h2>{isEdit ? "Edit Product" : "Add Product"}</h2>
 
       <form className={styles.form}>
         <div className={styles.sections}>
@@ -113,6 +129,7 @@ function AddProductDetails({ savedDetails, onNext, isManager=false }) {
                   error={errors.product_id}
                   onChange={(e) => handleProductIdChange(e.target.value)}
                   onBlur={(e) => handleProductIdChange(e.target.value)}
+                  disabled={isEdit}
                 />
 
                 <div>
@@ -124,9 +141,10 @@ function AddProductDetails({ savedDetails, onNext, isManager=false }) {
                       ...categories.map((category) => category.name),
                     ]}
                     error={errors.category}
-                    onChange={(e) =>
-                      handleProductCategoryChange(e.target.value)
-                    }
+                    onChange={(e) => {
+                      handleProductCategoryChange(e.target.value);
+                      setSalesSettingsChanged(true);
+                    }}
                   />
 
                   <div>
@@ -139,7 +157,10 @@ function AddProductDetails({ savedDetails, onNext, isManager=false }) {
                       ]}
                       error={errors.type}
                       disabled={!selectedCategory}
-                      onChange={(e) => handleProductTypeChange(e.target.value)}
+                      onChange={(e) => {
+                        handleProductTypeChange(e.target.value);
+                        setSalesSettingsChanged(true);
+                      }}
                     />
                   </div>
                 </div>
@@ -184,12 +205,12 @@ function AddProductDetails({ savedDetails, onNext, isManager=false }) {
 
                 <InputField
                   label="Discount (Precents)"
-                  value={details.discount??0}
+                  value={details.discount ?? 0}
                   placeholder="0"
                   type="number"
                   inputMode="numeric"
                   error={errors.discount}
-                  onFocus={(e)=>e.target.select()}
+                  onFocus={(e) => e.target.select()}
                   onChange={(e) => handleProductDiscountChange(e.target.value)}
                   onBlur={(e) => handleProductDiscountChange(e.target.value)}
                 />

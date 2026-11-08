@@ -6,6 +6,13 @@ const {
   updateInventory,
   updateProductsStatus,
 } = require("./updateInventoryMiddleware");
+
+const {
+  getShippingSettings,
+  getPointsSettings,
+} = require("./cart/orderSettingsMiddleware");
+
+
 const {
   checkUserLoggedIn,
   beginPaymentTransaction,
@@ -21,7 +28,7 @@ const {
   recoverPayPalOrder,
   checkPayPalOrderStatus,
 } = require("./paymentMiddleware");
-const { getShippingSettings, getPointsSettings } = require("./cartMiddleware");
+
 
 const handlePaymentError = (err, req, res, next) => {
   console.error("Payment processing error: ", err);

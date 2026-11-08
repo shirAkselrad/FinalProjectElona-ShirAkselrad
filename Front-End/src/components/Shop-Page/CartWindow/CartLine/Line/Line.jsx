@@ -9,6 +9,7 @@ function Line({
   image,
   name,
   price,
+  discount,
   quantity,
   onQuantityChange,
   onRemoveProduct,
@@ -16,7 +17,7 @@ function Line({
   return (
     <div className={styles.line}>
       <div className={styles.product}>
-        <ProductInfo image={image} name={name} price={price} />
+        <ProductInfo image={image} name={name} price={price} discount={discount}/>
 
         <div className={styles.quantity}>
           <Plus

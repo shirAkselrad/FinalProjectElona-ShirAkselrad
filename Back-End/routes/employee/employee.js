@@ -6,6 +6,7 @@ const inventoryRoutes = require("./inventory/inventory");
 const addProductRoutes = require("./inventory/addProduct");
 const editProductRoutes = require("./inventory/editProduct");
 const ordersRoutes = require("./orders");
+const editOrderRoutes = require("./orders/editOrder");
 
 //this middleware checks if the user is an employee
 const checkIfEmployee = (req, res, next) => {
@@ -27,5 +28,6 @@ router.use("/", inventoryRoutes);
 router.use("/", addProductRoutes);
 router.use("/", editProductRoutes);
 router.use("/", ordersRoutes);
+router.use("/", editOrderRoutes);
 
 module.exports = router;

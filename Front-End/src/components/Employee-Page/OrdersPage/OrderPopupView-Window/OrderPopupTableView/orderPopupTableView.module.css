@@ -1,12 +1,12 @@
 
 .header {
   display: grid;
-  grid-template-columns: 1.1fr 2.5fr 0.6fr 1fr 1fr;
+  grid-template-columns: 1.1fr 2.5fr 1.3fr 1.3fr 0.8fr;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 
-  padding: 14px 0;
-  border-bottom: 2px solid #e8ddd5;
+  padding: 16px 12px;
+  border-bottom: 1px solid #e8ddd5;
 
   font-family: Arial, sans-serif;
   font-size: 11px;
@@ -14,11 +14,8 @@
   color: #a58d80;
 }
 
-.header span:nth-child(3) {
-  text-align: center;
-}
-
+.header span:nth-child(3),
 .header span:nth-child(4),
 .header span:nth-child(5) {
-  text-align: right;
+  text-align: center;
 }

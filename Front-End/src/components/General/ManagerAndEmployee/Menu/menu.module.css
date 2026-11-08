@@ -1,9 +1,7 @@
 .menu {
   width: 240px;
-
-  background-color: #ffffff;
-  border: 1px solid #e4d8ce;
-
+  background-color: #faf7f4;
+  border: 1px solid #e5d8cd;
   flex-shrink: 0;
 }
 
@@ -18,14 +16,11 @@
 
 .header h2 {
   margin: 0;
-
   font-family: Georgia, "Times New Roman", serif;
   font-size: 24px;
   font-weight: 400;
-
-  color: #2d211a;
+  color: #4b1426;
 }
-
 .decoration {
   display: flex;
   align-items: center;
@@ -36,19 +31,17 @@
   margin-top: 16px;
 }
 
+
 .line {
   width: 36px;
   height: 1px;
-
-  background-color: #d3a65c;
+  background-color: #b89580;
 }
 
 .diamond {
   width: 5px;
   height: 5px;
-
-  background-color: #d3a65c;
-
+  background-color: #4b1426;
   transform: rotate(45deg);
 }
 

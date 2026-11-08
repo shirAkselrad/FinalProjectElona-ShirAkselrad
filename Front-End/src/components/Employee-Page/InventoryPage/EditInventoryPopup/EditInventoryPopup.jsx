@@ -1,60 +1,80 @@
-import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
-import InputField from "../../../General/InputField/InputField.jsx";
-import InputLabel from "../../../General/InputLabel/InputLabel.jsx";
-import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
-import CheckBoxField from "../../../General/CheckBoxField/CheckBoxField.jsx";
+import styles from "../AddProductPopup/AddProduct/addProduct.module.css";
 import Remove from "../../../General/Remove/Remove.jsx";
-import GeneralSelection from "../../../General/GeneralSelection/GeneralSelection.jsx";
-import DateInput from "../../../General/DateInput/DateInput.jsx";
-import TextAreaField from "../../../General/TextAreaField/TextAreaField.jsx";
-import ImageUploadBtn from "../../../General/ImageUploadBtn/ImageUploadBtn.jsx";
-import ColorsCheckBoxList from "../../../General/Colors/ColorsCheckBoxList/ColorsCheckBoxList.jsx";
-import ImagesPreviewList from "../../../General/ImagesPreviewList/ImagesPreviewList.jsx";
-import FileSelection from "../../../General/FileSelection/FileSelection.jsx";
-import { ProductCategory, ProductSize } from "../../../../Enums/products.js";
-import { countries } from "../../../../data/countries.js";
-import { colors } from "../../../../data/colors.js";
+import AddProductDetails from "../AddProductPopup/AddProductDetails/AddProductDetails.jsx";
+import AddProductFrontImg from "../AddProductPopup/AddProductFrontImg/AddProductFrontImg.jsx";
+import AddProductImages from "../AddProductPopup/AddProductImages/AddProductImages.jsx";
 import { useEffect, useState } from "react";
-import useEditProductImgs, { checkFormValidation } from "./editProductPopup.js";
-import useProductForm from "../AddProductPopup/addProductPopupInfo.js";
 
 function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
+  const [step, setStep] = useState(1);
+  const [productDetails, setProductDetails] = useState({
+    ...product,
+    colors: Array.isArray(product.colors)
+      ? product.colors
+      : product.colors.split(",").map((color) => color.trim()),
+  });
   const [productImgs, setProductImgs] = useState([]);
-  const [frontImg, setFrontImg] = useState("");
 
-  //This function send all the products inputs values after checking them. then product's info will be updated
-  async function saveEditedProduct() {
+  useEffect(() => {
+    async function getProductImgs() {
+      try {
+        const url = isManager
+          ? `/api/manager/getProductImages/${product.product_id}`
+          : `/api/employee/getProductImages/${product.product_id}`;
+        const response = await fetch(url, { method: "GET" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message);
+        setProductImgs(
+          data.files.sort((a, b) => a.file_number - b.file_number),
+        );
+      } catch (error) {
+        console.error("Couldn't get product images: ", error);
+      }
+    }
+    getProductImgs();
+  }, [product.product_id, isManager]);
+
+  function handleDetailsNext(details) {
+    setProductDetails(details);
+    setStep(2);
+  }
+  function handleNext() {
+    setStep((prev) => prev + 1);
+  }
+  function handleBack() {
+    setStep((prev) => prev - 1);
+  }
+
+  function handleImagesReorder(fromIndex, toIndex) {
+    setProductImgs((prev) => {
+      const frontImg = prev.find((img) => img.file_number === 1);
+      const otherImgs = prev.filter((img) => img.file_number !== 1);
+      const updatedImgs = [...otherImgs];
+      const [draggedImg] = updatedImgs.splice(fromIndex, 1);
+      updatedImgs.splice(toIndex, 0, draggedImg);
+      return [frontImg, ...updatedImgs];
+    });
+  }
+
+  async function savedEditedProduct(productToSave) {
     try {
       const formData = new FormData();
-
-      formData.append("name", editedProduct.name);
-      formData.append("category", editedProduct.category);
-      formData.append("size", editedProduct.size);
-      formData.append("country_origin", editedProduct.country_origin);
-      formData.append("colors", editedProduct.colors.join("-"));
-      formData.append("price", editedProduct.price);
-      formData.append("cost_price", editedProduct.cost_price);
-      formData.append("quantity", editedProduct.quantity);
-      formData.append("min_stock", editedProduct.min_stock);
-      formData.append("discount", editedProduct.discount);
-      formData.append("min_sales", editedProduct.min_sales);
-      formData.append("sales_check_date", editedProduct.sales_check_date);
-      formData.append("description", editedProduct.description);
-      formData.append("restock_required", editedProduct.restock_required);
-
-      //saving the final images of the product (these are the ONLY images which will be saved in the files table at back-end )- info about both old and new images
-      const imgsData = productImgs.map((img) => ({
-        file_name: img.file.name,
-        file_hash: img.file_hash,
-        frontImg: img.frontImg,
-      }));
-      formData.append("imgsData", JSON.stringify(imgsData));
-
-      //the actual data of the new images (only the new because back-end already have the data of the old images)- the actaul files
-      productImgs.forEach((img) => {
-        if (img.file instanceof File) formData.append("files", img.file);
+      const { images, ...productData } = productToSave;
+      formData.append("product", JSON.stringify(productData));
+      formData.append(
+        "images",
+        JSON.stringify(
+          images.map((img) => ({
+            file_name: img.file_name,
+            file_number: img.file_number,
+            path: img.path || null,
+          })),
+        ),
+      );
+      images.forEach((img) => {
+        if (img.file instanceof File)
+          formData.append("uploading-files", img.file);
       });
-
       const url = isManager
         ? `/api/manager/editedProduct/${product.product_id}`
         : `/api/employee/editedProduct/${product.product_id}`;
@@ -62,317 +82,66 @@ function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
         method: "PUT",
         body: formData,
       });
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
+      const responseText = await response.text();
+      console.log("Server response:", response.status, responseText);
+
+      const data = JSON.parse(responseText);0
+
       if (data.success) {
-        onSave({
-          ...product,
-          ...editedProduct,
-          colors: editedProduct.colors.json("-"),
+        await onSave({
+          ...productData,
+          colors: productData.colors.join(","),
         });
         onClose();
-      }
+      } else console.error(data.message);
       return data;
     } catch (error) {
-      console.error("couldn't update the wanted product, error: ", error);
+      console.error("Couldn't update product: ", error);
+      return {
+        success: false,
+        message: "Couldn't update product",
+      };
     }
   }
-
-  async function getProductImgs() {
-    try {
-      const url = isManager
-        ? `/api/manager/getProductImages/${product.product_id}`
-        : `/api/employee/getProductImages/${product.product_id}`;
-      const response = await fetch(url, {
-        method: "GET",
-      });
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
-
-      //this operation is for fitting the imgs fomate to FileSelection component
-      const formattedImgs = data.files.map((image) => ({
-        ...image,
-        id: image.auto_file_name,
-        file: {
-          name: image.file_name,
-        },
-      }));
-
-      //check and apply at frontImg state the current frontImg
-      const currentFrontImg = formattedImgs.find((img) => img.frontImg === 1);
-      if (currentFrontImg) {
-        setFrontImg(currentFrontImg.id);
-      }
-      setProductImgs(formattedImgs);
-    } catch (error) {
-      console.error("Couldn't get product's images, error: ", error);
-    }
-  }
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    getProductImgs();
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [product.product_id, isManager]);
-
-  //changing the product's formate so it will be fitted to useProductForm object formate
-  const initialProduct = {
-    ...product,
-    colors: product.colors.split("-"),
-  };
-
-  const {
-    product: editedProduct,
-    errors,
-    handleProductNameChange,
-    handleProductCategoryChange,
-    handleProductSizeChange,
-    handleProductCountryChange,
-    handleProductPriceChange,
-    handleProductCostPriceChange,
-    handleProductQuantityChange,
-    handleProductMinStockChange,
-    handleProductDiscountChange,
-    handleProductMinSalesChange,
-    handleProductDescriptionChange,
-    handleRestockRequiredChange,
-    handleSalesCheckDateChange,
-    handleColorsChange,
-  } = useProductForm(initialProduct);
-
-  const {
-    handleAddFiles,
-    handleFrontImgChange,
-    handleRemoveFile,
-    popup,
-    setPopup,
-  } = useEditProductImgs(setProductImgs, frontImg, setFrontImg);
-
   return (
     <div className={styles.overlay}>
-      {popup.show && (
-        <MessagePopup
-          message={popup.message}
-          type={popup.type}
-          onClose={() =>
-            setPopup({
-              show: false,
-              message: "",
-              type: "",
-            })
-          }
-        />
-      )}
       <div className={styles.popup}>
-        <div className={styles.removeBtn}>
+        <div className={styles.closeBtn}>
           <Remove onClick={onClose} />
         </div>
 
-        <h2 className={styles.title}>EDIT PRODUCT</h2>
-
-        <form className={styles.form}>
-          <InputField
-            label="Product Name"
-            placeholder="Enter product name"
-            value={editedProduct.name}
-            onChange={(e) => handleProductNameChange(e.target.value)}
-            error={errors.name}
+        {step === 1 && (
+          <AddProductDetails
+            savedDetails={productDetails}
+            onNext={handleDetailsNext}
+            isManager={isManager}
+            isEdit={true}
           />
+        )}
 
-          <InputField
-            label="Product ID"
-            placeholder="Enter product ID"
-            value={editedProduct.product_id}
-            disabled
+        {step === 2 && (
+          <AddProductFrontImg
+            product={productDetails}
+            productImgs={productImgs}
+            setProductImgs={setProductImgs}
+            onNext={handleNext}
+            onBack={handleBack}
           />
+        )}
 
-          <div>
-            <InputLabel text="Category" />
-            <GeneralSelection
-              value={editedProduct.category}
-              options={Object.values(ProductCategory)}
-              onChange={(e) => handleProductCategoryChange(e.target.value)}
-              error={errors.category}
-            />
-          </div>
-
-          <div>
-            <InputLabel text="Size" />
-            <GeneralSelection
-              value={editedProduct.size}
-              options={Object.values(ProductSize)}
-              onChange={(e) => handleProductSizeChange(e.target.value)}
-              error={errors.size}
-            />
-          </div>
-
-          <div>
-            <InputLabel text="Country of Origin" />
-            <GeneralSelection
-              value={editedProduct.country_origin}
-              options={countries}
-              onChange={(e) => handleProductCountryChange(e.target.value)}
-              error={errors.country_origin}
-            />
-          </div>
-
-          <InputLabel text="Product's colors" />
-
-          <ColorsCheckBoxList
-            colors={colors}
-            selectedColors={editedProduct.colors}
-            onChange={handleColorsChange}
-            error={errors.colors}
+        {step === 3 && (
+          <AddProductImages
+            product={productDetails}
+            productImgs={productImgs}
+            setProductImgs={setProductImgs}
+            onReorder={handleImagesReorder}
+            onBack={handleBack}
+            onClose={onClose}
+            isManager={isManager}
+            isEdit={true}
+            onSaveEdited={savedEditedProduct}
           />
-
-          <div className={styles.row}>
-            <div className={styles.half}>
-              <InputField
-                value={editedProduct.price}
-                label="Price"
-                placeholder="0.00"
-                type="number"
-                step="0.01"
-                onChange={(e) => handleProductPriceChange(e.target.value)}
-                error={errors.price}
-              />
-            </div>
-
-            <div className={styles.half}>
-              <InputField
-                value={editedProduct.cost_price}
-                label="Cost Price"
-                placeholder="0.00"
-                type="number"
-                step="0.01"
-                onChange={(e) => handleProductCostPriceChange(e.target.value)}
-                error={errors.cost_price}
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.half}>
-              <InputField
-                value={editedProduct.quantity}
-                label="Quantity"
-                placeholder="0"
-                type="number"
-                onChange={(e) => handleProductQuantityChange(e.target.value)}
-                error={errors.quantity}
-              />
-            </div>
-
-            <div className={styles.half}>
-              <InputField
-                value={editedProduct.min_stock}
-                label="Minimum Stock"
-                placeholder="0"
-                type="number"
-                onChange={(e) => handleProductMinStockChange(e.target.value)}
-                error={errors.min_stock}
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.half}>
-              <InputField
-                value={editedProduct.discount}
-                label="Discount (Precents)"
-                placeholder="0"
-                type="number"
-                onChange={(e) => handleProductDiscountChange(e.target.value)}
-                error={errors.discount}
-              />
-            </div>
-
-            <div className={styles.half}>
-              <InputField
-                value={editedProduct.min_sales}
-                label="Minimum Sales"
-                placeholder="0"
-                type="number"
-                onChange={(e) => handleProductMinSalesChange(e.target.value)}
-                error={errors.min_sales}
-              />
-            </div>
-          </div>
-
-          <div className={styles.row}>
-            <div className={styles.half}>
-              <DateInput
-                value={editedProduct.sales_check_date?.split("T")[0]}
-                label="Sales Check Date"
-                onChange={(e) => handleSalesCheckDateChange(e.target.value)}
-                min={new Date().toISOString().split("T")[0]}
-                error={errors.sales_check_date}
-              />
-            </div>
-          </div>
-
-          <div className={styles.description}>
-            <TextAreaField
-              value={editedProduct.description}
-              label="Description"
-              placeholder="Enter product description"
-              maxLength={250}
-              onChange={(e) => handleProductDescriptionChange(e.target.value)}
-              error={errors.description}
-            />
-          </div>
-
-          <div className={styles.image}>
-            <InputLabel text="Product Files" />
-
-            <span className={styles.fileInfo}>
-              Allowed files: JPG, JPEG, PNG, WEBP
-            </span>
-
-            <div className={styles.imageButtons}>
-              <ImageUploadBtn
-                text="ADD FILES"
-                multiple
-                onChange={(e) => handleAddFiles(e.target.files)}
-              />
-            </div>
-            <ImagesPreviewList
-              images={productImgs}
-              onRemove={handleRemoveFile}
-              allowRemoveFront={true}
-            />
-
-            <InputLabel text="Front Image" />
-            <FileSelection
-              files={productImgs}
-              value={frontImg}
-              //sending the id of the chosen image
-              onChange={handleFrontImgChange}
-            />
-          </div>
-
-          <div className={styles.checkboxField}>
-            <InputLabel text="Restock Reminder" />
-
-            <CheckBoxField
-              checked={Boolean(editedProduct.restock_required)}
-              text="Required"
-              onChange={(e) => handleRestockRequiredChange(e.target.checked)}
-            />
-          </div>
-
-          <GeneralBtn
-            text="SAVE CHANGES"
-            type="button"
-            className={styles.addBtn}
-            onClick={saveEditedProduct}
-            disabled={!checkFormValidation(errors, editedProduct, productImgs)}
-          />
-        </form>
+        )}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import * as inputValidation from "../../../../../utils/inputValidation.js";
 import { ProductSize } from "../../../../../Enums/products.js";
 
 //passing empty product (as long as the user didn't press back)
-function useProductDetails(initialDetails = null) {
+function useProductDetails(initialDetails = null, isEdit = false) {
   const emptyDetails = {
     product_id: "",
     name: "",
@@ -212,7 +212,11 @@ function useProductDetails(initialDetails = null) {
       ...details,
       quantity: value,
     });
-    if (!InventoryInputValidation.onlyNumbers(value) || Number(value) <= 0) {
+    if (
+      !InventoryInputValidation.onlyNumbers(value) ||
+      value === "" ||
+      (isEdit ? Number(value) < 0 : Number(value) <= 0)
+    ) {
       setErrors({
         ...errors,
         quantity: "Invalid quantity value",
@@ -268,7 +272,6 @@ function useProductDetails(initialDetails = null) {
     }
   }
 
-
   //This function checks the validation of the product's description
   function handleProductDescriptionChange(value) {
     setDetails({
@@ -302,7 +305,6 @@ function useProductDetails(initialDetails = null) {
       }));
   }
 
-
   //This function set the product's color/s
   function handleColorsChange(value) {
     const updatedColors = details.colors.includes(value)
@@ -335,7 +337,8 @@ function useProductDetails(initialDetails = null) {
       details.name !== "" &&
       details.product_id !== "" &&
       details.category !== "None" &&
-     details.type!==""&&
+      details.type !== "None" &&
+      details.type !== "" &&
       details.size !== ProductSize.NONE &&
       details.country_origin !== "None" &&
       details.colors.length > 0 &&

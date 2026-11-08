@@ -37,11 +37,39 @@
 .actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 28px;
+  margin-top: 24px;
+}
+
+.actions button {
+  width: fit-content;
+  min-width: 180px;
+  padding: 12px 24px;
 }
 
 @media (max-width: 800px) {
   .fields {
     grid-template-columns: 1fr;
   }
+}
+
+
+.pointsNote {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 16px;
+  padding: 10px 16px;
+
+  background-color: #f5efea;
+  border-left: 3px solid #4b1426;
+  border-radius: 4px;
+
+  color: #76503a;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.pointsNote strong {
+  color: #4b1426;
+  font-weight: 600;
 }

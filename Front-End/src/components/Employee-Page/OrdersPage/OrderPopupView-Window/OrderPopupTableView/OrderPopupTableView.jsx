@@ -17,8 +17,8 @@ function OrderPopupTableView({ products }) {
         <span>TOTAL</span>
       </div>
 
-      {products.map((product) => (
-        <OrderPopupRowView key={product.product_id} product={product} />
+      {products.map((product, index) => (
+        <OrderPopupRowView key={index} product={product} />
       ))}
     </div>
   );

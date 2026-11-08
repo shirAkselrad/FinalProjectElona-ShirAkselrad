@@ -3,7 +3,7 @@ import InventoryRow from "../InventoryRow/InventoryRow.jsx";
 import { useState } from "react";
 import EditInventoryPopup from "../EditInventoryPopup/EditInventoryPopup.jsx";
 import ProductPreviewPopup from "../ProductPreviewPopup/ProductPreviewPopup.jsx";
-
+import InventoryLegend from "../Inventory/InventoryLegend/InventoryLegend.jsx";
 /**
  *
  * @param {inventory} inventory array
@@ -35,13 +35,20 @@ function InventoryTable({
     (inv) => Number(inv.restock_required) === 1 && Number(inv.quantity) === 0,
   ).length;
 
+  const normalStockCount = inventory.filter(
+    (inv) =>
+      Number(inv.restock_required) !== 1 ||
+      Number(inv.quantity) > Number(inv.min_stock),
+  ).length;
+
   return (
     <div className={styles.tableWrapper}>
       {showStockSummary && (
-        <div className={styles.stockSummary}>
-          <span>Low Stock: {lowStockCount}</span>
-          <span>Out Of Stock: {outOfStockCount}</span>
-        </div>
+        <InventoryLegend
+          lowStockCount={lowStockCount}
+          outOfStockCount={outOfStockCount}
+          normalStockCount={normalStockCount}
+        />
       )}
       <table className={styles.table}>
         <colgroup>

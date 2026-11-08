@@ -20,17 +20,22 @@ const getPointsSettings = (req, res) => {
 };
 
 const updatePointsSettings = (req, res, next) => {
-  const { min_order_price, earning_percentage } = req.body;
+  const { min_order_price, earning_percentage, max_redemption_percentage } =
+    req.body;
   const query =
-    "update points_settings set min_order_price=?, earning_percentage=?";
-  db.query(query, [min_order_price, earning_percentage], (err) => {
-    if (err)
-      return res.status(500).json({
-        success: false,
-        message: "Couldn't update points settings",
-      });
-    next();
-  });
+    "update points_settings set min_order_price=?, earning_percentage=?, max_redemption_percentage=>";
+  db.query(
+    query,
+    [min_order_price, earning_percentage, max_redemption_percentage],
+    (err) => {
+      if (err)
+        return res.status(500).json({
+          success: false,
+          message: "Couldn't update points settings",
+        });
+      next();
+    },
+  );
 };
 
 router.get("/pointsSettings", getPointsSettings);

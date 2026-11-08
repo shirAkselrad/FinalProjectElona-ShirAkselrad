@@ -2,39 +2,105 @@ import styles from "./orderPopupView.module.css";
 import OrderPopupTitleView from "../OrderPopupTitleView/OrderPopupTitleView.jsx";
 import EditBtn from "../../../../General/EditBtn/EditBtn.jsx";
 import Remove from "../../../../General/Remove/Remove.jsx";
-import OrderPopupTableView from "../OrderPopupTableView/OrderPopupTableView.jsx";
-import OrderPopupSumarryView from "../OrderPopupSumarryView/OrderPopupSumarryView.jsx";
+import GeneralBtn from "../../../../General/GeneralBtn/GeneralBtn.jsx";
+import BrightGeneralBtn from "../../../../General/BrightGeneralBtn/BrightGeneralBtn.jsx";
+import OrderSummaryTable from "../../../../Shop-Page/OrderSummary/OrderSummaryTable/OrderSummaryTable.jsx";
+import OrderSummaryTotal from "../../../../Shop-Page/OrderSummary/OrderSummaryTotal/OrderSummaryTotal.jsx";
 import { useEffect, useState } from "react";
-/**
- *
- * @param {order} order the currrent order to be view in the popup
- * @param {onClose} onClose the event which accurs when the user click on the x btn
- * @param {onEdit} onEdit the event which accurs when the user click on the edit btn
- * @returns OrderPopupView
- */
-function OrderPopupView({ order, onClose, onEdit, isManager = false }) {
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    const getOrderProducts = async () => {
-      try {
-        const url = isManager
-          ? `/api/manager/orders/${order.order_id}/items`
-          : `/api/employee/orders/${order.order_id}/items`;
-        const response = await fetch(url, {
-          method: "GET",
-        });
-        if (!response.ok) throw new Error("Couldn't get order's products");
-        const data = await response.json();
-        console.log("Order ID:", order.order_id);
-        console.log("Products from backend:", data.products);
 
-        setProducts(data.products);
+function OrderPopupView({
+  order,
+  onClose,
+  onEdit,
+  onApprove,
+  onReject,
+  isManager = false,
+  isRefunds = false,
+}) {
+  const [summary, setSummary] = useState(null);
+
+  useEffect(() => {
+    const getOrderSummary = async () => {
+      try {
+        setSummary(null);
+
+        const url = isManager
+          ? `/api/manager/orders/${order.order_id}/summary`
+          : `/api/employee/orders/${order.order_id}/summary`;
+
+        const response = await fetch(url);
+     
+
+        if (!response.ok) throw new Error("Couldn't get order summary");
+
+        const data = await response.json();
+        console.log("POINTS DEBUG:", {
+          pointsUsed: data.order.points_used,
+          maxPercentage: data.order.max_redemption_percentage,
+        });
+           console.log(
+             "ORDER ITEMS:",
+             JSON.stringify(data.order.items, null, 2),
+           );
+        setSummary(data.order);
       } catch (error) {
-        console.error("Couldn't get order products: ", error);
+        console.error("Couldn't get order summary:", error);
       }
     };
-    getOrderProducts();
+
+    getOrderSummary();
   }, [order.order_id, isManager]);
+
+  const round = (value) => Number(value.toFixed(2));
+
+  const activeItems =
+    summary?.items?.filter((item) => item.status === "Active") || [];
+  console.log("ALL ITEMS:", summary?.items);
+  console.log("ACTIVE ITEMS:", activeItems);
+
+  const originalTotal = round(
+    activeItems.reduce(
+      (sum, item) => sum + Number(item.original_price) * Number(item.quantity),
+      0,
+    ),
+  );
+
+  const productsTotal = round(
+    activeItems.reduce((sum, item) => sum + Number(item.total_price), 0),
+  );
+
+  const discount = Number(summary?.general_discount_percentage || 0);
+  const afterPromotions = round(productsTotal * (1 - discount / 100));
+
+  const maxPoints = round(
+    (afterPromotions * Number(summary?.max_redemption_percentage || 0)) / 100,
+  );
+
+  const pointsUsed = Math.min(Number(summary?.points_used || 0), maxPoints);
+
+  const updatedSummary = summary && {
+    ...summary,
+    original_total: originalTotal,
+    promotions_discount: round(originalTotal - afterPromotions),
+    total_after_promotions: afterPromotions,
+    points_used: pointsUsed,
+    final_total: round(afterPromotions - pointsUsed + Number(summary.shipping)),
+  };
+
+  const refundPoints = summary
+    ? round(Number(summary.total_after_promotions) - afterPromotions)
+    : 0;
+
+  const hasPendingEdit = summary?.items?.some(
+    (item) => item.status === "Inactive",
+  );
+
+  const hasChangedItems = summary?.items?.some(
+    (item) => item.status === "Inactive" || item.status === "Refunded",
+  );
+
+  const showRefundSummary = isRefunds || hasChangedItems;
+
   return (
     <div className={styles.overlay}>
       <div className={styles.orderPopup}>
@@ -46,20 +112,56 @@ function OrderPopupView({ order, onClose, onEdit, isManager = false }) {
           />
 
           <div className={styles.actions}>
-            {/*gets the onEdit function to oprate when clicked */}
-
-            {order.status == "PAID" && (
-              <EditBtn onClick={onEdit} className={styles.popupEdit} />
+            {isRefunds ? (
+              <div className={styles.refundActions}>
+                <GeneralBtn text="APPROVE" onClick={onApprove} />
+                <BrightGeneralBtn text="REJECT" onClick={onReject} />
+              </div>
+            ) : (
+              order.status === "PAID" &&
+              !hasPendingEdit && (
+                <EditBtn onClick={onEdit} className={styles.popupEdit} />
+              )
             )}
-            {/*gets the onClose function to oprate when clicked */}
+
             <Remove onClick={onClose} className={styles.popupRemove} />
           </div>
         </div>
+        {summary && (
+          <div className={styles.summary}>
+            <OrderSummaryTable items={summary.items} />
 
-        {/*the table of all the products in the order, gets the order's products  */}
-        <OrderPopupTableView products={products} />
+            {showRefundSummary ? (
+              <div className={styles.totals}>
+                <OrderSummaryTotal
+                  order={summary}
+                  title="ORIGINAL ORDER"
+                  isManagement={true}
+                />
 
-        <OrderPopupSumarryView total={order.final_price} />
+                <OrderSummaryTotal
+                  order={updatedSummary}
+                  title="UPDATED ORDER"
+                  isManagement={true}
+                />
+
+                {hasPendingEdit && (
+                  <div className={styles.refund}>
+                    <span>REFUND POINTS</span>
+                    <strong>{refundPoints.toFixed(2)} points</strong>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <OrderSummaryTotal
+                order={summary}
+                minDeliveryDate={summary.min_delivery_date?.slice(0, 10)}
+                maxDeliveryDate={summary.max_delivery_date?.slice(0, 10)}
+                isManagement={true}
+              />
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

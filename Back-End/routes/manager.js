@@ -11,6 +11,11 @@ const reviewsRouter = require("./manager/reviews");
 const shippingSettingsRoutes = require("./manager/shippingSettings");
 const pointsSettingsRoutes = require("./manager/pointsSettings");
 const generalPromotionsRoutes = require("./manager/generalPromotions");
+const editCategoriesRoutes = require("./manager/categories/editCategories");
+const editOrderRoutes = require("./employee/orders/editOrder");
+const approveOrderEditsRoutes = require("./manager/approveOrderEdits");
+const pendingOrderEditsRoutes = require("./manager/pendingOrderEdits");
+const rejectOrderEditsRoutes = require("./manager/rejectOrderEdits");
 
 //this middleware check if the user is a manager
 const checkIfManager = (req, res, next) => {
@@ -38,5 +43,10 @@ router.use("/", reviewsRouter);
 router.use("/", shippingSettingsRoutes);
 router.use("/", pointsSettingsRoutes);
 router.use("/", generalPromotionsRoutes);
+router.use("/", editCategoriesRoutes);
+router.use("/", editOrderRoutes);
+router.use("/", approveOrderEditsRoutes);
+router.use("/", pendingOrderEditsRoutes);
+router.use("/", rejectOrderEditsRoutes);
 
 module.exports = router;

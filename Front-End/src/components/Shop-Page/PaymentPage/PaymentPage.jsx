@@ -1,7 +1,7 @@
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../../context/CartContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./paymentPage.module.css";
 
 const paypalOptions = {

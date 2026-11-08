@@ -1,0 +1,22 @@
+
+.container {
+  width: 100%;
+  margin-top: 25px;
+}
+
+.title {
+  color: #4b1426;
+  font-family: "Playfair Display", serif;
+  font-size: 23px;
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+
+
+.pendingRefunds {
+  width: 100%;
+}
+
+.tableContainer {
+  margin-top: 14px;
+}

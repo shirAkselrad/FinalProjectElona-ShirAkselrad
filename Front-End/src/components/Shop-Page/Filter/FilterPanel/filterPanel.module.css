@@ -1,0 +1,101 @@
+
+.panel {
+  width: 250px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 22px;
+  box-sizing: border-box;
+
+  background-color: #faf7f4;
+  border: 1px solid #e5d8cd;
+  border-radius: 6px;
+  color: #4b1426;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.header h3 {
+  margin: 0;
+  font-family: "Libre Baskerville", serif;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 20px 0;
+  border-top: 1px solid #e5d8cd;
+}
+
+.section h4 {
+  margin: 0 0 5px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #4b1426;
+}
+
+.priceInputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.priceInputs > * {
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.applyBtn {
+  padding: 12px;
+  border: 1px solid #632638;
+  border-radius: 4px;
+  background-color: #632638;
+  color: #f6f0e9;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.applyBtn:hover {
+  background-color: #4b1426;
+}
+
+.clearBtn {
+  padding: 10px;
+  border: 1px solid #632638;
+  border-radius: 4px;
+  background: transparent;
+  color: #632638;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.clearBtn:hover {
+  background-color: #eadbd9;
+}
+
+@media (max-width: 768px) {
+  .panel {
+    width: 100%;
+  }
+}

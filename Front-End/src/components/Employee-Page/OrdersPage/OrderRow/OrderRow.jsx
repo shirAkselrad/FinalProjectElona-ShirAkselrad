@@ -3,19 +3,22 @@ import styles from "./orderRow.module.css";
 import Status from "../../Status/Status.jsx";
 import ViewBtn from "../../../General/ViewBtn/ViewBtn.jsx";
 
+const formatDate = (date) =>
+  date ? new Date(date).toLocaleDateString("en-GB") : "—";
 /**
  *
  * @param {order} order the current order in the row
  * @param {onView} oView the event which happenes when the user click on the view btn
  * @returns OrderRow
  */
+
 function OrderRow({
   order,
   onView,
   onStatusChange,
   openStatusOrderId,
   setOpenStatusOrderId,
-  isManager=false
+  isManager = false,
 }) {
   return (
     <tr className={styles.row}>
@@ -27,7 +30,13 @@ function OrderRow({
 
       <td className={styles.items}>{order.total_items}</td>
 
-      <td>{new Date(order.created_at).toLocaleDateString("en-GB")}</td>
+      <td>{formatDate(order.created_at)}</td>
+      <td>
+        {order.min_delivery_date && order.max_delivery_date
+          ? `${formatDate(order.min_delivery_date)} - ${formatDate(order.max_delivery_date)}`
+          : "—"}
+      </td>
+      <td>{order.general_promotion || "—"}</td>
 
       <td className={styles.total}>{Number(order.final_price).toFixed(2)}₪</td>
 

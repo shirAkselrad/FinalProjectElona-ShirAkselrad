@@ -24,6 +24,7 @@ import MainLayout from "../layouts/MainLayout/MainLayout.jsx";
 import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout.jsx";
 import { CartProvider } from "../context/CartContext.jsx";
+import Refunds from "../components/Manager-Page/RefundsPage/Refunds/Refunds.jsx";
 function App() {
   return (
     <CartProvider>
@@ -47,6 +48,7 @@ function App() {
             <Route path="orders" element={<Orders isManager={true} />} />
             <Route path="reviews" element={<CustomerReviews />} />
             <Route path="storeManagement" element={<StoreManagement/>}/>
+            <Route path="refunds" element={<Refunds/>}/>
           </Route>
           <Route
             path="myAccount"

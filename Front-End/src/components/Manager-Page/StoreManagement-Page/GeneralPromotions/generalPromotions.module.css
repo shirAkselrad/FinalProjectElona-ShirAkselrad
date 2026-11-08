@@ -120,3 +120,46 @@
     font-size: 19px;
   }
 }
+
+.promotionNote {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 12px 0 20px;
+  padding: 12px 18px;
+
+  background-color: #f5efea;
+  border-left: 3px solid #4b1426;
+  border-radius: 4px;
+
+  color: #76503a;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.promotionNote strong {
+  display: block;
+  color: #4b1426;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.promotionNote ul {
+  list-style-type: disc;
+  list-style-position: outside;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.promotionNote li {
+  padding-left: 2px;
+  margin-bottom: 3px;
+}
+
+.promotionNote li::marker {
+  color: #4b1426;
+}
+
+.promotionNote li:last-child {
+  margin-bottom: 0;
+}

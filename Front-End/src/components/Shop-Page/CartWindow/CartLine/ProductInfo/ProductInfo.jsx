@@ -2,7 +2,7 @@ import styles from "./productInfo.module.css";
 
 import ProductPrice from "../../../../Shop-Page/ProductPrice/ProductPrice";
 
-function ProductInfo({ image, name, price }) {
+function ProductInfo({ image, name, price, discount }) {
   return (
     <div className={styles.productInfo}>
       <img src={image} alt={name} className={styles.image} />
@@ -10,7 +10,7 @@ function ProductInfo({ image, name, price }) {
       <div className={styles.details}>
         <h3 className={styles.name}>{name}</h3>
 
-        <ProductPrice price={price} />
+        <ProductPrice price={price} discount={discount} />
       </div>
     </div>
   );
