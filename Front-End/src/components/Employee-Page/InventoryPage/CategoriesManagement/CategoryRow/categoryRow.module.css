@@ -1,10 +1,13 @@
-
 .container {
   border-bottom: 1px solid #eee5de;
 }
 
 .container:last-child {
   border-bottom: none;
+}
+
+.employee .statusBtn {
+  cursor: default;
 }
 
 /* Category row */
@@ -100,6 +103,10 @@
   letter-spacing: 0.4px;
   text-align: center;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 
   transition:
     background-color 0.2s ease,

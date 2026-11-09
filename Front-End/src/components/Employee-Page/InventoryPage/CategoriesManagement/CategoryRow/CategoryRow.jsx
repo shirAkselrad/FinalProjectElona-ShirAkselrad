@@ -7,6 +7,7 @@ import GeneralBtn from "../../../../General/GeneralBtn/GeneralBtn.jsx";
 function CategoryRow({ category, isManager = false, onRefreshCategories }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isAddingType, setIsAddingType] = useState(false);
+  console.log("Category:", category);
 
   const handleStatusChange = async () => {
     const newStatus = category.status === "Active" ? "Not Active" : "Active";
@@ -40,29 +41,38 @@ function CategoryRow({ category, isManager = false, onRefreshCategories }) {
           <span>{category.name}</span>
         </div>
 
-        <span className={styles.typesCount}>{category.types.length} Types</span>
+        <span className={styles.typesCount}>{category.types.length} {category.types.length===1?"Type":"Types"}</span>
 
         <div className={styles.actions}>
-          <GeneralBtn
-            text={category.status}
-            type="button"
-            className={`${styles.statusBtn} ${
-              category.status === "Active" ? styles.active : styles.inactive
-            }`}
-            onClick={isManager ? handleStatusChange : undefined}
-            disabled={!isManager}
-          />
+          {isManager ? (
+            <>
+              <GeneralBtn
+                text={category.status}
+                type="button"
+                className={`${styles.statusBtn} ${
+                  category.status === "Active" ? styles.active : styles.inactive
+                }`}
+                onClick={handleStatusChange}
+              />
 
-          {isManager && (
-            <GeneralBtn
-              text={<FiPlus />}
-              type="button"
-              className={styles.actionBtn}
-              onClick={() => {
-                setIsOpen(true);
-                setIsAddingType(true);
-              }}
-            />
+              <GeneralBtn
+                text={<FiPlus />}
+                type="button"
+                className={styles.actionBtn}
+                onClick={() => {
+                  setIsOpen(true);
+                  setIsAddingType(true);
+                }}
+              />
+            </>
+          ) : (
+            <span
+              className={`${styles.statusBtn} ${
+                category.status === "Active" ? styles.active : styles.inactive
+              }`}
+            >
+              {category.status}
+            </span>
           )}
         </div>
       </div>

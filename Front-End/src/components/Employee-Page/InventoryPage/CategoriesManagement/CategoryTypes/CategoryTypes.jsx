@@ -44,17 +44,28 @@ function CategoryTypes({
             <span>{type.name}</span>
             <span>{type.min_sales}</span>
             <span>{type.sales_check_days}</span>
-            <button
-              type="button"
-              className={`${styles.statusBtn} ${type.status === "Active" ? styles.active : styles.inactive}`}
-              onClick={() => handleStatusChange(type)}
-              disabled={!isManager}
-            >
-              {type.status}
-            </button>
+            {isManager ? (
+              <button
+                type="button"
+                className={`${styles.statusBtn} ${
+                  type.status === "Active" ? styles.active : styles.inactive
+                }`}
+                onClick={() => handleStatusChange(type)}
+              >
+                {type.status}
+              </button>
+            ) : (
+              <span
+                className={`${styles.statusBtn} ${
+                  type.status === "Active" ? styles.active : styles.inactive
+                }`}
+              >
+                {type.status}
+              </span>
+            )}
           </div>
         ))}
-        {isAddingType && (
+        {isManager && isAddingType && (
           <AddCategoryTypeRow
             categoryId={categoryId}
             onCancel={onCancel}

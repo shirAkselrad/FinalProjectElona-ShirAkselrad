@@ -205,7 +205,7 @@ function Inventory({ isManager = false }) {
       {isManager && showPopupCategory && (
         <AddCategoryPopup
           onClose={handleClosePopupCategory}
-          onCategoryAdded={getCategories}
+          onRefreshCategories={getCategories}
         />
       )}
       <CategoriesTable categories={categories} isManager={isManager} onRefreshCategories={getCategories}/>

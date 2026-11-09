@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const dbSingleton = require("../../dbSingleton");
+const dbSingleton = require("../../dbSingleton"); 
 const db = dbSingleton.getConnection();
 
 const checkCategoryExists = (req, res, next) => {
@@ -54,8 +54,11 @@ const addCategory = (req, res, next) => {
   });
 };
 
+
 const addCategoryTypes = (req, res, next) => {
   const { types } = req.body;
+
+  if (!types?.length) return next();
 
   const values = types.map((type) => [
     req.categoryId,
@@ -68,17 +71,22 @@ const addCategoryTypes = (req, res, next) => {
     "insert into category_types (category_id, name, min_sales, sales_check_days) values ?";
 
   db.query(query, [values], (err) => {
-    if (err)
+    if (err) {
+      console.error("addCategoryTypes ERROR:", err);
+      console.log("VALUES:", values);
+
       return db.rollback(() => {
         res.status(500).json({
           success: false,
           message: "Couldn't add category's types",
         });
       });
+    }
 
     next();
   });
 };
+
 
 const getCategories = (req, res, next) => {
   const query = "select category_id, name, status from categories";

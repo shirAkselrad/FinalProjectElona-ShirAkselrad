@@ -27,7 +27,7 @@ function OrderSummaryPage() {
   //This function gets client's order from the data base
   async function getOrder() {
     try {
-      const response = await fetch("/api/cart/getOrderSummary", {
+      const response = await fetch("/api/orderSummary/getOrderSummary", {
         method: "GET",
       });
 

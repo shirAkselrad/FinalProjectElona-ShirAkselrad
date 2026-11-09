@@ -33,7 +33,7 @@ function CategoriesTable({
         <div className={styles.tableHeader}>
           <span>Category</span>
           <span>Types</span>
-          <span>Status / Actions</span>
+          <span>{isManager ? "Status / Action" : "Status"}</span>
         </div>
 
         {categories.length === 0 ? (

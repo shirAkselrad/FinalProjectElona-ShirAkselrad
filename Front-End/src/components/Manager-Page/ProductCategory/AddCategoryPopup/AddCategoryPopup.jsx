@@ -8,7 +8,7 @@ import MessagePopup from "../../../General/MessagePopup/MessagePopup";
 import { checkCategoryValidation } from "./categoryValidation";
 import { onlyFirstLetterCapital } from "../../../../utils/inputValidation";
 
-function AddCategoryPopup({ onClose }) {
+function AddCategoryPopup({ onClose, onRefreshCategories }) {
   const [messagePopup, setMessagePopup] = useState({
     show: false,
     message: "",
@@ -70,7 +70,10 @@ function AddCategoryPopup({ onClose }) {
   function handleCloseMessage() {
     const isSuccess = messagePopup.type === "success";
     setMessagePopup((prev) => ({ ...prev, show: false }));
-    if (isSuccess) onClose();
+    if (isSuccess) {
+      onRefreshCategories?.();
+      onClose();
+    }
   }
   return (
     <div className={styles.overlay}>
