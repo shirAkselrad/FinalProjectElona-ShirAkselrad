@@ -1,18 +1,21 @@
 import styles from "./clients.module.css";
 import ClientsTable from "../ClientsTable/ClientsTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
-import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
-import FilterBox from "../../../General/Filters/FilterBox/FilterBox.jsx";
-import { useOutletContext } from "react-router-dom";
+import SearchBar from "../../../General/SearchBar/SearchBar.jsx"; 
+import { useOutlet, useOutletContext } from "react-router-dom";
+import ManagementFilters from "../../../General/ManagmentFilters/ManagementFilters.jsx";
 import { useState, useEffect } from "react";
-import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 
 function Clients({ isManager = false }) {
-  //This popup will be displayed only in case there is no results of the filtering action
-  const [showNoMatchesPopup, setShowNoMatchesPopup] = useState(false);
-
-  //This state variable keeps all the cities in the clients table with no repeats
+  const { client, setClients, users, setUsers } = useOutletContext();
+  const displayedClients = isManager ? users : clients;
+  const updateDisplayedClients = isManager ? setUsers : setClients;
   const [cities, setCities] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("All Statuses");
+  const [selectedCity, setSelectedCity] = useState("All Cities");
+  const [searchValue, setSearchValue] = useState("");
+  const [filteredClients, setFilteredClients] = useState(null);
+  const [refresh, setRefresh] = useState(0);
 
   //The function gets all the cities names with no repeats
   async function getCitiesNoRepeat() {
@@ -27,118 +30,71 @@ function Clients({ isManager = false }) {
         throw new Error(`HTTP error! status: ${response.status}`);
 
       const data = await response.json();
-      console.log("CITIES FROM SERVER:", data.cities);
-      setCities(data.cities);
+      if (data.success) setCities(data.cities);
     } catch (error) {
       console.error("Error getting cities: ", error);
     }
   }
 
-  //getting an updated cities list
+  //get filtered clients from backend
+  async function getFilteredClients() {
+    try {
+      const url = isManager ? "/api/manager/users" : "/api/employee/clients";
+      const response = await fetch(
+        `${url}?status=${selectedStatus}&city=${selectedCity}&search=${searchValue}`,
+        {
+          method: "GET",
+        },
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (data.success)
+        setFilteredClients(isManager ? data.users : data.clients);
+    } catch (error) {
+      console.error("Error filtering clients:", error);
+    }
+  }
+
   useEffect(() => {
     getCitiesNoRepeat();
-  }, []);
+  }, [isManager, refresh]);
 
-  //for the status's filter
-  const [selectedStatus, setSelectedStatus] = useState("All Statuses");
-  //for the city's filter
-  const [selectedCity, setSelectedCity] = useState("All Cities");
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getFilteredClients();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [selectedStatus, selectedCity, searchValue, isManager, refresh]);
 
-  //hold all the first types
+  //updating client after editing
+  function handleUpdateClient(updatedClient) {
+    updateDisplayedClients((prevClients) =>
+      prevClients.map((client) =>
+        client.email === updatedClient.email
+          ? { ...client, ...updatedClient }
+          : client,
+      ),
+    );
+    setRefresh((prev) => prev + 1);
+  }
+
+  const results = filteredClients ?? displayedClients;
+
   const filters = [
     {
       title: "STATUS",
       options: ["All Statuses", "Active", "Not Active"],
       selected: selectedStatus,
-      setSelected: handleStatusChange, //only when the filter changed the list will chanage as well
+      setSelected: setSelectedStatus,
     },
     {
       title: "CITY",
       options: ["All Cities", ...cities],
       selected: selectedCity,
-      setSelected: handleCityChange, //only when the filter changed the list will chanage as well
+      setSelected: setSelectedCity,
     },
   ];
-
-  const { clients, setClients, users, setUsers } = useOutletContext();
-  const displayedClients = isManager ? users : clients;
-  const updateDisplayedClients = isManager ? setUsers : setClients;
-  //This part is resposible to the search filter in the clients table
-  const [searchValue, setSearchValue] = useState("");
-
-  //this state variable is for those clients that will be presented after filtering
-  const [filteredClients, setFilteredClients] = useState(null);
-
-  //This function operates the filtering action, update the client's list and displays the popup if needs
-  function applyFilters(status, city, search) {
-    const result = displayedClients.filter((client) => {
-      const matchedSearch = Object.entries(client).some(([key, value]) => {
-        const currentValue = String(value).toLowerCase();
-        const currentSearch = search.toLowerCase();
-
-        if (key === "status") return currentValue === currentSearch;
-
-        return currentValue.includes(currentSearch);
-      });
-
-      const matchesStatus =
-        client.status === status || status === "All Statuses";
-
-      const matchesCity = client.city === city || city === "All Cities";
-
-      return matchedSearch && matchesCity && matchesStatus;
-    });
-
-    setFilteredClients(result);
-    setShowNoMatchesPopup(result.length == 0);
-  }
-
-  //This function gets a status value and change the status state variable, also calls the applyFilters function for an operating the filtering
-  function handleStatusChange(value) {
-    setSelectedStatus(value);
-    applyFilters(value, selectedCity, searchValue);
-  }
-
-  //This function gets a city value and change the city's value filter (option) in the state variable, aslo calls the applyFilters function for operating the filtering
-  function handleCityChange(value) {
-    setSelectedCity(value);
-    applyFilters(selectedStatus, value, searchValue);
-  }
-
-  //This function gets a search value and pass it to the searchValue state variable and call the applyFilters function for operating the function
-  function handleSearchChange(value) {
-    setSearchValue(value);
-    applyFilters(selectedStatus, selectedCity, value);
-  }
-
-  //This function reset all the filters value so all the clients in the database will be displayed
-  function resetFilters() {
-    setSelectedStatus("All Statuses");
-    setSelectedCity("All Cities");
-    setSearchValue("");
-    setFilteredClients(null);
-    setShowNoMatchesPopup(false);
-  }
-  //the function which update the clients array after updating a client
-  function handleUpdateClient(updateClient) {
-    updateDisplayedClients((prevClients) =>
-      prevClients.map((client) =>
-        client.email === updateClient.email
-          ? { ...client, ...updateClient }
-          : client,
-      ),
-    );
-    setFilteredClients((prevClients) =>
-      prevClients === null
-        ? null
-        : prevClients.map((client) =>
-            client.email === updateClient.email
-              ? { ...client, ...updateClient }
-              : client,
-          ),
-    );
-    getCitiesNoRepeat();
-  }
 
   return (
     <div className={styles.clients}>
@@ -150,25 +106,27 @@ function Clients({ isManager = false }) {
         <div className={styles.search}>
           <SearchBar
             searchValue={searchValue}
-            setSearchValue={handleSearchChange}
+            setSearchValue={setSearchValue}
           />
         </div>
-
-        <FilterBox filters={filters} reset={resetFilters} />
       </div>
 
-      <ClientsTable
-        onSave={handleUpdateClient}
-        clients={filteredClients ?? displayedClients}
-        isManager={isManager}
+      <ManagementFilters
+        title={isManager ? "FILTER USERS" : "FILTER CLIENTS"}
+        filters={filters}
       />
 
-      {showNoMatchesPopup && (
-        <MessagePopup
-          message="No matching clients found"
-          type="error"
-          onClose={() => setShowNoMatchesPopup(false)}
+      {results.length > 0 ? (
+        <ClientsTable
+          clients={results}
+          onSave={handleUpdateClient}
+          isManager={isManager}
         />
+      ) : (
+        <div className={styles.noResults}>
+          <h3>NO MATCHING {isManager ? "USERS" : "CLIENTS"}</h3>
+          <p>Try adjusting your search or filters.</p>
+        </div>
       )}
     </div>
   );

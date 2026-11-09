@@ -9,48 +9,58 @@
   min-width: 1350px;
   table-layout: fixed;
   border-collapse: collapse;
-  border: 1px solid #e3d8ce;
-  background-color: #fff;
+  border: 1px solid #e5d8d2;
+  background-color: #fffdfb;
 }
 
 .table th,
 .table td {
-  padding: 14px 12px;
+  padding: 10px;
   text-align: left;
   vertical-align: middle;
   white-space: nowrap;
 }
 
 .table th {
-  height: 48px;
-  color: #302823;
+  height: 46px;
+  background-color: #f4e9e6;
+  color: #4b1426;
   font-size: 13px;
   font-weight: 600;
-  border-bottom: 2px solid #d8c5b5;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid #d8bdb7;
 }
 
 .table td {
-  height: 55px;
-  font-size: 14px;
-  border-bottom: 1px solid #e7ded8;
+  height: 52px;
+  font-size: 13px;
+  color: #59443f;
+  border-bottom: 1px solid #eee3df;
+}
+
+.table tbody tr:hover td {
+  background-color: #f8f0ed;
+  transition: background-color 0.2s ease;
 }
 
 .table tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Column widths */
+/* Column widths - total 100% */
 
-.table th:nth-child(1) { width: 7%; }   /* Order ID */
-.table th:nth-child(2) { width: 11%; }  /* Client */
-.table th:nth-child(3) { width: 19%; }  /* Email */
-.table th:nth-child(4) { width: 6%; }   /* Items */
-.table th:nth-child(5) { width: 10%; }  /* Order Date */
-.table th:nth-child(6) { width: 16%; }  /* Delivery Window */
-.table th:nth-child(7) { width: 9%; }   /* Promotion */
-.table th:nth-child(8) { width: 7%; }   /* Total */
-.table th:nth-child(9) { width: 9%; }   /* Status */
-.table th:nth-child(10) { width: 6%; }  /* Details */
+.table th:nth-child(1)  { width: 7%; }
+.table th:nth-child(2)  { width: 10%; }
+.table th:nth-child(3)  { width: 16%; }
+.table th:nth-child(4)  { width: 5%; }
+.table th:nth-child(5)  { width: 9%; }
+.table th:nth-child(6)  { width: 15%; }
+.table th:nth-child(7)  { width: 14%; }
+.table th:nth-child(8)  { width: 7%; }
+.table th:nth-child(9)  { width: 11%; }
+.table th:nth-child(10) { width: 6%; }
+
+/* Center selected columns */
 
 .table th:nth-child(4),
 .table td:nth-child(4),
@@ -58,5 +68,42 @@
 .table td:nth-child(9),
 .table th:nth-child(10),
 .table td:nth-child(10) {
+  text-align: center;
+}
+
+/* Promotion */
+
+.table th:nth-child(7),
+.table td:nth-child(7) {
+  padding: 10px;
+}
+
+.table td:nth-child(7) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Total */
+
+.table th:nth-child(8),
+.table td:nth-child(8) {
+  padding: 10px 12px;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Status */
+
+.table th:nth-child(9),
+.table td:nth-child(9) {
+  padding: 10px 8px;
+  text-align: center;
+}
+
+/* Details */
+
+.table th:nth-child(10),
+.table td:nth-child(10) {
+  padding: 10px 8px;
   text-align: center;
 }

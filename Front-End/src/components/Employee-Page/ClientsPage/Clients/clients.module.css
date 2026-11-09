@@ -1,3 +1,9 @@
+
+.clients {
+  width: 100%;
+  min-width: 0;
+}
+
 .top {
   margin-bottom: 25px;
 }
@@ -11,18 +17,145 @@
 
 .search {
   flex: 1;
+  min-width: 0;
 }
 
 .addClient {
   height: 42px;
   padding: 0 18px;
-
   border: none;
-  background-color: #24150f;
-  color: white;
-
+  background-color: #4b1426;
+  color: #fff;
   font-size: 11px;
   letter-spacing: 1px;
-
   cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.addClient:hover {
+  background-color: #682b40;
+}
+
+/* Filters */
+
+.filterGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filterTitle {
+  width: 75px;
+  color: #4b1426;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* No results */
+
+.noResults {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 55px 20px;
+  text-align: center;
+  background-color: #fffdfb;
+  border: 1px solid #e5d8d2;
+}
+
+.noResults h3 {
+  margin: 0 0 12px;
+  color: #4b1426;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.noResults p {
+  margin: 0;
+  color: #a18b7d;
+  font-size: 13px;
+}
+.filtersPanel {
+  width: fit-content;
+  max-width: 100%;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+
+  background-color: #f3e6e3; /* חוץ */
+  border: 1px solid #d8bdb7;
+}
+
+.filtersInner {
+  padding: 14px 18px;
+
+  background-color: #fffaf7; /* בפנים בהיר */
+  border: 1px solid #dcc6bf;
+}
+
+
+.filtersHeader {
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid #e3d3ce;
+
+  color: #4b1426;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+.filtersRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.filterGroup button {
+  padding: 8px 14px;
+  min-height: 34px;
+  border-radius: 4px;
+
+  background-color: #fffaf8;
+  border: 1px solid #cfaeaa;
+  color: #6b3042;
+
+  font-size: 11px;
+  letter-spacing: 0.8px;
+}
+
+
+.filterGroup button:hover {
+  background-color: #ead6d4;
+  border-color: #a97682;
+}
+
+.filterGroup button[class*="active"] {
+  background-color: #4b1426;
+  border-color: #4b1426;
+  color: #fffdfb;
+}
+
+.filterTitle {
+  color: #6d3547;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  min-width: 52px;
+}
+.filterGroup button {
+  padding: 8px 14px;
+  min-height: 34px;
+  border-radius: 4px;
+  font-size: 11px;
+  letter-spacing: 0.8px;
 }

@@ -1,8 +1,9 @@
-
 .orders {
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .tableContainer {
-  margin-top: 22px;
+  margin-top: 24px;
 }

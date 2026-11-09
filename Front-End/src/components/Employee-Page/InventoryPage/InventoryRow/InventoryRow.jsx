@@ -78,8 +78,6 @@ function InventoryRow({ inv, onEdit, onRemove, onImages, isManager = false }) {
       <td>{inv.name}</td>
       <td>{inv.category}</td>
       <td>{inv.type}</td>
-      <td>{inv.colors}</td>
-      <td>{inv.size}</td>
       <td>{inv.price}₪</td>
       <td>{inv.cost_price}₪</td>
       <td>{inv.discount}%</td>

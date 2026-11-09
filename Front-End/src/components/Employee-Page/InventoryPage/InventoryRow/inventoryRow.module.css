@@ -11,12 +11,25 @@
   color: #c28d67;
 }
 
+/* Actions */
 .actions {
   display: flex;
   align-items: center;
-  gap: 18px;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
 }
 
+.actions button {
+  padding: 8px 10px;
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.actions > * {
+  flex-shrink: 0;
+}
 /* Inactive products */
 .removed {
   opacity: 0.45;
@@ -26,11 +39,6 @@
   color: #aaa;
   text-decoration: line-through;
   text-decoration-thickness: 1px;
-}
-
-th:nth-child(12),
-td:nth-child(12) {
-  text-align: center;
 }
 
 /* Low stock */
@@ -72,4 +80,33 @@ td:nth-child(12) {
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
+}
+
+
+.table td:nth-child(2),
+.table td:nth-child(4) {
+  overflow-wrap: anywhere;
+}
+
+.actions svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* Low stock */
+.row.lowStock td {
+  background-color: #fff3df;
+}
+
+.row.lowStock:hover td {
+  background-color: #fcebd0;
+}
+
+/* Out of stock */
+.row.outOfStock td {
+  background-color: #f8e5e7;
+}
+
+.row.outOfStock:hover td {
+  background-color: #f2d8dc;
 }

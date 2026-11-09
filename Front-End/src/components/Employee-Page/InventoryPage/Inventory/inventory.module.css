@@ -1,12 +1,14 @@
 .inventory {
   width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 28px;
+  margin-bottom: 25px;
 }
 
 .topActions {
@@ -27,8 +29,9 @@
   white-space: nowrap;
   cursor: pointer;
 
-  transition: background-color 0.25s ease,
-              border-color 0.25s ease;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .saveBtn {
@@ -49,4 +52,27 @@
 
 .search {
   margin-bottom: 24px;
+}
+
+.noResults {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 55px 20px;
+  text-align: center;
+  background-color: #fffdfb;
+  border: 1px solid #e5d8d2;
+}
+
+.noResults h3 {
+  margin: 0 0 12px;
+  color: #4b1426;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.noResults p {
+  margin: 0;
+  color: #a18b7d;
+  font-size: 13px;
 }

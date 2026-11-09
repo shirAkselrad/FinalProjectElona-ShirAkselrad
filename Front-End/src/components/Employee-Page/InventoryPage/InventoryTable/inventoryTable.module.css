@@ -1,145 +1,75 @@
+
 .tableWrapper {
   width: 100%;
-  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
 }
 
 .table {
-  width: max-content;
-  min-width: 100%;
+  width: 100%;
   border-collapse: collapse;
-  border: 1px solid #ded3ca;
-  background-color: #fffdfb;
   table-layout: auto;
+  border: 1px solid #e5d8d2;
+  background-color: #fffdfb;
 }
+
+/* Table cells */
 
 .table th,
 .table td {
-  padding: 14px 16px;
-  text-align: left;
+  padding: 10px;
   vertical-align: middle;
-  white-space: nowrap;
+  text-align: center;
 }
-th,
-td {
-  white-space: nowrap;
-}
+
+/* Table headers */
 
 .table th {
-  font-size: 14px;
+  height: 46px;
+  background-color: #f4e9e6;
+  color: #4b1426;
+  font-size: 13px;
   font-weight: 600;
-  color: #1f1f1f;
-  border-bottom: 1px solid #cdbfb3;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid #d8bdb7;
 }
 
+/* Table data */
+
 .table td {
-  font-size: 14px;
-  color: #6f625b;
-  border-bottom: 1px solid #e7ded8;
+  height: 52px;
+  color: #59443f;
+  font-size: 13px;
+  border-bottom: 1px solid #eee3df;
+}
+
+/* Hover */
+
+.table tbody tr:hover td {
+  background-color: #f8f0ed;
+  transition: background-color 0.2s ease;
 }
 
 .table tbody tr:last-child td {
   border-bottom: none;
 }
 
-.productIdCol {
-  width: 110px;
+/* Text columns */
+
+.table th:nth-child(2),
+.table td:nth-child(2),
+.table th:nth-child(3),
+.table td:nth-child(3),
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  text-align: left;
 }
 
-.nameCol {
-  width: 180px;
-}
+/* Actions column */
 
-.categoryCol {
-  width: 130px;
-}
-
-.colorCol {
-  width: 100px;
-}
-
-.countryCol {
-  width: 130px;
-}
-
-.sizeCol {
-  width: 70px;
-}
-
-.priceCol {
-  width: 100px;
-}
-
-.costPriceCol {
-  width: 110px;
-}
-
-.discountCol {
-  width: 100px;
-}
-
-.quantityCol {
-  width: 100px;
-}
-
-.minStockCol {
-  width: 100px;
-}
-
-.statusCol {
-  width: 100px;
-}
-
-.creationDateCol {
-  width: 150px;
-}
-
-.updatedAtCol {
-  width: 150px;
-}
-
-.restockCol {
-  width: 140px;
-}
-
-.salesCheckCol {
-  width: 150px;
-}
-
-.minSalesCol {
-  width: 100px;
-}
-
-.actionsCol {
-  width: 180px;
-}
-.table th:last-child {
+.table th:last-child,
+.table td:last-child {
+  width: 260px;
+  white-space: nowrap;
   text-align: center;
-}
-.stockSummary {
-  display: flex;
-  gap: 24px;
-  padding: 14px 18px;
-  background-color: #fffdfb;
-  border: 1px solid #ded3ca;
-  border-bottom: none;
-  font-size: 14px;
-  font-weight: 600;
-  color: #6f625b;
-}
-
-.tableHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  padding: 12px 16px;
-}
-
-.stockSummary {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-  margin: 0;
-  padding: 0;
 }
