@@ -30,7 +30,7 @@ export function onlyNumbers(str) {
 
 //The function check that str is an email address
 export function checkEmail(str) {
-  const emailRegex = /^[\w.-]+@[\w.-]+\.\w{2,}$/;
+  const emailRegex = /^[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}$/;
   return emailRegex.test(str);
 }
 
@@ -103,4 +103,10 @@ export function checkStreet(city, street) {
       return normalizedAlias === normalizedStreet;
     }),
   );
+}
+
+export function formatEmail(email) {
+  if (!email) return "";
+
+  return email.replace(/\+[^@]*(?=@gmail\.com$)/i, "");
 }

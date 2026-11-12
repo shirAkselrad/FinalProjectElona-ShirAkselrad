@@ -1,16 +1,13 @@
+
 .row {
   height: 48px;
-
   border-bottom: 1px solid #e8ddd3;
-
   color: #6f655e;
-
   font-size: 14px;
 }
 
 .row td {
   padding: 8px 18px;
-
   vertical-align: middle;
 }
 
@@ -20,24 +17,52 @@
 
 .role {
   display: inline-block;
+  padding: 6px 12px;
 
-  padding: 4px 12px;
+  border: 1px solid;
+  border-radius: 0;
 
-  background-color: #f2ebe4;
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.role::before {
+  content: "";
+  width: 10px;
+  height: 10px;
   border-radius: 2px;
+  background-color: var(--role-color, #b9aaa0);
+  flex-shrink: 0;
+}
 
-  color: #81756c;
 
-  font-size: 13px;
+.manager {
+  color: #755c87;
+  background-color: #ede7f3;
+  border-color: #cdbedb;
+}
+
+
+.employee {
+  color: #58728f;
+  background-color: #e8edf4;
+  border-color: #bccddd;
+}
+
+.client {
+  color: #95694f;
+  background-color: #f5eae2;
+  border-color: #dec6b5;
 }
 
 .actions {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-
   gap: 14px;
-
   min-width: 140px;
 }
 
@@ -50,6 +75,7 @@
   justify-content: center;
 
   padding: 0;
+  font-size: 22px;
 }
 
 .editBtn svg {
@@ -60,13 +86,7 @@
 .actions button:last-child {
   width: 90px;
   height: 32px;
-
   padding: 0;
-}
-
-/* make the edit icon a little bigger */
-.editBtn {
-  font-size: 22px;
 }
 
 .removedRow {

@@ -2,10 +2,15 @@ const express = require("express");
 const router = express.Router();
 const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
+const getOrderFilterOptions = require("./getOrderFilterOptions");
+
+//get available order statuses
+router.get("/orders/filterOptions", getOrderFilterOptions);
 
 //this path returns to front-end all the orders details
 router.get("/orders", (req, res) => {
-  const query = `
+  const { status, search } = req.query;
+  let query = `
   select
     order_id,
     client_email,
@@ -22,9 +27,32 @@ router.get("/orders", (req, res) => {
     final_price,
     status
   from orders
-  order by order_id desc
 `;
-  db.query(query, (err, results) => {
+  const conditions = [];
+  const params = [];
+  if (status && status != "All Statuses") {
+    conditions.push("status=?");
+    params.push(status);
+  }
+  if (search?.trim()) {
+    const searchValue = `%${search.trim()}%`;
+    conditions.push(
+      `(order_id like ? or client_email like ? or client_email in( select email from users where first_name like ? or last_name like ? or concat(first_name, ' ',last_name) like ?))`,
+    );
+    params.push(
+      searchValue,
+      searchValue,
+      searchValue,
+      searchValue,
+      searchValue,
+    );
+  }
+
+  if (conditions.length > 0) query += " where " + conditions.join(" and ");
+
+  query += " order by order_id desc";
+
+  db.query(query, params, (err, results) => {
     if (err) {
       return res.status(500).json({
         success: false,

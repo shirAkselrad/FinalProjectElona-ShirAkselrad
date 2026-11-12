@@ -1,39 +1,33 @@
 import styles from "./managementFilters.module.css";
-import CategoryBtn from "../../Shop-Page/CategoryBtn/CategoryBtn.jsx";
-
+import GeneralSelection from "../GeneralSelection/GeneralSelection.jsx";
+import BrightGeneralBtn from "../BrightGeneralBtn/BrightGeneralBtn.jsx";
 function ManagementFilters({ title, filters }) {
-  const rows = [];
-
-  for (let i = 0; i < filters.length; i += 2) {
-    rows.push(filters.slice(i, i + 2));
+  function handleReset() {
+    filters.forEach((filter) => {
+      filter.setSelected(filter.defaultValue);
+    });
   }
-
   return (
     <div className={styles.filtersPanel}>
-      <div className={styles.filtersInner}>
-        <div className={styles.filtersHeader}>{title}</div>
+      <div className={styles.filtersHeader}>
+        <span>{title}</span>
+        <BrightGeneralBtn text="Reset All" onClick={handleReset} />
+      </div>
 
-        <div className={styles.filtersRows}>
-          {rows.map((row, index) => (
-            <div className={styles.filtersRow} key={index}>
-              {row.map((filter) => (
-                <div className={styles.filterGroup} key={filter.title}>
-                  <span className={styles.filterTitle}>{filter.title}</span>
-
-                  {filter.options.map((option) => (
-                    <CategoryBtn
-                      key={option}
-                      text={option.toUpperCase()}
-                      variant="light"
-                      active={filter.selected === option}
-                      onClick={() => filter.setSelected(option)}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
+      <div className={styles.filtersContent}>
+        {filters.map((filter) => (
+          <div
+            key={filter.title}
+            className={`${styles.filterGroup} ${filter.nested ? styles.nestedFilter : ""}`}
+          >
+            <label className={styles.filterTitle}>{filter.title}</label>
+            <GeneralSelection
+              value={filter.selected}
+              options={filter.options}
+              onChange={(e) => filter.setSelected(e.target.value)}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,21 +1,26 @@
+
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
+  flex-wrap: wrap;
+  gap: 6px;
 
   margin-top: 25px;
 
-  font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
   font-weight: 400;
+  line-height: 1.8;
 }
 
 .text {
-  color: #9a7a68;
+  color: #9d6578;
 }
 
 .link {
+  position: relative;
+
   padding: 0;
   border: none;
   background: transparent;
@@ -24,12 +29,51 @@
   font-size: inherit;
   font-weight: 400;
 
-  color: #b8784f;
+  color: #4b1426;
 
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+
+  width: 100%;
+  height: 1px;
+
+  background-color: #9d6578;
+  transform: scaleX(0);
+  transform-origin: left;
+
+  transition: transform 0.3s ease;
 }
 
 .link:hover {
-  color: #7a4f35;
+  color: #9d6578;
+}
+
+.link:hover::after {
+  transform: scaleX(1);
+}
+
+.link:focus-visible {
+  outline: 2px solid #4b1426;
+  outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+  .container {
+    font-size: 11px;
+    gap: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .link::after {
+    transition: none;
+  }
 }

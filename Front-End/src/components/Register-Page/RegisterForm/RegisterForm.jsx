@@ -1,5 +1,4 @@
 import styles from "./registerForm.module.css";
-
 import BackLink from "../../General/BackLink/BackLink.jsx";
 import PageIntro from "../../General/PageIntro/PageIntro.jsx";
 import InputField from "../../General/InputField/InputField.jsx";
@@ -8,25 +7,12 @@ import AlreadyHave from "../../General/AlreadyHave/AlreadyHave.jsx";
 import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import {
+  validateRegisterChange,
+  validateRegisterBlur,
+  checkRegisterValidation,
+} from "./registerValidation.js";
 import * as Validation from "../../../utils/inputValidation.js";
-
-//The function sends all the inputs values to backend for creating a new user
-async function createUser(userData) {
-  try {
-    const response = await fetch("/api/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("error creating new user: ", error);
-  }
-}
 
 function RegisterForm() {
   const navigate = useNavigate();
@@ -58,6 +44,7 @@ function RegisterForm() {
     password: "",
     verifyPassword: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   //This state is for the popup message after an attempt to sign in
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
@@ -66,21 +53,47 @@ function RegisterForm() {
     type: "",
   });
 
-  //checking that the user doesn't have any empty inputs before sending to info to backend
-  const allUserFieldsFilled = Object.values(user).every(
-    (value) => value !== "",
-  );
+  const isFormValid = checkRegisterValidation(user);
 
-  //checking there is no errors in the inputs before sending it to backend
-  const noErrors = Object.values(errors).every((error) => error === "");
+  //The function sends all the inputs values to backend for creating a new user
+  async function createUser(userData) {
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+      return await response.json();
+    } catch (error) {
+      console.error("error creating new user: ", error);
+      return {
+        success: false,
+        message: "Couldn't connect to the server",
+      };
+    }
+  }
 
-  const isFormValid = allUserFieldsFilled && noErrors;
+  //updates input values and their errors
+  function handleChange(field, value) {
+    const updatedUser = {
+      ...user,
+      [field]: value,
+    };
+    setUser(updatedUser);
+    setErrors((prev) => validateRegisterChange(field, updatedUser, prev));
+  }
+
+  //validates the input after leaving it
+  function handleBlur(field) {
+    setErrors((prev) => validateRegisterBlur(field, user, prev));
+  }
 
   //The function check if the form is valid if it does, call the createUser function
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (!isFormValid) return;
+    if (!isFormValid || isSubmitting) return;
+
     const userData = {
       firstName: Validation.onlyFirstLetterCapital(user.firstName),
       lastName: Validation.onlyFirstLetterCapital(user.lastName),
@@ -90,23 +103,34 @@ function RegisterForm() {
       email: user.email.trim(),
       phoneNum: user.phoneNum.trim(),
       userName: user.userName.trim(),
-      password: user.password.trim(),
+      password: user.password
     };
-
-    const data = await createUser(userData);
-
-    //This part check if the user created and sent texts to the popup according to the success state
-    if (data?.success) {
+    setIsSubmitting(true);
+    try {
+      const data = await createUser(userData);
       setDisplayMessagePopup({
         show: true,
-        message: data.message,
-        type: "success",
+        message:
+          data.message ||
+          (data.success
+            ? "Account created successfully"
+            : "Couldn't create your account"),
+        type: data.success ? "success" : "error",
       });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  //handles popup closing
+  function handlePopupClose() {
+    if (displayMessagePopup.type === "success") {
+      navigate("/loginPage");
     } else {
       setDisplayMessagePopup({
-        show: true,
-        message: data?.message || "This User already exists",
-        type: "error",
+        show: false,
+        message: "",
+        type: "",
       });
     }
   }
@@ -118,9 +142,8 @@ function RegisterForm() {
       </div>
 
       <PageIntro
-        smallTitle="JOIN ELONA"
-        title="Create your"
-        italicText="account"
+        title="Create your account."
+        description="Join ELONA and discover exclusive fashion."
       />
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -130,32 +153,10 @@ function RegisterForm() {
             placeholder="Your first name"
             type="text"
             maxLength={30}
+            value={user.firstName}
             error={errors.firstName}
-            onChange={(e) => {
-              if (Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  firstName: "",
-                });
-              }
-              setUser({
-                ...user,
-                firstName: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  firstName: "Only letters and spaces are allowed",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  firstName: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("firstName", e.target.value)}
+            onBlur={() => handleBlur("firstName")}
           />
 
           <InputField
@@ -163,32 +164,10 @@ function RegisterForm() {
             placeholder="Your last name"
             type="text"
             maxLength={30}
+            value={user.lastName}
             error={errors.lastName}
-            onChange={(e) => {
-              if (Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  lastName: "",
-                });
-              }
-              setUser({
-                ...user,
-                lastName: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  lastName: "Only letters and spaces are allowed",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  lastName: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("lastName", e.target.value)}
+            onBlur={() => handleBlur("lastName")}
           />
         </div>
 
@@ -198,32 +177,10 @@ function RegisterForm() {
             placeholder="Your city"
             type="text"
             maxLength={50}
+            value={user.city}
             error={errors.city}
-            onChange={(e) => {
-              if (Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  city: "",
-                });
-              }
-              setUser({
-                ...user,
-                city: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  city: "Only letters and spaces are allowed",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  city: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("city", e.target.value)}
+            onBlur={() => handleBlur("city")}
           />
         </div>
 
@@ -233,65 +190,21 @@ function RegisterForm() {
             placeholder="Your street"
             type="text"
             maxLength={50}
+            value={user.street}
             error={errors.street}
-            onChange={(e) => {
-              if (Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  street: "",
-                });
-              }
-              setUser({
-                ...user,
-                street: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkStr(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  street: "Only letters and spaces are allowed",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  street: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("street", e.target.value)}
+            onBlur={() => handleBlur("street")}
           />
 
           <InputField
             label="HOUSE NUMBER"
             placeholder="House number"
-            maxLength={5}
             type="text"
+            maxLength={5}
+            value={user.houseNum}
             error={errors.houseNum}
-            onChange={(e) => {
-              if (Validation.onlyNumbers(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  houseNum: "",
-                });
-              }
-              setUser({
-                ...user,
-                houseNum: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.onlyNumbers(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  houseNum: "Only numbers allowed",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  houseNum: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("houseNum", e.target.value)}
+            onBlur={() => handleBlur("houseNum")}
           />
         </div>
 
@@ -299,34 +212,12 @@ function RegisterForm() {
           <InputField
             label="EMAIL ADDRESS"
             placeholder="your@email.com"
-            maxLength={100}
             type="email"
+            maxLength={100}
+            value={user.email}
             error={errors.email}
-            onChange={(e) => {
-              if (Validation.checkEmail(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  email: "",
-                });
-              }
-              setUser({
-                ...user,
-                email: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkEmail(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  email: "Invalid email",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  email: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("email", e.target.value)}
+            onBlur={() => handleBlur("email")}
           />
 
           <InputField
@@ -334,32 +225,10 @@ function RegisterForm() {
             placeholder="Your phone number"
             type="tel"
             maxLength={10}
+            value={user.phoneNum}
             error={errors.phoneNum}
-            onChange={(e) => {
-              if (Validation.checkPhoneNum(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  phoneNum: "",
-                });
-              }
-              setUser({
-                ...user,
-                phoneNum: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkPhoneNum(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  phoneNum: "Invalid phone number",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  phoneNum: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("phoneNum", e.target.value)}
+            onBlur={() => handleBlur("phoneNum")}
           />
         </div>
 
@@ -367,69 +236,23 @@ function RegisterForm() {
           <InputField
             label="USERNAME"
             placeholder="Choose a username"
-            maxLength={12}
             type="text"
+            maxLength={12}
+            value={user.userName}
             error={errors.userName}
-            onChange={(e) => {
-              if (Validation.checkUsername(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  userName: "",
-                });
-              }
-              setUser({
-                ...user,
-                userName: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkUsername(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  userName:
-                    "Username must include 8-12 chars and at least 2 capital letters",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  userName: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("userName", e.target.value)}
+            onBlur={() => handleBlur("userName")}
           />
 
           <InputField
             label="PASSWORD"
             placeholder="Your password"
-            maxLength={12}
             type="password"
+            maxLength={12}
+            value={user.password}
             error={errors.password}
-            onChange={(e) => {
-              if (Validation.checkPassword(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  password: "",
-                });
-              }
-              setUser({
-                ...user,
-                password: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (!Validation.checkPassword(e.target.value)) {
-                setErrors({
-                  ...errors,
-                  password:
-                    "Password must include 8-12 chars and at least one special char and one capital letter",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  password: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("password", e.target.value)}
+            onBlur={() => handleBlur("password")}
           />
         </div>
 
@@ -437,82 +260,37 @@ function RegisterForm() {
           <InputField
             label="VERIFY PASSWORD"
             placeholder="Repeat your password"
-            maxLength={12}
             type="password"
+            maxLength={12}
+            value={user.verifyPassword}
             error={errors.verifyPassword}
-            onChange={(e) => {
-              if (
-                Validation.checkVerificationPassword(
-                  user.password,
-                  e.target.value,
-                )
-              ) {
-                setErrors({
-                  ...errors,
-                  verifyPassword: "",
-                });
-              }
-              setUser({
-                ...user,
-                verifyPassword: e.target.value,
-              });
-            }}
-            onBlur={(e) => {
-              if (
-                !Validation.checkVerificationPassword(
-                  user.password,
-                  e.target.value,
-                )
-              ) {
-                setErrors({
-                  ...errors,
-                  verifyPassword: "Passwords don't match",
-                });
-              } else {
-                setErrors({
-                  ...errors,
-                  verifyPassword: "",
-                });
-              }
-            }}
+            onChange={(e) => handleChange("verifyPassword", e.target.value)}
+            onBlur={() => handleBlur("verifyPassword")}
           />
         </div>
 
         <div className={styles.createAccount}>
           <GeneralBtn
             type="submit"
-            text="CREATE ACCOUNT"
-            disabled={!isFormValid}
+            text={isSubmitting ? "CREATING..." : "CREATE ACCOUNT"}
+            disabled={!isFormValid || isSubmitting}
           />
         </div>
 
         <div className={styles.account}>
           <AlreadyHave
-            path={"/loginPage"}
+            path="/loginPage"
             text="Already have an account?"
             linkText="Log in"
           />
         </div>
       </form>
 
-      {/*This popup will be displayed ONLY after all the user inputs are valid.
-      will display different kind of messages according to what the success status.
-      if the user was created then the user will be leaded to the login page  */}
       {displayMessagePopup.show && (
         <MessagePopup
           message={displayMessagePopup.message}
           type={displayMessagePopup.type}
-          onClose={() => {
-            if (displayMessagePopup.type === "success") {
-              navigate("/loginPage");
-            } else {
-              setDisplayMessagePopup({
-                show: false,
-                message: "",
-                type: "",
-              });
-            }
-          }}
+          onClose={handlePopupClose}
         />
       )}
     </div>

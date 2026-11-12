@@ -1,16 +1,18 @@
+
 .field {
   width: 100%;
 }
 
 .label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 12px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
   font-weight: 400;
-  letter-spacing: 3px;
-  color: #9a7868;
+  letter-spacing: 2px;
+
+  color: #9d6578;
 }
 
 .inputWrapper {
@@ -21,37 +23,43 @@
   display: flex;
   align-items: center;
   gap: 5px;
+
   width: 100%;
-  border-bottom: 1px solid #e5d8cf;
+  border-bottom: 1px solid #e2cdd2;
   box-sizing: border-box;
+
+  transition: border-color 0.3s ease;
 }
 
 .input {
   width: 100%;
   min-width: 0;
-  padding: 0 0 10px;
+  padding: 0 0 12px;
 
   border: none;
   outline: none;
   background-color: transparent;
 
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  color: #6f625b;
+  font-family: "Libre Baskerville", serif;
+  font-size: 13px;
+  font-weight: 400;
 
+  color: #4b1426;
   box-sizing: border-box;
 }
 
 .input::placeholder {
-  color: #9a8b82;
+  color: #b9a4aa;
+  opacity: 1;
 }
 
 .inputContent:focus-within {
-  border-bottom-color: #c99a5b;
+  border-bottom-color: #4b1426;
 }
 
-.inputContent:has(.inputError) {
-  border-bottom-color: red;
+.inputContent:has(.inputError),
+.inputContent:has(.inputError):focus-within {
+  border-bottom-color: #b44759;
 }
 
 .inputContent:has(.suffix) .input {
@@ -60,16 +68,32 @@
 }
 
 .suffix {
-  color: #76503a;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  padding-bottom: 10px;
+  padding-bottom: 12px;
   flex-shrink: 0;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 13px;
+
+  color: #9d6578;
 }
 
 .errorText {
   display: block;
-  color: red;
+  margin-top: 7px;
+
+  font-family: "Libre Baskerville", serif;
   font-size: 11px;
-  margin-top: 4px;
+  line-height: 1.5;
+
+  color: #b44759;
+}
+
+@media (max-width: 480px) {
+  .label {
+    font-size: 9px;
+  }
+
+  .input {
+    font-size: 12px;
+  }
 }

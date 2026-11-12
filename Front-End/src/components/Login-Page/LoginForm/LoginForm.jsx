@@ -9,101 +9,136 @@ import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import ForgotPassword from "../ForgotPassword/ForgotPassword.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-
-//The function gets an str and returns true if str is not empty, else, false
-function checkInput(str) {
-  return str.length != 0;
-}
-//The function sends all the inputs values to backend for validation the login inputs
-async function loginUser(userData) {
-  try {
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(userData),
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("error logging in user: ", error);
-  }
-}
+import { validateLoginField, checkLoginValidation } from "./loginValidation.js";
 
 function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user: loggedInUser, login } = useAuth();
-  const [lockUntil, setLockUntil] = useState(null);
+  const { login } = useAuth();
 
-  //checks if the temporary block is over
-  useEffect(() => {
-    if (!lockUntil) return;
-    const interval = setInterval(() => {
-      if (Date.now() >= lockUntil) {
-        setLockUntil(null);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [lockUntil]);
-
-  //keeps the user inputs
   const [user, setUser] = useState({
     userName: "",
     password: "",
   });
 
-  //keeps the errors accroding the input type
   const [errors, setErrors] = useState({
     userName: "",
     password: "",
   });
 
-  //This state is for the popup message after an attempt to login
+  const [lockUntil, setLockUntil] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authenticatedUser, setAuthenticatedUser] = useState(null);
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
     show: false,
     message: "",
     type: "",
   });
 
-  //checking that the user doesn't have any empty inputs before sending to info to backend
-  const allUserFieldsFilled = Object.values(user).every(
-    (value) => value !== "",
-  );
+  const isFormValid = checkLoginValidation(user);
+  const isLocked = lockUntil !== null && Date.now() < lockUntil;
 
-  //checking there is no errors in the inputs before sending it to backend
-  const noErrors = Object.values(errors).every((error) => error === "");
-
-  const isFormValid = allUserFieldsFilled && noErrors;
-
-  //The function check if the form is valid if it does, call the createUser function
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (lockUntil && Date.now() < lockUntil) return;
-
-    if (!isFormValid) return;
-    const userData = {
-      userName: user.userName,
-      password: user.password,
-    };
-
-    const data = await loginUser(userData);
-    if (data?.lockUntil) setLockUntil(data.lockUntil);
-    if (data?.success) {
-      login(data.user);
-      setDisplayMessagePopup({
-        show: true,
-        message: data.message,
-        type: "success",
+  async function loginUser(userData) {
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
       });
-    } else {
-      setDisplayMessagePopup({
-        show: true,
-        message: data?.message || "Invalid username or password",
-        type: "error",
-      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error logging in user:", error);
+
+      return {
+        success: false,
+        message: "Couldn't connect to the server. Please try again.",
+      };
     }
   }
+
+  //removes temporary login lock when it expires
+  useEffect(() => {
+    if (!lockUntil) return;
+    const interval = setInterval(() => {
+      if (Date.now() >= lockUntil) setLockUntil(null);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockUntil]);
+
+  //updates input values
+  function handleChange(field, value) {
+    setUser((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: "",
+    }));
+  }
+
+  //checks input when leaving the field
+  function handleBlur(field, value) {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: validateLoginField(field, value),
+    }));
+  }
+
+  //submit login details
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (!isFormValid || isLocked || isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    const data = await loginUser(user);
+
+    setIsSubmitting(false);
+
+    if (data.lockUntil) setLockUntil(data.lockUntil);
+
+    if (data.success) {
+      login(data.user);
+      setAuthenticatedUser(data.user);
+    }
+
+    setDisplayMessagePopup({
+      show: true,
+      message: data.message || "Invalid username or password",
+      type: data.success ? "success" : "error",
+    });
+  }
+
+  //handles popup closing and navigation
+  function handlePopupClose() {
+    if (displayMessagePopup.type === "success" && authenticatedUser) {
+      const previousPage = location.state?.from;
+
+      if (authenticatedUser.role === "Manager")
+        navigate("/managerPage", { replace: true });
+      else if (authenticatedUser.role === "Employee")
+        navigate("/employeePage", { replace: true });
+      else if (authenticatedUser.role === "Client" && previousPage)
+        navigate(previousPage.pathname + (previousPage.search || ""), {
+          replace: true,
+        });
+      else navigate("/", { replace: true });
+    }
+
+    setDisplayMessagePopup({
+      show: false,
+      message: "",
+      type: "",
+    });
+  }
+
   return (
     <div className={styles.loginForm}>
       <div className={styles.back}>
@@ -111,9 +146,8 @@ function LoginForm() {
       </div>
 
       <PageIntro
-        smallTitle="WELCOME BACK"
-        title="Login to your"
-        italicText="account"
+        title="Welcome back."
+        description="Sign in to your ELONA account."
       />
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -121,66 +155,19 @@ function LoginForm() {
           label="USERNAME"
           placeholder="Your username"
           type="text"
-          error={errors.userName}
           maxLength={12}
-          onChange={(e) => {
-            if (checkInput(e.target.value)) {
-              setErrors({
-                ...errors,
-                userName: "",
-              });
-            }
-            setUser({
-              ...user,
-              userName: e.target.value,
-            });
-          }}
-          onBlur={(e) => {
-            if (!checkInput(e.target.value)) {
-              setErrors({
-                ...errors,
-                userName: "Username cannot be empty",
-              });
-            } else {
-              setErrors({
-                ...errors,
-                userName: "",
-              });
-            }
-          }}
+          error={errors.userName}
+          onChange={(e) => handleChange("userName", e.target.value)}
+          onBlur={(e) => handleBlur("userName", e.target.value)}
         />
 
         <InputField
           label="PASSWORD"
           placeholder="Your password"
           type="password"
-          maxLength={12}
           error={errors.password}
-          onChange={(e) => {
-            if (checkInput(e.target.value)) {
-              setErrors({
-                ...errors,
-                password: "",
-              });
-            }
-            setUser({
-              ...user,
-              password: e.target.value,
-            });
-          }}
-          onBlur={(e) => {
-            if (!checkInput(e.target.value)) {
-              setErrors({
-                ...errors,
-                password: "Password cannot be empty",
-              });
-            } else {
-              setErrors({
-                ...errors,
-                password: "",
-              });
-            }
-          }}
+          onChange={(e) => handleChange("password", e.target.value)}
+          onBlur={(e) => handleBlur("password", e.target.value)}
         />
 
         <div className={styles.forgot}>
@@ -189,47 +176,25 @@ function LoginForm() {
 
         <div className={styles.signIn}>
           <GeneralBtn
-            disabled={!isFormValid || (lockUntil && Date.now() < lockUntil)}
-            text="LOGIN"
+            disabled={!isFormValid || isLocked || isSubmitting}
+            text={isSubmitting ? "LOGGING IN..." : "LOGIN"}
           />
         </div>
 
         <div className={styles.account}>
           <AlreadyHave
-            path={"/registerPage"}
+            path="/registerPage"
             text="Don't have an account?"
             linkText="Create one"
           />
         </div>
       </form>
 
-      {/*This popup will be displayed ONLY after all the user inputs are valid.
-      will display different kind of messages according to what the success status.
-      if the user was logged in successfully then the user will be leaded to the shop website  */}
       {displayMessagePopup.show && (
         <MessagePopup
           message={displayMessagePopup.message}
           type={displayMessagePopup.type}
-          onClose={() => {
-            if (displayMessagePopup.type === "success") {
-              const previousPage = location.state?.from;
-              if (previousPage && loggedInUser?.role === "Client")
-                navigate(previousPage.pathname + previousPage.search, {
-                  replace: true,
-                });
-              else if (loggedInUser?.role === "Manager")
-                navigate("/managerPage");
-              else if (loggedInUser?.role === "Employee")
-                navigate("/employeePage");
-              else navigate("/");
-            } else {
-              setDisplayMessagePopup({
-                show: false,
-                message: "",
-                type: "",
-              });
-            }
-          }}
+          onClose={handlePopupClose}
         />
       )}
     </div>

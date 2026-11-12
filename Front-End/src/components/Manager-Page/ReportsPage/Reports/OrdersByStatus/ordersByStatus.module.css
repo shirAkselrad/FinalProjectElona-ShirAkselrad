@@ -1,0 +1,182 @@
+
+.ordersByStatus {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 25px 30px;
+  background-color: #fffdfb;
+  border: 1px solid #e5d8d2;
+}
+
+/* Header */
+
+.chartHeader {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5d8d2;
+}
+
+.chartTitle {
+  margin: 0;
+  color: #4b1426;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.chartSubtitle {
+  margin: 8px 0 0;
+  color: #a18b7d;
+  font-size: 12px;
+}
+
+/* Chart */
+
+.chartContainer {
+  width: 100%;
+  height: 400px;
+}
+
+.noResults {
+  text-align: center;
+  color: #a18b7d;
+  font-size: 13px;
+}
+
+/* Status colors */
+
+.processing {
+  --status-color: #c28b77;
+}
+
+.paid {
+  --status-color: #87435b;
+}
+
+.shipped {
+  --status-color: #b77d85;
+}
+
+.completed {
+  --status-color: #4b1426;
+}
+
+.canceled,
+.cancelled {
+  --status-color: #987e69;
+}
+
+.other {
+  --status-color: #76503a;
+}
+
+.statusSlice {
+  fill: var(--status-color) !important;
+  stroke: #fffdfb;
+  stroke-width: 2px;
+}
+
+/* Labels */
+
+.ordersByStatus :global(.recharts-pie-label-text) {
+  fill: #4b1426;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.ordersByStatus :global(.recharts-pie-label-line) {
+  stroke: #b77d85;
+}
+
+/* Total */
+
+/* Total orders inside donut */
+
+.chartCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.chartCenter span {
+  color: #a18b7d;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.chartCenter strong {
+  color: #4b1426;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* Legend */
+
+.legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #59443f;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.legendItem strong {
+  color: #4b1426;
+}
+
+.legendColor {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  background-color: var(--status-color);
+}
+
+/* Tooltip */
+
+.ordersByStatus :global(.recharts-default-tooltip) {
+  background-color: #fffdfb !important;
+  border: 1px solid #e5d8d2 !important;
+  box-shadow: 0 4px 15px rgba(75, 20, 38, 0.08);
+}
+
+.ordersByStatus :global(.recharts-tooltip-label) {
+  color: #4b1426;
+  font-weight: 600;
+}
+
+@media (max-width: 650px) {
+  .ordersByStatus {
+    padding: 18px;
+  }
+
+.chartContainer {
+  width: 100%;
+  height: 400px;
+  position: relative;
+}
+
+  .legend {
+    gap: 12px;
+  }
+}
+
+
+.chartWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}

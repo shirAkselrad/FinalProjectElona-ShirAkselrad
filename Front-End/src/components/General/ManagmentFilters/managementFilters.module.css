@@ -1,69 +1,90 @@
 
-.filtersInner {
-  padding: 14px 18px;
-  background-color: #fffaf7;
-  border: 1px solid #dcc6bf;
-}
-
 .filtersPanel {
-  width: fit-content;
+  width: 300px;
   max-width: 100%;
+  padding: 18px;
   box-sizing: border-box;
-  padding: 10px;
-  margin-bottom: 16px;
-  background-color: #f3e6e3;
-  border: 1px solid #d8bdb7;
+
+  background-color: #fffaf7;
+  border: 1px solid #e8d9d3;
+  border-radius: 6px;
+  box-shadow: 0 8px 25px rgba(75, 20, 38, 0.07);
 }
 
 .filtersHeader {
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #e3d3ce;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eaded9;
+
   color: #4b1426;
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
 }
 
-
-.filtersRows {
+.filtersContent {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-}
-
-.filtersRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 40px;
+  gap: 16px;
 }
 
 .filterGroup {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
 }
 
 .filterTitle {
-  color: #6d3547;
+  color: #805665;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.7px;
+}
+
+.filterGroup > div {
+  width: 100%;
+  min-width: 0;
+}
+
+.nestedFilter {
+  margin-left: 10px;
+  padding-left: 12px;
+  border-left: 2px solid #dec5cc;
+  box-sizing: border-box;
+}
+
+@media (max-width: 650px) {
+  .filtersPanel {
+    width: 100%;
+  }
+}
+
+.filtersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #eaded9;
+
+  color: #4b1426;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
   white-space: nowrap;
 }
 
-.filterGroup button {
-  padding: 8px 14px;
-  min-height: 34px;
-  border-radius: 4px;
-  font-size: 11px;
-  letter-spacing: 0.8px;
+.filtersHeader > span {
+  flex-shrink: 0;
 }
 
-.filtersInner {
-  padding: 14px 18px;
-  background-color: #fffaf7;
-  border: 1px solid #dcc6bf;
+.filtersHeader > button {
+  flex-shrink: 0;
+  padding: 7px 9px;
+  font-size: 9px;
+  letter-spacing: 0.2px;
 }

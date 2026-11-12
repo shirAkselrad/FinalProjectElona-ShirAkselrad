@@ -79,7 +79,19 @@ function ClientRow({ client, onEdit, onRemove, isManager = false }) {
       <td>{client.street}</td>
       <td>{client.house_num}</td>
       <td>{client.email}</td>
-      {isManager && <td>{client.role}</td>}
+
+      {isManager && (
+        <td>
+          <span
+            className={`${styles.role} ${
+              styles[client.role?.toLowerCase()] || ""
+            }`}
+          >
+            {client.role}
+          </span>
+        </td>
+      )}
+
       <td>{client.role === "Employee" ? "-" : client.points}</td>
 
       <td>

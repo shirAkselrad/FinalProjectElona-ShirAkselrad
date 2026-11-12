@@ -1,26 +1,69 @@
 const express = require("express");
 const router = express.Router();
 
-//This middle ware checks if the given recovery code is equal to the code which was sent to the user's email
+//checks if the recovery code is correct and still valid
 const checkCode = (req, res, next) => {
-  const code = req.body.code; //by string
-  const codeToCompare = req.session.recoveryCode; //by array
-  if (!codeToCompare)
+  const { code } = req.body || {};
+  const codeToCompare = req.session.recoveryCode;
+
+  if (!req.session.email || !req.session.recoveryCodeExpires)
     return res.status(400).json({
       success: false,
-      message: "There is no recovery code",
+      message: "There is no active recovery process",
     });
-  for (let i = 0; i < 6; i++)
-    if (Number(code[i]) !== codeToCompare[i])
-      return res.status(400).json({
-        success: false,
-        message: "Incorrect recovery code, please try again",
-      });
+
+  //checks if the code has expired
+  if (Date.now() >= req.session.recoveryCodeExpires) {
+    delete req.session.recoveryCode;
+
+    return res.status(400).json({
+      success: false,
+      message: "Recovery code expired. Please request a new code.",
+    });
+  }
+
+  if (!Array.isArray(codeToCompare))
+    return res.status(400).json({
+      success: false,
+      message: "There is no active recovery code",
+    });
+
+  //validates and compares the entered code
+  const correctCode =
+    typeof code === "string" &&
+    /^\d{6}$/.test(code) &&
+    codeToCompare.length === 6 &&
+    codeToCompare.every((digit, index) => digit === Number(code[index]));
+
+  if (!correctCode)
+    return res.status(400).json({
+      success: false,
+      message: "Incorrect recovery code, please try again.",
+    });
+
   next();
 };
 
-//This path check if the recovery code is correct
+//returns the expiration timer for the FE timer
+router.get("/status", (req, res) => {
+  if (!req.session.email || !req.session.recoveryCodeExpires)
+    return res.status(404).json({
+      success: false,
+      message: "there is no actie recovery process",
+    });
+  return res.status(200).json({
+    success: true,
+    expiresAt: req.session.recoveryCodeExpires,
+  });
+});
+
 router.post("/", checkCode, (req, res) => {
+  if(!req.session.recoveryVerified)
+  {
+    req.session.recoveryVerified=true;
+    req.session.resetPasswordExpires=Date.now()+5*60*1000; 
+  }
+
   return res.status(200).json({
     success: true,
     message: "Correct code, continue for generating a new password",

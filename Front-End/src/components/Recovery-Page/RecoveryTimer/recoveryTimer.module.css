@@ -1,0 +1,26 @@
+
+.timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.timer p {
+  margin: 0;
+  color: #80606b;
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+}
+
+.timer span {
+  margin-left: 6px;
+  color: #4b1426;
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer .expired {
+  color: #b64b60;
+}

@@ -1,21 +1,26 @@
 import styles from "./clients.module.css";
 import ClientsTable from "../ClientsTable/ClientsTable.jsx";
 import SectionTitle from "../../SectionTitle/SectionTitle.jsx";
-import SearchBar from "../../../General/SearchBar/SearchBar.jsx"; 
-import { useOutlet, useOutletContext } from "react-router-dom";
+import SearchBar from "../../../General/SearchBar/SearchBar.jsx";
+import { useOutletContext } from "react-router-dom";
 import ManagementFilters from "../../../General/ManagmentFilters/ManagementFilters.jsx";
+import ManagementLegend from "../../../General/ManagementLegend/ManagementLegend.jsx";
+import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
 import { useState, useEffect } from "react";
 
 function Clients({ isManager = false }) {
-  const { client, setClients, users, setUsers } = useOutletContext();
+  const { clients, setClients, users, setUsers } = useOutletContext();
+
   const displayedClients = isManager ? users : clients;
   const updateDisplayedClients = isManager ? setUsers : setClients;
+
   const [cities, setCities] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [selectedCity, setSelectedCity] = useState("All Cities");
   const [searchValue, setSearchValue] = useState("");
   const [filteredClients, setFilteredClients] = useState(null);
   const [refresh, setRefresh] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
 
   //The function gets all the cities names with no repeats
   async function getCitiesNoRepeat() {
@@ -87,12 +92,66 @@ function Clients({ isManager = false }) {
       options: ["All Statuses", "Active", "Not Active"],
       selected: selectedStatus,
       setSelected: setSelectedStatus,
+      defaultValue: "All Statuses",
     },
     {
       title: "CITY",
       options: ["All Cities", ...cities],
       selected: selectedCity,
       setSelected: setSelectedCity,
+      defaultValue: "All Cities",
+    },
+  ];
+
+  const activeFilterCount = filters.filter(
+    (filter) => filter.selected !== filter.defaultValue,
+  ).length;
+  const totalCount = results.length;
+  const activeCount = results.filter(
+    (client) => client.status?.toLowerCase() === "active",
+  ).length;
+  const notActiveCount = results.filter(
+    (client) => client.status?.toLowerCase() === "not active",
+  ).length;
+
+  const managerCount = results.filter(
+    (user) => user.role?.toLowerCase() === "manager",
+  ).length;
+  const employeeCount = results.filter(
+    (user) => user.role?.toLowerCase() === "employee",
+  ).length;
+  const clientCount = results.filter(
+    (user) => user.role?.toLowerCase() === "client",
+  ).length;
+
+  const statusLegendItems = [
+    {
+      label: "Active",
+      count: activeCount,
+      className: styles.active,
+    },
+    {
+      label: "Not Active",
+      count: notActiveCount,
+      className: styles.notActive,
+    },
+  ];
+
+  const roleLegendItems = [
+    {
+      label: "Managers",
+      count: managerCount,
+      className: styles.managers,
+    },
+    {
+      label: "Employees",
+      count: employeeCount,
+      className: styles.employees,
+    },
+    {
+      label: "Clients",
+      count: clientCount,
+      className: styles.clientsRole,
     },
   ];
 
@@ -111,10 +170,46 @@ function Clients({ isManager = false }) {
         </div>
       </div>
 
-      <ManagementFilters
-        title={isManager ? "FILTER USERS" : "FILTER CLIENTS"}
-        filters={filters}
-      />
+      <div className={styles.clientsToolbar}>
+        <div className={styles.legendGroups}>
+          <span className={styles.totalCount}>
+            {totalCount} {isManager ? "Users" : "Clients"}
+          </span>
+
+          <div className={styles.legendDivider} />
+
+          <ManagementLegend items={statusLegendItems} />
+
+          {isManager && (
+            <div className={styles.roleLegendSection}>
+              <div className={styles.legendDivider} />
+              <ManagementLegend items={roleLegendItems} />
+            </div>
+          )}
+        </div>
+
+        <div className={styles.filtersArea}>
+          <GeneralBtn
+            type="button"
+            text={`Filters${activeFilterCount ? ` (${activeFilterCount})` : ""} ${
+              showFilters ? "−" : "+"
+            }`}
+            className={`${styles.filtersToggle} ${
+              showFilters ? styles.filtersToggleActive : ""
+            }`}
+            onClick={() => setShowFilters((prev) => !prev)}
+          />
+
+          {showFilters && (
+            <div className={styles.filtersDropdown}>
+              <ManagementFilters
+                title={isManager ? "FILTER USERS" : "FILTER CLIENTS"}
+                filters={filters}
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
       {results.length > 0 ? (
         <ClientsTable

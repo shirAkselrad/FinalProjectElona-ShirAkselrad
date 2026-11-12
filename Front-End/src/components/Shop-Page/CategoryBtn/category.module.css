@@ -44,23 +44,25 @@
 /* Employee / Manager interface - light background */
 .light {
   color: #76503a;
-  border-color: #d9c6ba;
+  border-color: #e5d8d2;
+  background-color: transparent;
 }
 
 .light:hover {
-  background-color: #f0e3dc;
-  border-color: #b89580;
+  background-color: #f5ece8;
+  border-color: #d7bdc4;
   color: #4b1426;
 }
 
 .light.active {
-  background-color: #4b1426;
-  border-color: #4b1426;
-  color: #f6f0e9;
+  background-color: #eadbe0;
+  border-color: #d9bcc5;
+  color: #4b1426;
+  font-weight: 600;
 }
 
 .light.active:hover {
-  background-color: #623044;
-  border-color: #623044;
-  color: #f6f0e9;
+  background-color: #e4cfd7;
+  border-color: #d4aebb;
+  color: #4b1426;
 }

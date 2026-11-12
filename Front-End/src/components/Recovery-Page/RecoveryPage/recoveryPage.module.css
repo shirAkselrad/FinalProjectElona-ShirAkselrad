@@ -1,12 +1,14 @@
+
 .recoveryPage {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 65% 35%;
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
   background-color: #fbf8f5;
 }
 
 .imageSide {
   width: 100%;
+  min-width: 0;
   height: 100%;
 }
 
@@ -14,5 +16,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 70px 60px;
+
+  min-width: 0;
+  padding: 60px 48px;
+}
+
+@media (max-width: 900px) {
+  .recoveryPage {
+    grid-template-columns: 1fr;
+  }
+
+  .imageSide {
+    display: none;
+  }
+
+  .formSide {
+    min-height: 100vh;
+    padding: 50px 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formSide {
+    padding: 32px 20px;
+  }
 }

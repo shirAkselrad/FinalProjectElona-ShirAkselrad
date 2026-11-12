@@ -161,12 +161,28 @@ function useProductDetails(initialDetails = null, isEdit = false) {
     }
   }
 
+  function checkDiscountedPrice(price, costPrice, discount) {
+    if (price === "" || costPrice === "" || discount === "") return "";
+    if (
+      !InventoryInputValidation.checkPrice(price) ||
+      !InventoryInputValidation.checkPrice(costPrice) ||
+      !InventoryInputValidation.checkDiscount(discount)
+    )
+      return "";
+    const finalPrice =
+      Math.round(Number(price) * (1 - Number(discount) / 100) * 100) / 100;
+    if (finalPrice < Number(costPrice))
+      return "Price after dicount cannot be lower than cost price";
+    return "";
+  }
+
   //This function checks the validation of the product's price
   function handleProductPriceChange(value) {
     setDetails({
       ...details,
       price: value,
     });
+
     setErrors((prev) => ({
       ...prev,
       price:
@@ -177,8 +193,13 @@ function useProductDetails(initialDetails = null, isEdit = false) {
         value !== "" &&
         details.cost_price !== "" &&
         Number(details.cost_price) >= Number(value)
-          ? "Cost price cannnot be equal/higher than the selling price"
+          ? "Cost price cannot be equal/higher than the selling price"
           : "",
+      discount: checkDiscountedPrice(
+        value,
+        details.cost_price,
+        details.discount,
+      ),
     }));
   }
 
@@ -188,22 +209,17 @@ function useProductDetails(initialDetails = null, isEdit = false) {
       ...details,
       cost_price: value,
     });
-    if (!InventoryInputValidation.checkPrice(value) || Number(value) <= 0) {
-      setErrors({
-        ...errors,
-        cost_price: "Invalid cost price value",
-      });
-    } else if (details.price !== "" && Number(details.price) <= Number(value)) {
-      setErrors({
-        ...errors,
-        cost_price: "Cost price cannot be equal/higher than the selling price ",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        cost_price: "",
-      });
-    }
+
+    setErrors((prev) => ({
+      ...prev,
+      cost_price:
+        !InventoryInputValidation.checkPrice(value) || Number(value) <= 0
+          ? "Invalid cost price value"
+          : details.price !== "" && Number(details.price) <= Number(value)
+            ? "Cost price cannot be equal/higher than the selling price"
+            : "",
+      discount: checkDiscountedPrice(details.price, value, details.discount),
+    }));
   }
 
   //This function check the validation of the product's quantity
@@ -259,17 +275,14 @@ function useProductDetails(initialDetails = null, isEdit = false) {
       ...details,
       discount: value,
     });
-    if (!InventoryInputValidation.checkDiscount(value) || Number(value) < 0) {
-      setErrors({
-        ...errors,
-        discount: "Invalid discount value",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        discount: "",
-      });
-    }
+
+    setErrors((prev) => ({
+      ...prev,
+      discount:
+        !InventoryInputValidation.checkDiscount(value) || Number(value) < 0
+          ? "Invalid discount value"
+          : checkDiscountedPrice(details.price, details.cost_price, value),
+    }));
   }
 
   //This function checks the validation of the product's description
@@ -349,7 +362,14 @@ function useProductDetails(initialDetails = null, isEdit = false) {
       details.discount !== "" &&
       details.description !== "";
 
-    return noErrors && noEmptyInputs;
+    const validDiscountedPrice =
+      checkDiscountedPrice(
+        details.price,
+        details.cost_price,
+        details.discount,
+      ) === "";
+
+    return noErrors && noEmptyInputs && validDiscountedPrice;
   }
 
   return {

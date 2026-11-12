@@ -3,53 +3,14 @@ import InventoryRow from "../InventoryRow/InventoryRow.jsx";
 import { useState } from "react";
 import EditInventoryPopup from "../EditInventoryPopup/EditInventoryPopup.jsx";
 import ProductPreviewPopup from "../ProductPreviewPopup/ProductPreviewPopup.jsx";
-import InventoryLegend from "../Inventory/InventoryLegend/InventoryLegend.jsx";
-/**
- *
- * @param {inventory} inventory array
- * @param {onSave} onSave an event which will happen when the user click on the save btn
- * @param {onRemove} onRemove an even which will happen when the user click on the remove btn
- * @returns InventoryTable
- */
-function InventoryTable({
-  inventory,
-  onRemove,
-  onSave,
-  onSaveImgs,
-  isManager = false,
-  showStockSummary = true,
-}) {
-  //state which give info about which inv in the inventory table is getting change
+
+function InventoryTable({ inventory, onRemove, onSave, isManager = false }) {
   const [selectedInv, setSelectedInv] = useState(null);
   const [showProductPreview, setShowProductPreview] = useState(false);
   const [showPopupEdit, setShowPopupEdit] = useState(false);
 
-  const lowStockCount = inventory.filter(
-    (inv) =>
-      Number(inv.restock_required) === 1 &&
-      Number(inv.quantity) > 0 &&
-      Number(inv.quantity) <= Number(inv.min_stock),
-  ).length;
-
-  const outOfStockCount = inventory.filter(
-    (inv) => Number(inv.restock_required) === 1 && Number(inv.quantity) === 0,
-  ).length;
-
-  const normalStockCount = inventory.filter(
-    (inv) =>
-      Number(inv.restock_required) !== 1 ||
-      Number(inv.quantity) > Number(inv.min_stock),
-  ).length;
-
   return (
     <div className={styles.tableWrapper}>
-      {showStockSummary && (
-        <InventoryLegend
-          lowStockCount={lowStockCount}
-          outOfStockCount={outOfStockCount}
-          normalStockCount={normalStockCount}
-        />
-      )}
       <table className={styles.table}>
         <colgroup>
           <col className={styles.productIdCol} />
@@ -81,10 +42,12 @@ function InventoryTable({
           </tr>
         </thead>
 
-        {/*building the inventory row, sending to each row both remove and edit events */}
         <tbody>
           {inventory.map((inv) => (
             <InventoryRow
+              key={inv.product_id}
+              inv={inv}
+              isManager={isManager}
               onRemove={onRemove}
               onEdit={() => {
                 setSelectedInv(inv);
@@ -94,15 +57,11 @@ function InventoryTable({
                 setSelectedInv(inv);
                 setShowProductPreview(true);
               }}
-              key={inv.product_id}
-              inv={inv}
-              isManager={isManager}
             />
           ))}
         </tbody>
       </table>
 
-      {/*if selectedInv is not null it means the edit btn was clicked, so the editInventoryPopup will be present, gets the selectedInv to edit, the onSave event and the onClose event which will be oprate after and will return the selectedInv to null  */}
       {showPopupEdit && (
         <EditInventoryPopup
           product={selectedInv}

@@ -3,23 +3,20 @@ const { transporter } = require("../../../services/mailer");
 const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
-//This middle ware is for sending the user a mail after updating the password
-const sendMailNewPassword = async (req, res, next) => {
+// Sends confirmation email after password reset
+const sendMailNewPassword = (req, res, next) => {
   const email = req.session.email;
-  const query = "select first_name, last_name from users where email=?";
-  db.query(query, [email], async (err, results) => {
-    if (err)
-      return res.status(500).json({
-        success: false,
-        message: "Server error",
-      });
 
-    if (results.length == 0)
-      return res.status(404).json({
-        success: false,
-        message: "No user match to the given email",
-      });
-    const fullname = results[0].first_name + " " + results[0].last_name;
+  const query = "select first_name, last_name from users where email=?";
+
+  db.query(query, [email], async (err, results) => {
+    if (err || results.length === 0) {
+      console.error("Error getting user details for password email:", err);
+      return next();
+    }
+
+    const fullName = results[0].first_name + " " + results[0].last_name;
+
     try {
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
@@ -27,57 +24,51 @@ const sendMailNewPassword = async (req, res, next) => {
         subject: "Password Reset - ELONA",
         html: `
           <div style="
-            font-family: Arial, sans-serif;
+            font-family: Georgia, serif;
             background-color: #fbf8f5;
             padding: 40px;
             text-align: center;
           ">
             <h1 style="
-              color: #3f332d;
+              color: #4b1426;
               font-size: 28px;
+              font-weight: 400;
               letter-spacing: 2px;
             ">
               PASSWORD UPDATED
             </h1>
 
-            <p style="
-              color: #51453e;
-              font-size: 16px;
-            ">
-              Hello ${fullname},
+            <p style="color: #80606b; font-size: 16px;">
+              Hello ${fullName},
             </p>
 
-            <p style="
-              color: #51453e;
-              font-size: 15px;
-            ">
+            <p style="color: #80606b; font-size: 15px;">
               Your password was reset successfully.
             </p>
 
             <div style="
               margin: 30px 0;
-              color: #c49a5a;
+              color: #d8afa6;
+              font-size: 20px;
             ">
               ◆
             </div>
 
             <p style="
-              color: #3f332d;
-              font-size: 14px;
+              color: #4b1426;
+              font-size: 13px;
+              letter-spacing: 1px;
             ">
               Exclusive fashion for strong women
             </p>
           </div>
         `,
       });
-      next();
-    } catch (err) {
-      return res.status(500).json({
-        success: false,
-        message:
-          "Passpord updated but there was an error with sending the email ",
-      });
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
     }
+
+    next();
   });
 };
 

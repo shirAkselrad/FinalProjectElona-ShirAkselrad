@@ -4,35 +4,77 @@ import InventoryTable from "../InventoryTable/InventoryTable";
 import SectionTitle from "../../SectionTitle/SectionTitle";
 import CategoriesTable from "../CategoriesManagement/CategoriesTable/CategoriesTable.jsx";
 import ManagementFilters from "../../../General/ManagmentFilters/ManagementFilters.jsx";
+import ManagementLegend from "../../../General/ManagementLegend/ManagementLegend.jsx";
+import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
+import AddProduct from "../AddProductPopup/AddProduct/AddProduct.jsx"; 
+import AddCategoryPopup from "../CategoriesManagement/AddCategoryPopup/AddCategoryPopup.jsx";
 import { useState, useEffect } from "react";
-/**
- *
- * @param {inventory} inventory array
- * @returns Inventory
- */
+
 function Inventory({ isManager = false }) {
   const [inventory, setInventory] = useState([]);
   const [categories, setCategories] = useState([]);
+
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedType, setSelectedType] = useState("All Types");
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [selectedStock, setSelectedStock] = useState("All Stock");
   const [searchValue, setSearchValue] = useState("");
+
   const [refresh, setRefresh] = useState(0);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+
+  const [statusOptions, setStatusOptions] = useState(["All Statuses"]);
+  const [stockOptions, setStockOptions] = useState(["All Stock"]);
+
+  async function getFilterOptions() {
+    try {
+      const url = isManager
+        ? "/api/manager/inventory/filterOptions"
+        : "/api/employee/inventory/filterOptions";
+
+      const response = await fetch(url, {
+        method: "GET",
+      });
+
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatusOptions(["All Statuses", ...data.statuses]);
+        setStockOptions(["All Stock", ...data.stocks]);
+      }
+    } catch (error) {
+      console.error("Error getting filter options:", error);
+    }
+  }
 
   async function getInventory() {
     try {
       const url = isManager
         ? "/api/manager/inventory"
         : "/api/employee/inventory";
-      const response = await fetch(
-        `${url}?category=${selectedCategory}&type=${selectedType}&status=${selectedStatus}&stock=${selectedStock}&search=${searchValue}`,
-        { method: "GET" },
-      );
+
+      const params = new URLSearchParams({
+        category: selectedCategory,
+        type: selectedType,
+        status: selectedStatus,
+        stock: selectedStock,
+        search: searchValue,
+      });
+
+      const response = await fetch(`${url}?${params}`, {
+        method: "GET",
+      });
+
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
 
       const data = await response.json();
+
       if (data.success) setInventory(data.inventory);
     } catch (error) {
       console.error("Error getting inventory:", error);
@@ -44,26 +86,32 @@ function Inventory({ isManager = false }) {
       const url = isManager
         ? "/api/manager/getCategories"
         : "/api/employee/categories";
+
       const response = await fetch(url, {
         method: "GET",
       });
+
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
+
       const data = await response.json();
+
       if (data.success) setCategories(data.categories);
     } catch (error) {
-      console.error("Error getting categories: ", error);
+      console.error("Error getting categories:", error);
     }
   }
 
   useEffect(() => {
     getCategories();
+    getFilterOptions();
   }, [isManager]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       getInventory();
     }, 300);
+
     return () => clearTimeout(timer);
   }, [
     selectedCategory,
@@ -75,7 +123,7 @@ function Inventory({ isManager = false }) {
     refresh,
   ]);
 
-  //This function save all the changes while clicking on the SAVE button
+  //updates inventory after editing a product
   const onSave = (editedInv) => {
     setInventory((prev) =>
       prev.map((inv) =>
@@ -84,81 +132,144 @@ function Inventory({ isManager = false }) {
           : inv,
       ),
     );
+
     setRefresh((prev) => prev + 1);
   };
 
-  //This function update the product images after pressing the save btn at the images popup
+  //updates product images
   async function onSaveImgs(product_id, imgsData) {
     try {
       const url = isManager
         ? `/api/manager/deleteProductImgs/${product_id}`
         : `/api/employee/deleteProductImgs/${product_id}`;
+
       const response = await fetch(url, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          imgsData: imgsData,
-        }),
+        body: JSON.stringify({ imgsData }),
       });
+
       const data = await response.json();
       return data.success === true;
     } catch (error) {
-      console.error("Error updating product images: ", error);
+      console.error("Error updating product images:", error);
+      return false;
     }
   }
 
-  //This function removes the inv which it's remove btn was pressed
+  //updates inventory after changing product status
   const onRemove = (invToRemove) => {
     setInventory((prev) =>
-      prev.map((inv) => inv.product_id === invToRemove.product_id)
-        ? { ...inv, status: invToRemove.status }
-        : inv,
+      prev.map((inv) =>
+        inv.product_id === invToRemove.product_id
+          ? { ...inv, status: invToRemove.status }
+          : inv,
+      ),
     );
+
     setRefresh((prev) => prev + 1);
   };
 
-  //Find the selected category
+  //refreshes inventory after adding a product
+  function handleProductAdded() {
+    setShowAddProduct(false);
+    setRefresh((prev) => prev + 1);
+  }
+
+  //refreshes categories after adding a category
+  function handleCategoryAdded() {
+    setShowAddCategory(false);
+    getCategories();
+  }
+
+  const categoryOptions = [
+    "All Categories",
+    ...categories.map((category) => category.name),
+  ];
+
   const selectedCategoryData = categories.find(
     (category) => category.name === selectedCategory,
   );
 
   const typeOptions = [
     "All Types",
-    ...new Set((selectedCategoryData?.types || []).map((type) => type.name)),
+    ...(selectedCategoryData?.types || []).map((type) => type.name),
   ];
 
   const filters = [
     {
       title: "CATEGORY",
-      options: [
-        "All Categories",
-        ...categories.map((category) => category.name),
-      ],
+      options: categoryOptions,
       selected: selectedCategory,
-      setSelected: (value) => {
-        setSelectedCategory(value);
+      setSelected: (category) => {
+        setSelectedCategory(category);
         setSelectedType("All Types");
       },
+      defaultValue: "All Categories",
     },
     {
       title: "TYPE",
       options: typeOptions,
       selected: selectedType,
       setSelected: setSelectedType,
+      defaultValue: "All Types",
+      nested: true,
     },
     {
       title: "STATUS",
-      options: ["All Statuses", "Active", "Not Active"],
+      options: statusOptions,
       selected: selectedStatus,
       setSelected: setSelectedStatus,
+      defaultValue: "All Statuses",
     },
     {
       title: "STOCK",
-      options: ["All Stock", "Normal Stock", "Low Stock", "Out of Stock"],
+      options: stockOptions,
       selected: selectedStock,
       setSelected: setSelectedStock,
+      defaultValue: "All Stock",
+    },
+  ];
+
+  const lowStockCount = inventory.filter(
+    (inv) =>
+      Number(inv.quantity) > 0 &&
+      Number(inv.restock_required) === 1 &&
+      Number(inv.quantity) <= Number(inv.min_stock ?? 0),
+  ).length;
+
+  const outOfStockCount = inventory.filter(
+    (inv) => Number(inv.quantity) === 0,
+  ).length;
+
+  const normalStockCount = inventory.filter(
+    (inv) =>
+      Number(inv.quantity) > 0 &&
+      (Number(inv.restock_required ?? 0) !== 1 ||
+        Number(inv.quantity) > Number(inv.min_stock ?? 0)),
+  ).length;
+
+  const activeFilterCount = filters.filter(
+    (filter) => filter.selected !== filter.defaultValue,
+  ).length;
+
+  const legendItems = [
+    {
+      label: "Out of Stock",
+      count: outOfStockCount,
+      className: styles.outOfStock,
+    },
+    {
+      label: "Low Stock",
+      count: lowStockCount,
+      className: styles.lowStock,
+    },
+    {
+      label: "Normal Stock",
+      count: normalStockCount,
+      className: styles.normalStock,
     },
   ];
 
@@ -172,7 +283,34 @@ function Inventory({ isManager = false }) {
         <SearchBar searchValue={searchValue} setSearchValue={setSearchValue} />
       </div>
 
-      <ManagementFilters title="FILTER INVENTORY" filters={filters} />
+      <div className={styles.inventoryToolbar}>
+        <ManagementLegend items={legendItems} />
+
+        <div className={styles.filtersArea}>
+          <GeneralBtn
+            type="button"
+            text={`Filters${activeFilterCount ? ` (${activeFilterCount})` : ""} ${
+              showFilters ? "−" : "+"
+            }`}
+            className={`${styles.filtersToggle} ${
+              showFilters ? styles.filtersToggleActive : ""
+            }`}
+            onClick={() => setShowFilters((prev) => !prev)}
+          />
+
+          <GeneralBtn
+            type="button"
+            text="+ ADD PRODUCT"
+            onClick={() => setShowAddProduct(true)}
+          />
+
+          {showFilters && (
+            <div className={styles.filtersDropdown}>
+              <ManagementFilters title="FILTER INVENTORY" filters={filters} />
+            </div>
+          )}
+        </div>
+      </div>
 
       {inventory.length > 0 ? (
         <InventoryTable
@@ -189,11 +327,35 @@ function Inventory({ isManager = false }) {
         </div>
       )}
 
+      <div className={styles.categoriesHeader}>
+        {isManager && (
+          <GeneralBtn
+            type="button"
+            text="+ ADD CATEGORY"
+            onClick={() => setShowAddCategory(true)}
+          />
+        )}
+      </div>
+
       <CategoriesTable
         categories={categories}
         isManager={isManager}
         onRefreshCategories={getCategories}
       />
+
+      {showAddProduct && (
+        <AddProductPopup
+          onClose={() => setShowAddProduct(false)}
+          onSave={handleProductAdded}
+        />
+      )}
+
+      {isManager && showAddCategory && (
+        <AddCategoryPopup
+          onClose={() => setShowAddCategory(false)}
+          onSave={handleCategoryAdded}
+        />
+      )}
     </div>
   );
 }

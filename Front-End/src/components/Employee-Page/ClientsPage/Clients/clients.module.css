@@ -2,17 +2,21 @@
 .clients {
   width: 100%;
   min-width: 0;
+  box-sizing: border-box;
 }
 
+/* Header */
 .top {
-  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  margin-bottom: 24px;
 }
-
 .tools {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .search {
@@ -20,6 +24,7 @@
   min-width: 0;
 }
 
+/* Add Client Button */
 .addClient {
   height: 42px;
   padding: 0 18px;
@@ -36,32 +41,97 @@
   background-color: #682b40;
 }
 
-/* Filters */
-
-.filterGroups {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.filterGroup {
+/* Clients Toolbar */
+.clientsToolbar {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 16px;
+  min-width: 0;
+  min-height: 40px;
+  margin-bottom: 16px;
 }
 
-.filterTitle {
-  width: 75px;
-  color: #4b1426;
+/* Legend */
+.legendGroups {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.totalCount {
+  color: #8b7876;
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* No results */
+.legendDivider {
+  width: 1px;
+  height: 26px;
+  background-color: #dacbc6;
+  flex-shrink: 0;
+}
 
+.roleLegendSection {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* Filters */
+.filtersArea {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.filtersArea .filtersToggle {
+  width: auto;
+  height: 36px;
+  padding: 0 16px;
+  border: 1px solid #e4d5cf;
+  border-radius: 5px;
+  background-color: #fffaf7;
+
+  color: #4b1426;
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.filtersArea .filtersToggle:not(:disabled):hover,
+.filtersArea .filtersToggleActive,
+.filtersArea .filtersToggleActive:not(:disabled):hover {
+  background-color: #f3e9e6;
+  border-color: #d9bcc5;
+  color: #4b1426;
+}
+
+/* Filters Dropdown */
+.filtersDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  width: 300px;
+  max-width: calc(100vw - 32px);
+}
+
+/* No Results */
 .noResults {
   width: 100%;
   box-sizing: border-box;
@@ -84,78 +154,69 @@
   color: #a18b7d;
   font-size: 13px;
 }
-.filtersPanel {
-  width: fit-content;
-  max-width: 100%;
-  padding: 16px 20px;
-  margin-bottom: 16px;
 
-  background-color: #f3e6e3; /* חוץ */
-  border: 1px solid #d8bdb7;
+/* Status Legend */
+.active {
+  background-color: #f6eee9;
+  color: #6c3444;
 }
 
-.filtersInner {
-  padding: 14px 18px;
-
-  background-color: #fffaf7; /* בפנים בהיר */
-  border: 1px solid #dcc6bf;
+.active > span:first-child {
+  background-color: #956777;
 }
 
-
-.filtersHeader {
-  margin-bottom: 14px;
-  padding-bottom: 10px;
-
-  border-bottom: 1px solid #e3d3ce;
-
-  color: #4b1426;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-}
-.filtersRow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
+.notActive {
+  background-color: #eeeeee;
+  color: #999999;
 }
 
-.filterGroup button {
-  padding: 8px 14px;
-  min-height: 34px;
-  border-radius: 4px;
-
-  background-color: #fffaf8;
-  border: 1px solid #cfaeaa;
-  color: #6b3042;
-
-  font-size: 11px;
-  letter-spacing: 0.8px;
+.notActive > span:first-child {
+  background-color: #bcbcbc;
 }
 
-
-.filterGroup button:hover {
-  background-color: #ead6d4;
-  border-color: #a97682;
+/* Role Legend */
+.managers {
+  background-color: #ede7f3;
+  color: #755c87;
 }
 
-.filterGroup button[class*="active"] {
-  background-color: #4b1426;
-  border-color: #4b1426;
-  color: #fffdfb;
+.managers > span:first-child {
+  background-color: #b5a0c9;
 }
 
-.filterTitle {
-  color: #6d3547;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  min-width: 52px;
+.employees {
+  background-color: #e8edf4;
+  color: #58728f;
 }
-.filterGroup button {
-  padding: 8px 14px;
-  min-height: 34px;
-  border-radius: 4px;
-  font-size: 11px;
-  letter-spacing: 0.8px;
+
+.employees > span:first-child {
+  background-color: #a2b7d0;
+}
+
+.clientsRole {
+  background-color: #f5eae2;
+  color: #95694f;
+}
+
+.clientsRole > span:first-child {
+  background-color: #d9b59c;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+  .tools {
+    flex-wrap: wrap;
+  }
+
+  .clientsToolbar {
+    gap: 10px;
+  }
+
+  .legendGroups {
+    flex: 1;
+  }
+
+  .filtersDropdown {
+    max-width: calc(100vw - 32px);
+  }
 }

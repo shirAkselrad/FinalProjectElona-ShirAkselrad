@@ -145,22 +145,31 @@ function useProductForm(initialProduct = null) {
     }
   }
 
+  function checkDiscountedPrice(price, costPrice, discount) {
+    if (price === "" || costPrice === "" || discount === "") return "";
+    const finalPrice =
+      Math.round(Number(price) * (1 - Number(discount) / 100) * 100) / 100;
+    if (finalPrice < Number(costPrice))
+      return "Price after discount cannot be lower than cost price";
+    return "";
+  }
   function handleProductPriceChange(value) {
     setProduct({
       ...product,
       price: value,
     });
-    if (!InventoryInputValidation.checkPrice(value) || Number(value) <= 0) {
-      setErrors({
-        ...errors,
-        price: "Invalid price value",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        price: "",
-      });
-    }
+    setErrors({
+      ...errors,
+      price:
+        !InventoryInputValidation.checkPrice(value) || Number(value) <= 0
+          ? "Invalid price value"
+          : "",
+      discount: checkDiscountedPrice(
+        value,
+        product.cost_price,
+        product.discount,
+      ),
+    });
   }
 
   function handleProductCostPriceChange(value) {
@@ -168,22 +177,16 @@ function useProductForm(initialProduct = null) {
       ...product,
       cost_price: value,
     });
-    if (!InventoryInputValidation.checkPrice(value) || Number(value) <= 0) {
-      setErrors({
-        ...errors,
-        cost_price: "Invalid cost price value",
-      });
-    } else if (Number(product.price) < Number(value)) {
-      setErrors({
-        ...errors,
-        cost_price: "Cost price cannot be higher than the selling price ",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        cost_price: "",
-      });
-    }
+    setErrors({
+      ...errors,
+      cost_price:
+        !InventoryInputValidation.checkPrice(value) || Number(value) <= 0
+          ? "Invalid cost price value"
+          : Number(product.price) < Number(value)
+            ? "Cost price cannot be higher than the selling price"
+            : "",
+      discount: checkDiscountedPrice(product.price, value, product.discount),
+    });
   }
 
   function handleProductQuantityChange(value) {
@@ -232,17 +235,13 @@ function useProductForm(initialProduct = null) {
       ...product,
       discount: value,
     });
-    if (!InventoryInputValidation.checkDiscount(value) || Number(value) < 0) {
-      setErrors({
-        ...errors,
-        discount: "Invalid discount value",
-      });
-    } else {
-      setErrors({
-        ...errors,
-        discount: "",
-      });
-    }
+    setErrors({
+      ...errors,
+      discount:
+        !InventoryInputValidation.checkDiscount(value) || Number(value) < 0
+          ? "Invalid discount value"
+          : checkDiscountedPrice(product.price, product.cost_price, value),
+    });
   }
 
   function handleProductMinSalesChange(value) {

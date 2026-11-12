@@ -1,0 +1,230 @@
+
+.salesByCategory {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 25px 30px;
+  background-color: #fffdfb;
+  border: 1px solid #e5d8d2;
+}
+
+/* Header */
+
+.chartHeader {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5d8d2;
+}
+
+.chartTitle {
+  margin: 0;
+  color: #4b1426;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.chartSubtitle {
+  margin: 8px 0 0;
+  color: #a18b7d;
+  font-size: 12px;
+}
+
+/* Chart */
+
+.chartContainer {
+  width: 100%;
+  height: 420px;
+  position: relative;
+}
+
+.noResults {
+  text-align: center;
+  color: #a18b7d;
+  font-size: 13px;
+}
+
+/* Category colors */
+
+.palette0 {
+  --category-color: #4b1426;
+}
+
+.palette1 {
+  --category-color: #87435b;
+}
+
+.palette2 {
+  --category-color: #76503a;
+}
+
+.palette3 {
+  --category-color: #b77d85;
+}
+
+.palette4 {
+  --category-color: #5f405d;
+}
+
+.palette5 {
+  --category-color: #a46b50;
+}
+
+.palette6 {
+  --category-color: #91445a;
+}
+
+.palette7 {
+  --category-color: #6f7161;
+}
+
+.palette8 {
+  --category-color: #c28b77;
+}
+
+.palette9 {
+  --category-color: #63404a;
+}
+
+.palette10 {
+  --category-color: #987e69;
+}
+
+.palette11 {
+  --category-color: #a36584;
+}
+
+/* Inner ring - main categories */
+
+.innerSlice {
+  fill: var(--category-color) !important;
+  stroke: #fffdfb;
+  stroke-width: 1px;
+}
+
+/* Outer ring - category types */
+
+.outerSlice {
+  fill: color-mix(in srgb, var(--category-color), white 15%) !important;
+  stroke: #fffdfb;
+  stroke-width: 1px;
+}
+
+.outerSlice.shade1 {
+  fill: color-mix(in srgb, var(--category-color), white 30%) !important;
+}
+
+.outerSlice.shade2 {
+  fill: color-mix(in srgb, var(--category-color), white 45%) !important;
+}
+
+.outerSlice.shade3 {
+  fill: color-mix(in srgb, var(--category-color), white 60%) !important;
+}
+
+.outerSlice.shade4 {
+  fill: color-mix(in srgb, var(--category-color), white 75%) !important;
+}
+
+/* Chart labels */
+
+.salesByCategory :global(.recharts-pie-label-text) {
+  fill: #4b1426;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.salesByCategory :global(.recharts-pie-label-line) {
+  stroke: #b77d85;
+  stroke-width: 1px;
+}
+
+/* Chart center */
+
+.chartCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.chartCenter span {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #a18b7d;
+}
+
+.chartCenter strong {
+  color: #4b1426;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Legend */
+
+.legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 15px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #59443f;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.legendColor {
+  width: 11px;
+  height: 11px;
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: var(--category-color);
+}
+
+/* Tooltip */
+
+.salesByCategory :global(.recharts-default-tooltip) {
+  background-color: #fffdfb !important;
+  border: 1px solid #e5d8d2 !important;
+  box-shadow: 0 4px 15px rgba(75, 20, 38, 0.08);
+}
+
+.salesByCategory :global(.recharts-tooltip-label) {
+  color: #4b1426;
+  font-weight: 600;
+}
+
+/* Responsive */
+
+@media (max-width: 650px) {
+  .salesByCategory {
+    padding: 18px;
+  }
+
+  .chartContainer {
+    height: 320px;
+  }
+
+  .chartTitle {
+    font-size: 14px;
+  }
+
+  .chartCenter strong {
+    font-size: 16px;
+  }
+
+  .legend {
+    gap: 12px;
+  }
+}

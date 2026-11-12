@@ -1,66 +1,82 @@
 import { createContext, useContext, useEffect, useState } from "react";
+
 const AuthContext = createContext(null);
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  //checking if there is any logged in user while the web starts
+  // Check if a user is already logged in
   useEffect(() => {
     async function checkUser() {
       try {
         const response = await fetch("/api/login/user");
+
         if (!response.ok) {
           setUser(null);
           return;
         }
+
         const data = await response.json();
-        if (data.success) {
-          setUser(data.user);
-        } else setUser(null);
+
+        setUser(data.success ? data.user : null);
       } catch (error) {
-        console.log(
-          "Error in checking if there is  already a logged in user, error: ",
-          error,
-        );
+        console.error("Error checking logged in user:", error);
         setUser(null);
       } finally {
         setLoading(false);
       }
     }
+
     checkUser();
   }, []);
 
-  //saving user details after login
+  // Save logged in user
   function login(userData) {
     setUser(userData);
   }
 
-  //update logged in user deatils
+  // Update logged in user details
   function updateUser(updatedDetails) {
-    setUser((prevUser) => ({
-      ...prevUser,
-      ...updatedDetails,
-    }));
+    setUser((prevUser) =>
+      prevUser ? { ...prevUser, ...updatedDetails } : null,
+    );
   }
-  //logout user
+
+  // Log out user
   async function logout() {
     try {
       const response = await fetch("/api/header/logout", {
         method: "GET",
       });
-      if (!response.ok) console.error("http error, status: ", response.status);
+
       const data = await response.json();
-      if (data.success) setUser(null);
+
+      if (response.ok && data.success) setUser(null);
 
       return data;
     } catch (error) {
-      console.error("error logging out the user, error: ", error);
+      console.error("Error logging out:", error);
+
+      return {
+        success: false,
+        message: "Couldn't log out. Please try again.",
+      };
     }
   }
+
   const isAuthenticated = user !== null;
+
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, loading, login, logout, updateUser }}
+      value={{
+        user,
+        isAuthenticated,
+        loading,
+        login,
+        logout,
+        updateUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

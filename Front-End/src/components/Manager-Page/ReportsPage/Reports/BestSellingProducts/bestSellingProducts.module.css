@@ -1,0 +1,74 @@
+
+.bestSellingProducts {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 25px 30px;
+  background-color: #fffdfb;
+  border: 1px solid #e5d8d2;
+}
+
+.chartHeader {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5d8d2;
+}
+
+.chartTitle {
+  margin: 0;
+  color: #4b1426;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.chartSubtitle {
+  margin: 8px 0 0;
+  color: #a18b7d;
+  font-size: 12px;
+}
+
+.chartContainer {
+  width: 100%;
+  height: 430px;
+}
+
+.noResults {
+  text-align: center;
+  color: #a18b7d;
+  font-size: 13px;
+}
+
+.chartGrid :global(line) {
+  stroke: #eee4df;
+  stroke-dasharray: 3 3;
+}
+
+.bestSellingProducts :global(.recharts-cartesian-axis-tick-value) {
+  fill: #876c6a;
+  font-size: 11px;
+}
+
+.bestSellingProducts :global(.recharts-cartesian-axis-line),
+.bestSellingProducts :global(.recharts-cartesian-axis-tick-line) {
+  stroke: none;
+}
+
+.salesBar :global(.recharts-rectangle) {
+  fill: #4b1426;
+}
+
+.bestSellingProducts :global(.recharts-default-tooltip) {
+  background-color: #fffdfb !important;
+  border: 1px solid #e5d8d2 !important;
+  box-shadow: 0 4px 15px rgba(75, 20, 38, 0.08);
+}
+
+@media (max-width: 650px) {
+  .bestSellingProducts {
+    padding: 18px;
+  }
+
+  .chartContainer {
+    height: 480px;
+  }
+}

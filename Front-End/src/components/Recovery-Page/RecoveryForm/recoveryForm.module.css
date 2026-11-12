@@ -1,60 +1,72 @@
 .recoveryForm {
   width: 100%;
-  max-width: 480px;
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 25px 0;
 
   display: flex;
   flex-direction: column;
 }
 
 .back {
-  margin-bottom: 35px;
-}
-
-.description {
-  margin-top: 35px;
-  margin-bottom: 30px;
-
-  color: #6d5b50;
-  font-size: 14px;
-}
-
-.description p {
-  margin: 0;
+  margin-bottom: 42px;
 }
 
 .form {
+  width: 100%;
   display: flex;
   flex-direction: column;
-}
+  gap: 24px;
 
-.label {
-  margin-bottom: 18px;
-
-  color: #b17f65;
-  font-size: 13px;
-  letter-spacing: 3px;
-}
-
-.codeInput {
-  width: 100%;
-
-  padding: 0 0 16px;
-
-  border: none;
-  border-bottom: 1px solid #ded2ca;
-
-  outline: none;
-  background: transparent;
-
-  color: #827b76;
-  font-size: 30px;
-  letter-spacing: 12px;
-}
-
-.codeInput::placeholder {
-  color: #8e8884;
+  margin-top: 36px;
 }
 
 .verify {
-  margin-top: 32px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+@media (max-width: 480px) {
+  .recoveryForm {
+    padding: 20px 10px;
+  }
+
+  .back {
+    margin-bottom: 32px;
+  }
+
+  .form {
+    margin-top: 30px;
+    gap: 20px;
+  }
+}
+
+.resend {
+  display: block;
+  margin: 22px auto 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #4b1426;
+  font-family: "Libre Baskerville", serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  cursor: pointer;
+}
+
+.resend:hover {
+  color: #9d6578;
+}
+
+.resend:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading {
+  text-align: center;
+  color: #80606b;
+  font-size: 12px;
 }

@@ -25,6 +25,7 @@ import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout.jsx";
 import { CartProvider } from "../context/CartContext.jsx";
 import Refunds from "../components/Manager-Page/RefundsPage/Refunds/Refunds.jsx";
+import Reports from "../components/Manager-Page/ReportsPage/Reports/Reports.jsx"; 
 function App() {
   return (
     <CartProvider>
@@ -49,6 +50,7 @@ function App() {
             <Route path="reviews" element={<CustomerReviews />} />
             <Route path="storeManagement" element={<StoreManagement/>}/>
             <Route path="refunds" element={<Refunds/>}/>
+            <Route path="reports" element={<Reports/>}/>
           </Route>
           <Route
             path="myAccount"

@@ -1,0 +1,33 @@
+
+.legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 11px 14px;
+  border-radius: 5px;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.item strong {
+  font-weight: 600;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: currentColor;
+  flex-shrink: 0;
+}

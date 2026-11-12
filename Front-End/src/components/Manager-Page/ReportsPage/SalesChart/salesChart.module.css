@@ -1,0 +1,104 @@
+
+.salesChart {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 25px 30px;
+  background-color: #fffdfb;
+  border: 1px solid #e5d8d2;
+}
+
+/* Header */
+
+.chartHeader {
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5d8d2;
+}
+
+.chartTitle {
+  margin: 0;
+  color: #4b1426;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+}
+
+.chartSubtitle {
+  margin: 8px 0 0;
+  color: #a18b7d;
+  font-size: 12px;
+}
+
+/* Chart */
+
+.chartContainer {
+  width: 100%;
+  height: 350px;
+}
+
+.noResults {
+  text-align: center;
+  color: #a18b7d;
+  font-size: 13px;
+}
+
+/* Grid */
+
+.chartGrid :global(line) {
+  stroke: #eee4df;
+}
+
+/* Axes */
+
+.chartAxis :global(.recharts-cartesian-axis-tick-value) {
+  fill: #876c6a;
+  font-size: 12px;
+}
+
+.chartAxis :global(.recharts-cartesian-axis-line),
+.chartAxis :global(.recharts-cartesian-axis-tick-line) {
+  stroke: none;
+}
+
+/* Sales line */
+
+.salesLine :global(.recharts-line-curve) {
+  stroke: #4b1426;
+  stroke-width: 3px;
+  fill: none;
+}
+
+.salesLine :global(.recharts-line-dot) {
+  fill: #4b1426;
+  stroke: #4b1426;
+  stroke-width: 2px;
+}
+
+/* Tooltip */
+
+.salesChart :global(.recharts-default-tooltip) {
+  background-color: #fffdfb !important;
+  border: 1px solid #e5d8d2 !important;
+  box-shadow: 0 4px 15px rgba(75, 20, 38, 0.08);
+}
+
+.salesChart :global(.recharts-tooltip-label) {
+  color: #4b1426;
+  font-weight: 600;
+}
+
+/* Responsive */
+
+@media (max-width: 650px) {
+  .salesChart {
+    padding: 18px;
+  }
+
+  .chartContainer {
+    height: 300px;
+  }
+
+  .chartTitle {
+    font-size: 14px;
+  }
+}

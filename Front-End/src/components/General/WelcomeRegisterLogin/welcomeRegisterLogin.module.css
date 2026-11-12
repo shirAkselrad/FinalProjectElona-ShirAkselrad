@@ -1,56 +1,68 @@
+
 .wrapper {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 100%;
 }
 
 .smallTitle {
-  margin: 0 0 18px;
+  margin: 0 0 12px;
 
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 12px;
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
   font-weight: 400;
-  letter-spacing: 5px;
+  letter-spacing: 3px;
 
-  color: #a7603f;
+  color: #9d6578;
 }
 
 .title {
   margin: 0;
 
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 30px;
+  font-family: "Playfair Display", serif;
+  font-size: 32px;
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 1.25;
 
-  color: #1c120c;
+  color: #4b1426;
 }
 
 .title span {
   font-style: italic;
+  color: #9d6578;
 }
 
 .decoration {
   display: flex;
   align-items: center;
-
   gap: 10px;
 
-  margin-top: 22px;
+  margin-top: 18px;
 }
 
 .line {
   width: 30px;
   height: 1px;
 
-  background-color: #c58b4f;
+  background-color: #d8afa6;
 }
 
 .diamond {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 
-  background-color: #c58b4f;
-
+  background-color: #d8afa6;
   transform: rotate(45deg);
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 28px;
+  }
+
+  .smallTitle {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+  }
 }

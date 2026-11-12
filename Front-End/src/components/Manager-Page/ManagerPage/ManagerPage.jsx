@@ -163,26 +163,29 @@ function ManagerPage() {
   return (
     <main className={styles.managerPage}>
       <div className={styles.content}>
-        <Outlet
-          context={{
-            orders,
-            clients,
-            dates,
-            totals,
-            items,
-            products,
-            statuses,
-            stocks,
-            users,
-            setUsers,
-            managerOrders,
-            setManagerOrders,
-            inventory,
-            setInventory,
-            onSave,
-            onRemove,
-          }}
-        />
+        <div className={styles.pageContent}>
+          <Outlet
+            context={{
+              orders,
+              clients,
+              dates,
+              totals,
+              items,
+              products,
+              statuses,
+              stocks,
+              users,
+              setUsers,
+              managerOrders,
+              setManagerOrders,
+              inventory,
+              setInventory,
+              onSave,
+              onRemove,
+            }}
+          />
+        </div>
+
         <Menu items={managerMenu} />
       </div>
     </main>

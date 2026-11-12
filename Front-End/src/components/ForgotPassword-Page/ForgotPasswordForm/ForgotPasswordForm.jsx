@@ -1,5 +1,4 @@
 import styles from "./forgotPasswordForm.module.css";
-
 import BackLink from "../../General/BackLink/BackLink.jsx";
 import PageIntro from "../../General/PageIntro/PageIntro.jsx";
 import InputField from "../../General/InputField/InputField.jsx";
@@ -7,20 +6,15 @@ import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import { useNavigate } from "react-router-dom";
 import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import { useState } from "react";
-
-//The function check that str is an email address
-function checkEmail(str) {
-  const emailRegex = /^[\w.-]+@[\w.-]+\.\w{2,}$/;
-  return emailRegex.test(str);
-}
+import { validateForgotPasswordEmail } from "./forgotPasswordValidation.js";
 
 function ForgotPasswordForm() {
   const navigate = useNavigate();
   //keeps the user inputs
   const [userEmail, setUserEmail] = useState("");
-
   //keeps the errors accroding the input type
   const [emailError, setEmailError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   //This state is for the popup message after an attempt to login
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
@@ -29,7 +23,7 @@ function ForgotPasswordForm() {
     type: "",
   });
 
-  const isFormValid = userEmail !== "" && checkEmail(userEmail);
+  const isFormValid = validateForgotPasswordEmail(userEmail) === "";
 
   //The function send the email string to back end to check if valid
   async function accountRecovery(userEmail) {
@@ -41,8 +35,7 @@ function ForgotPasswordForm() {
           email: userEmail,
         }),
       });
-      const data = await response.json();
-      return data;
+      return await response.json();
     } catch (error) {
       console.error("The error is: ", error);
       return {
@@ -52,26 +45,49 @@ function ForgotPasswordForm() {
     }
   }
 
+  //updates email input
+  function handleChange(value) {
+    setUserEmail(value);
+    setEmailError("");
+  }
+
+  //validates the email when leaving the field
+ function handleBlur(value) {
+   const error = validateForgotPasswordEmail(value);
+   console.log("Email validation error:", error);
+   setEmailError(error);
+ }
   //The function check if the form is valid if it does, call the createUser function
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!isFormValid) {
-      setEmailError("Invalid email address");
+    if (isSubmitting) return;
+    const validationError = validateForgotPasswordEmail(userEmail);
+    if (validationError) {
+      setEmailError(validationError);
       return;
     }
-    const data = await accountRecovery(userEmail);
-    //This part check if the user entered a valid and existing email address and sent texts to the popup according to the success state
-    if (data?.success) {
+    setIsSubmitting(true);
+    try {
+      const data = await accountRecovery(userEmail.trim());
       setDisplayMessagePopup({
         show: true,
-        message: data.message,
-        type: "success",
+        message: data.message || "Couldn't send recovery code",
+        type: data.success ? "success" : "error",
       });
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  // Handles popup closing
+  function handlePopupClose() {
+    if (displayMessagePopup.type === "success") {
+      navigate("/recoveryPage");
     } else {
       setDisplayMessagePopup({
-        show: true,
-        message: data?.message || "Email was not found",
-        type: "error",
+        show: false,
+        message: "",
+        type: "",
       });
     }
   }
@@ -83,10 +99,8 @@ function ForgotPasswordForm() {
       </div>
 
       <PageIntro
-        smallTitle="ACCOUNT RECOVERY"
-        title="Forgot your"
-        italicText="password?"
-        description="Enter the email address linked to your account. We will send you a verification code."
+        title="Forgot your password?"
+        description="Enter your email address and we'll send you a verification code."
       />
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -94,45 +108,25 @@ function ForgotPasswordForm() {
           label="EMAIL ADDRESS"
           placeholder="your@email.com"
           type="email"
+          value={userEmail}
           error={emailError}
-          onChange={(e) => {
-            if (checkEmail(e.target.value)) {
-              setEmailError("");
-            }
-            setUserEmail(e.target.value);
-          }}
-          onBlur={(e) => {
-            if (!checkEmail(e.target.value)) {
-              setEmailError("Invalid email");
-            } else {
-              setEmailError("");
-            }
-          }}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={(e) => handleBlur(e.target.value)}
         />
 
         <div className={styles.sendCode}>
-          <GeneralBtn text="SEND CODE" />
+          <GeneralBtn
+            text={isSubmitting ? "SENDING..." : "SEND CODE"}
+            disabled={!isFormValid || isSubmitting}
+          />
         </div>
       </form>
 
-      {/*This popup will be displayed ONLY after all the user inputs are valid.
-      will display different kind of messages according to what the success status.
-      if the user was logged in successfully then the user will be leaded to the shop website  */}
       {displayMessagePopup.show && (
         <MessagePopup
           message={displayMessagePopup.message}
           type={displayMessagePopup.type}
-          onClose={() => {
-            if (displayMessagePopup.type === "success") {
-              navigate("/recoveryPage");
-            } else {
-              setDisplayMessagePopup({
-                show: false,
-                message: "",
-                type: "",
-              });
-            }
-          }}
+          onClose={handlePopupClose}
         />
       )}
     </div>

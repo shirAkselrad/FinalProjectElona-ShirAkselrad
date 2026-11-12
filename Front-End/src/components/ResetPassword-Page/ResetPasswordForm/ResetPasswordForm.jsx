@@ -1,5 +1,4 @@
 import styles from "./resetPasswordForm.module.css";
-
 import BackLink from "../../General/BackLink/BackLink.jsx";
 import PageIntro from "../../General/PageIntro/PageIntro.jsx";
 import InputField from "../../General/InputField/InputField.jsx";
@@ -7,91 +6,94 @@ import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 import MessagePopup from "../../General/MessagePopup/MessagePopup.jsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
-//The function check that both passwords are equal
-function checkVerificationPassword(password, str) {
-  if (password === str) return true;
-  return false;
-}
-
-//The function send the new password to backend
-async function resetPassword(password) {
-  try {
-    const response = await fetch("/api/resetPassword", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("error reseting password: ", error);
-  }
-}
-
-//The function check if str is a valid password
-function checkPassword(str) {
-  if (str.length < 8 || str.length > 12) return false;
-  const specialChars = "!@#$%^&*?";
-  let special = false;
-  let capital = false;
-  for (let i = 0; i < str.length; i++) {
-    if (specialChars.includes(str[i])) special = true;
-    if (str[i] >= "A" && str[i] <= "Z") capital = true;
-  }
-
-  return capital && special;
-}
+import {
+  validatePasswordChange,
+  validatePasswordBlur,
+  checkResetPasswordValidation,
+} from "./resetPasswordValidation.js";
 
 function ResetPasswordForm() {
   const navigate = useNavigate();
-
-  //keeps password
-  const [userPassword, setUserPassword] = useState("");
-
-  //keeps the verification password
-  const [userVerificationPassword, setUserVerificationPassword] = useState("");
-
-  //keeps the errors accroding the input type
+  const [passwords, setPasswords] = useState({
+    password: "",
+    verification: "",
+  });
   const [errors, setErrors] = useState({
     password: "",
     verification: "",
   });
 
-  //This state is for the popup message after an attempt to login
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
     show: false,
     message: "",
     type: "",
   });
 
-  const isFormValid =
-    checkPassword(userPassword) &&
-    checkVerificationPassword(userPassword, userVerificationPassword);
+  const isFormValid = checkResetPasswordValidation(
+    passwords.password,
+    passwords.verification,
+  );
 
-  //The function check if the form is valid if it does, call the createUser function
+  async function resetPassword(password) {
+    try {
+      const response = await fetch("/api/resetPassword", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
+      return await response.json();
+    } catch (error) {
+      return {
+        success: false,
+        message: "Couldn't connect to the server. Please try again.",
+      };
+    }
+  }
+
+  //updates input values
+  function handleChange(field, value) {
+    setPasswords((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+    setErrors((prev) => validatePasswordChange(field, value, passwords, prev));
+  }
+
+  //validates input when leaving the field
+  function handleBlur(field, value) {
+    setErrors((prev) => validatePasswordBlur(field, value, passwords, prev));
+  }
+
+  //submits new password
   async function handleSubmit(e) {
     e.preventDefault();
-
-    if (!isFormValid) return;
-
-    const data = await resetPassword(userPassword);
-
-    //This part check if the user created and sent texts to the popup according to the success state
-    if (data?.success) {
+    if (!isFormValid || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const data = await resetPassword(passwords.password);
       setDisplayMessagePopup({
         show: true,
-        message: data.message,
-        type: "success",
+        message: data.message || "Couldn't reset password",
+        type: data.success ? "success" : "error",
       });
-    } else {
-      setDisplayMessagePopup({
-        show: true,
-        message: data?.message || "Invalid password",
-        type: "error",
-      });
+    } finally {
+      setIsSubmitting(false);
     }
+  }
+
+  //hanldes popup closing
+  function handlePopupClose() {
+    if (displayMessagePopup.type === "success")
+      navigate("/loginPage", { replace: true });
+    else
+      setDisplayMessagePopup({
+        show: false,
+        message: "",
+        type: "",
+      });
   }
 
   return (
@@ -101,9 +103,8 @@ function ResetPasswordForm() {
       </div>
 
       <PageIntro
-        smallTitle="NEW PASSWORD"
-        title="Reset your"
-        italicText="password"
+        title="Reset your password."
+        description="Choose a new password for your account."
       />
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -113,71 +114,33 @@ function ResetPasswordForm() {
           type="password"
           maxLength={12}
           error={errors.password}
-          onChange={(e) => {
-            if (checkPassword(e.target.value)) {
-              setErrors({
-                ...errors,
-                password: "",
-              });
-            }
-            setUserPassword(e.target.value);
-          }}
-          onBlur={(e) => {
-            if (!checkPassword(e.target.value)) {
-              setErrors({
-                ...errors,
-                password:
-                  "Password must be 8-12 characters and contain a capital letter and special character",
-              });
-            } else {
-              setErrors({ ...errors, password: "" });
-            }
-          }}
+          onChange={(e) => handleChange("password", e.target.value)}
+          onBlur={(e) => handleBlur("password", e.target.value)}
         />
+
         <InputField
           label="CONFIRM PASSWORD"
           placeholder="Repeat your password"
           type="password"
           maxLength={12}
           error={errors.verification}
-          onChange={(e) => {
-            setUserVerificationPassword(e.target.value);
-            if (checkVerificationPassword(userPassword, e.target.value)) {
-              setErrors({ ...errors, verification: "" });
-            }
-          }}
-          onBlur={(e) => {
-            if (!checkVerificationPassword(userPassword, e.target.value)) {
-              setErrors({ ...errors, verification: "Passwords don't match" });
-            } else {
-              setErrors({ ...errors, verification: "" });
-            }
-          }}
+          onChange={(e) => handleChange("verification", e.target.value)}
+          onBlur={(e) => handleBlur("verification", e.target.value)}
         />
 
         <div className={styles.savePassword}>
-          <GeneralBtn text="SAVE NEW PASSWORD" />
+          <GeneralBtn
+            text={isSubmitting ? "SAVING..." : "SAVE NEW PASSWORD"}
+            disabled={!isFormValid || isSubmitting}
+          />
         </div>
       </form>
 
-      {/*This popup will be displayed ONLY after all the user inputs are valid.
-      will display different kind of messages according to what the success status.
-      if the user was resert the passowrd successfully then the user will be leaded to the login page */}
       {displayMessagePopup.show && (
         <MessagePopup
           message={displayMessagePopup.message}
           type={displayMessagePopup.type}
-          onClose={() => {
-            if (displayMessagePopup.type === "success") {
-              navigate("/loginPage");
-            } else {
-              setDisplayMessagePopup({
-                show: false,
-                message: "",
-                type: "",
-              });
-            }
-          }}
+          onClose={handlePopupClose}
         />
       )}
     </div>
