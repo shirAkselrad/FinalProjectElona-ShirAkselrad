@@ -6,8 +6,8 @@ import CategoriesTable from "../CategoriesManagement/CategoriesTable/CategoriesT
 import ManagementFilters from "../../../General/ManagmentFilters/ManagementFilters.jsx";
 import ManagementLegend from "../../../General/ManagementLegend/ManagementLegend.jsx";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
-import AddProduct from "../AddProductPopup/AddProduct/AddProduct.jsx"; 
-import AddCategoryPopup from "../CategoriesManagement/AddCategoryPopup/AddCategoryPopup.jsx";
+import AddProduct from "../AddProductPopup/AddProduct/AddProduct.jsx";
+import AddCategoryPopup from "../../../Manager-Page/ProductCategory/AddCategoryPopup/AddCategoryPopup.jsx";
 import { useState, useEffect } from "react";
 
 function Inventory({ isManager = false }) {
@@ -301,8 +301,18 @@ function Inventory({ isManager = false }) {
           <GeneralBtn
             type="button"
             text="+ ADD PRODUCT"
+            className={styles.addProduct}
             onClick={() => setShowAddProduct(true)}
           />
+
+          {isManager && (
+            <GeneralBtn
+              type="button"
+              text="+ ADD CATEGORY"
+              className={styles.addProduct}
+              onClick={() => setShowAddCategory(true)}
+            />
+          )}
 
           {showFilters && (
             <div className={styles.filtersDropdown}>
@@ -327,16 +337,6 @@ function Inventory({ isManager = false }) {
         </div>
       )}
 
-      <div className={styles.categoriesHeader}>
-        {isManager && (
-          <GeneralBtn
-            type="button"
-            text="+ ADD CATEGORY"
-            onClick={() => setShowAddCategory(true)}
-          />
-        )}
-      </div>
-
       <CategoriesTable
         categories={categories}
         isManager={isManager}
@@ -344,16 +344,17 @@ function Inventory({ isManager = false }) {
       />
 
       {showAddProduct && (
-        <AddProductPopup
+        <AddProduct
           onClose={() => setShowAddProduct(false)}
-          onSave={handleProductAdded}
+          onProductAdded={handleProductAdded}
+          isManager={isManager}
         />
       )}
 
       {isManager && showAddCategory && (
         <AddCategoryPopup
           onClose={() => setShowAddCategory(false)}
-          onSave={handleCategoryAdded}
+          onRefreshCategories={handleCategoryAdded}
         />
       )}
     </div>

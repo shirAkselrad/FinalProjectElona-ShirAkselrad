@@ -63,34 +63,35 @@ const getOrderSummaryItems = (req, res, next) => {
   });
 };
 
+// Calculate order summary
 const calculateOrderSummary = (req, res, next) => {
   const order = req.orderSummary;
+
   const round = (value) => Number(value.toFixed(2));
 
+  // Original products before order edits
   const originalItems = order.items.filter(
     (item) => item.replaces_order_item_id == null,
   );
 
   const originalTotal = originalItems.reduce(
-    (sum, item) => sum + Number(item.original_price) * Number(item.quantity),
+    (sum, item) =>
+      sum + Number(item.original_price) * Number(item.quantity),
     0,
   );
 
-  const productsTotal = originalItems.reduce(
-    (sum, item) => sum + Number(item.total_price),
-    0,
-  );
+  // Use the updated totals saved in the orders table
+  const finalTotal = Number(order.final_price);
 
-  const discount = Number(order.general_discount_percentage || 0);
-
-  const afterPromotions = round(productsTotal * (1 - discount / 100));
+  const totalAfterPromotions =
+    finalTotal - Number(order.shipping) + Number(order.points_used);
 
   order.original_total = round(originalTotal);
-  order.total_after_promotions = afterPromotions;
-  order.promotions_discount = round(originalTotal - afterPromotions);
-  order.final_total = round(
-    afterPromotions - Number(order.points_used) + Number(order.shipping),
+  order.total_after_promotions = round(totalAfterPromotions);
+  order.promotions_discount = round(
+    originalTotal - totalAfterPromotions,
   );
+  order.final_total = round(finalTotal);
 
   next();
 };

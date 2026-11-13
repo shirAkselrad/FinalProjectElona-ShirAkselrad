@@ -4,9 +4,11 @@ import styles from "./addProduct.module.css";
 import AddProductFrontImg from "../AddProductFrontImg/AddProductFrontImg.jsx";
 import AddProductImages from "../AddProductImages/AddProductImages.jsx";
 import Remove from "../../../../General/Remove/Remove.jsx";
+
 function AddProduct({ onClose, onProductAdded, isManager = false }) {
   //this state variable save the "step" of the addProductPopup component (details/images)
   const [step, setStep] = useState(1);
+
   //this state variable will save the product details (starts null)
   const [productDetails, setProductDetails] = useState(null);
 
@@ -41,9 +43,11 @@ function AddProduct({ onClose, onProductAdded, isManager = false }) {
 
       //adding the dragged image to it's new position
       updatedImgs.splice(toIndex, 0, draggedImg);
+
       return [frontImg, ...updatedImgs];
     });
   }
+
   return (
     <div className={styles.overlay}>
       <div className={styles.popup}>
@@ -85,4 +89,5 @@ function AddProduct({ onClose, onProductAdded, isManager = false }) {
     </div>
   );
 }
+
 export default AddProduct;

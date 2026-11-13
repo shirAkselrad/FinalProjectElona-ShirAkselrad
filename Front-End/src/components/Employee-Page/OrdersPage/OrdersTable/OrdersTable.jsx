@@ -20,6 +20,7 @@ function OrdersTable({
   onReject,
   isManager = false,
   isRefunds = false,
+  refundType = "edit",
 }) {
   //state variable which is the selectedOrder to have changes in, by default null
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -88,6 +89,7 @@ function OrdersTable({
           onReject={() => handleReject(selectedOrder.order_id)}
           isManager={isManager}
           isRefunds={isRefunds}
+          refundType={refundType}
         />
       )}
 

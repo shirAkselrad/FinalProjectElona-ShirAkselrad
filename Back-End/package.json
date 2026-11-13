@@ -6,6 +6,7 @@
     "express-session": "^1.19.0",
     "multer": "^2.2.0",
     "mysql2": "^3.23.4",
-    "nodemailer": "^9.0.5"
+    "nodemailer": "^9.0.5",
+    "puppeteer": "^25.17.0"
   }
 }

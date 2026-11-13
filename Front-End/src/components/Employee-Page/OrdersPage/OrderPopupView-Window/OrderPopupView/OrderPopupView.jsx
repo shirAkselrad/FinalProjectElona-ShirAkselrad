@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import styles from "./orderPopupView.module.css";
+
 import OrderPopupTitleView from "../OrderPopupTitleView/OrderPopupTitleView.jsx";
 import EditBtn from "../../../../General/EditBtn/EditBtn.jsx";
 import Remove from "../../../../General/Remove/Remove.jsx";
@@ -6,7 +8,6 @@ import GeneralBtn from "../../../../General/GeneralBtn/GeneralBtn.jsx";
 import BrightGeneralBtn from "../../../../General/BrightGeneralBtn/BrightGeneralBtn.jsx";
 import OrderSummaryTable from "../../../../Shop-Page/OrderSummary/OrderSummaryTable/OrderSummaryTable.jsx";
 import OrderSummaryTotal from "../../../../Shop-Page/OrderSummary/OrderSummaryTotal/OrderSummaryTotal.jsx";
-import { useEffect, useState } from "react";
 
 function OrderPopupView({
   order,
@@ -16,8 +17,11 @@ function OrderPopupView({
   onReject,
   isManager = false,
   isRefunds = false,
+  refundType = "edit",
 }) {
   const [summary, setSummary] = useState(null);
+
+  const isCanceledRefund = isRefunds && refundType === "canceled";
 
   useEffect(() => {
     const getOrderSummary = async () => {
@@ -29,19 +33,12 @@ function OrderPopupView({
           : `/api/employee/orders/${order.order_id}/summary`;
 
         const response = await fetch(url);
-     
 
-        if (!response.ok) throw new Error("Couldn't get order summary");
+        if (!response.ok) {
+          throw new Error("Couldn't get order summary");
+        }
 
         const data = await response.json();
-        console.log("POINTS DEBUG:", {
-          pointsUsed: data.order.points_used,
-          maxPercentage: data.order.max_redemption_percentage,
-        });
-           console.log(
-             "ORDER ITEMS:",
-             JSON.stringify(data.order.items, null, 2),
-           );
         setSummary(data.order);
       } catch (error) {
         console.error("Couldn't get order summary:", error);
@@ -53,10 +50,9 @@ function OrderPopupView({
 
   const round = (value) => Number(value.toFixed(2));
 
+  // Current active products
   const activeItems =
     summary?.items?.filter((item) => item.status === "Active") || [];
-  console.log("ALL ITEMS:", summary?.items);
-  console.log("ACTIVE ITEMS:", activeItems);
 
   const originalTotal = round(
     activeItems.reduce(
@@ -70,6 +66,7 @@ function OrderPopupView({
   );
 
   const discount = Number(summary?.general_discount_percentage || 0);
+
   const afterPromotions = round(productsTotal * (1 - discount / 100));
 
   const maxPoints = round(
@@ -78,6 +75,7 @@ function OrderPopupView({
 
   const pointsUsed = Math.min(Number(summary?.points_used || 0), maxPoints);
 
+  // Updated summary for product edits
   const updatedSummary = summary && {
     ...summary,
     original_total: originalTotal,
@@ -87,8 +85,11 @@ function OrderPopupView({
     final_total: round(afterPromotions - pointsUsed + Number(summary.shipping)),
   };
 
+  // Refund amount
   const refundPoints = summary
-    ? round(Number(summary.total_after_promotions) - afterPromotions)
+    ? isCanceledRefund
+      ? Number(summary.final_price)
+      : round(Number(summary.total_after_promotions) - afterPromotions)
     : 0;
 
   const hasPendingEdit = summary?.items?.some(
@@ -99,7 +100,7 @@ function OrderPopupView({
     (item) => item.status === "Inactive" || item.status === "Refunded",
   );
 
-  const showRefundSummary = isRefunds || hasChangedItems;
+  const showRefundSummary = !isCanceledRefund && (isRefunds || hasChangedItems);
 
   return (
     <div className={styles.overlay}>
@@ -107,31 +108,54 @@ function OrderPopupView({
         <div className={styles.top}>
           <OrderPopupTitleView
             orderId={order.order_id}
-            customerName={`${order.first_name} ${order.last_name}`}
+            customerName={
+              [order.first_name, order.last_name].filter(Boolean).join(" ") ||
+              order.client_email
+            }
             date={new Date(order.created_at).toLocaleDateString("en-GB")}
           />
 
           <div className={styles.actions}>
-            {isRefunds ? (
-              <div className={styles.refundActions}>
-                <GeneralBtn text="APPROVE" onClick={onApprove} />
-                <BrightGeneralBtn text="REJECT" onClick={onReject} />
-              </div>
-            ) : (
-              order.status === "PAID" &&
-              !hasPendingEdit && (
-                <EditBtn onClick={onEdit} className={styles.popupEdit} />
-              )
-            )}
+            {isRefunds
+              ? summary && (
+                  <div className={styles.refundActions}>
+                    <GeneralBtn
+                      text={isCanceledRefund ? "APPROVE REFUND" : "APPROVE"}
+                      onClick={onApprove}
+                    />
+
+                    {!isCanceledRefund && (
+                      <BrightGeneralBtn text="REJECT" onClick={onReject} />
+                    )}
+                  </div>
+                )
+              : order.status === "PAID" &&
+                !hasPendingEdit && (
+                  <EditBtn onClick={onEdit} className={styles.popupEdit} />
+                )}
 
             <Remove onClick={onClose} className={styles.popupRemove} />
           </div>
         </div>
+
         {summary && (
           <div className={styles.summary}>
             <OrderSummaryTable items={summary.items} />
 
-            {showRefundSummary ? (
+            {isCanceledRefund ? (
+              <div className={styles.totals}>
+                <OrderSummaryTotal
+                  order={summary}
+                  title="CANCELED ORDER"
+                  isManagement={true}
+                />
+
+                <div className={styles.refund}>
+                  <span>REFUND POINTS</span>
+                  <strong>{refundPoints.toFixed(2)} points</strong>
+                </div>
+              </div>
+            ) : showRefundSummary ? (
               <div className={styles.totals}>
                 <OrderSummaryTotal
                   order={summary}

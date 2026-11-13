@@ -16,6 +16,7 @@
 }
 
 .name {
+  width: 100%;
   margin: 0 0 8px;
 
   font-family: "Playfair Display", serif;
@@ -24,6 +25,9 @@
   line-height: 1.4;
 
   color: #4b1426;
+
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .description {
