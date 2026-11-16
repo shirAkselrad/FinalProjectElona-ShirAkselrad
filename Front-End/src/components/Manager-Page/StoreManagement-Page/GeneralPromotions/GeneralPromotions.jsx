@@ -7,12 +7,13 @@ import GeneralPromotionsTable from "../GeneralPromotionsTable/GeneralPromotionsT
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import DateTimePicker from "../../../General/DateTimePicker/DateTimePicker.jsx";
 function GeneralPromotions() {
-  const [promotion, setPromotion] = useState({ ...emptyPromotion });
-  const [promotions, setPromotions] = useState([]);
+  const [promotion, setPromotion] = useState({ ...emptyPromotion }); //starting with empty inputs
+  const [promotions, setPromotions] = useState([]); //all the existing promotions
   const [errors, setErrors] = useState({});
   const [popup, setPopup] = useState(null);
 
   useEffect(() => {
+    //getting the promotions details from BE (incase one of the promotions date has been expired then deactivating the active promotion)
     const getPromotions = async () => {
       try {
         const response = await fetch("/api/manager/getGeneralPromotions", {
@@ -38,6 +39,7 @@ function GeneralPromotions() {
     getPromotions();
   }, []);
 
+  //saving new promotion values, adding errors if needs
   const handleChange = (field, value) => {
     setPromotion((prev) => ({
       ...prev,
@@ -50,19 +52,23 @@ function GeneralPromotions() {
     }));
   };
 
+  //adding a new promotion error if needs to
   const handleAdd = async () => {
     const validationErrors = validatePromotion(promotion, promotions);
+    //only if there are no errors
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
     setErrors({});
+    //creating new promotion in the DB
     try {
       const response = await fetch("/api/manager/createPromotion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...promotion,
+          //date format
           start_date: promotion.start_date.replace("T", " "),
           end_date: promotion.end_date.replace("T", " "),
         }),
@@ -71,6 +77,7 @@ function GeneralPromotions() {
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       if (!data.success) throw new Error("Couldn't create promotion");
+      //adding new pormotion to the promotions state variable
       setPromotions((prev) => [
         ...prev,
         {
@@ -79,6 +86,7 @@ function GeneralPromotions() {
           promotion_id: data.promotion_id,
         },
       ]);
+      //clearing the inputs
       setPromotion({ ...emptyPromotion });
       setErrors({});
       setPopup({
@@ -94,6 +102,7 @@ function GeneralPromotions() {
     }
   };
 
+  //activating a promotion which it's date range is now
   const handleActivate = async (promotion_id) => {
     try {
       const response = await fetch("/api/manager/activatePromotion", {
@@ -108,6 +117,7 @@ function GeneralPromotions() {
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       if (!data.success) throw new Error("Couldn't activate promotion");
+      //updating the promotions state variable after activating an existing promotion
       setPromotions((prev) =>
         prev.map((item) => ({
           ...item,
@@ -127,6 +137,7 @@ function GeneralPromotions() {
     }
   };
 
+  //deactivating an active promotion
   const handleDeactivate = async (promotion_id) => {
     try {
       const response = await fetch("/api/manager/deactivatePromotion", {
@@ -143,6 +154,7 @@ function GeneralPromotions() {
 
       if (!data.success) throw new Error("Couldn't deactivate promotion");
 
+      //updating the promotions state varibale after deactivating a promotion
       setPromotions((prev) =>
         prev.map((item) =>
           item.promotion_id === promotion_id
@@ -164,16 +176,16 @@ function GeneralPromotions() {
     }
   };
 
-  const now = new Date();
-  const localNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 16);
+
+    //no errors 
   const isFormValid =
     Object.keys(validatePromotion(promotion, promotions)).length == 0;
 
+  //all the promotions that can be activate by date range
   const currentPromotions = promotions.filter(
     (item) => new Date(item.end_date) >= new Date(),
   );
+  //all the promotions which are no longer valid by date range (passed)
   const promotionHistory = promotions.filter(
     (item) => new Date(item.end_date) < new Date(),
   );

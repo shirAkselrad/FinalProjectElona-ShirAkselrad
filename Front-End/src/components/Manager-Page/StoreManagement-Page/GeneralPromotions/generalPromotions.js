@@ -8,10 +8,13 @@ export const emptyPromotion = {
 
 export const validatePromotion = (promotion) => {
   const errors = {};
+  //empty promotion name 
   if (!promotion.name.trim()) errors.name = "Promotion name is required.";
+  //too much long promotion name 
   else if (promotion.name.trim().length > 100)
     errors.name = "Maximum 100 characters.";
   const discount = Number(promotion.discount_percentage);
+  //invalid discount_percentage 
   if (
     promotion.discount_percentage === "" ||
     !Number.isInteger(discount) ||
@@ -21,6 +24,7 @@ export const validatePromotion = (promotion) => {
     errors.discount_percentage = "Invalid discount value";
 
   const price = Number(promotion.min_order_price);
+  //invalid min_order_price
   if (
     promotion.min_order_price === "" ||
     !Number.isFinite(price) ||
@@ -29,10 +33,12 @@ export const validatePromotion = (promotion) => {
   )
     errors.min_order_price = "Enter a valid price.";
 
+  //promotion start date 
   const startDate = new Date(promotion.start_date);
+  //promotion end date 
   const endDate = new Date(promotion.end_date);
   const now = new Date();
-
+//invalid start and end date 
   if (!promotion.start_date || Number.isNaN(startDate.getTime()))
     errors.start_date = "Enter a valid start date.";
   else if (startDate < now)

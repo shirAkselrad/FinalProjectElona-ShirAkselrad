@@ -5,7 +5,11 @@ import Cart from "../../Shop-Page/CartWindow/Cart/Cart.jsx";
 import styles from "./cartBtn.module.css";
 
 function CartBtn() {
+  //controls rather the cart window will be displayed or not
   const [showCart, setShowCart] = useState(false);
+  //the amount of items in the cart
+
+  //total items- order id, all cart items (include cart front img), total count of items in the cart, total price of all the items
   const { totalItems, getCartAmount } = useCart();
 
   return (

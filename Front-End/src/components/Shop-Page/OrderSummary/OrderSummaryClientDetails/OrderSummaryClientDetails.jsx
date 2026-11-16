@@ -20,6 +20,7 @@ function OrderSummaryClientDetails({
     isFormValid,
   } = useClientForm(client);
 
+  //updating clients info 
   async function updateClient(clientData) {
     try {
       const url =
@@ -40,8 +41,12 @@ function OrderSummaryClientDetails({
       return null;
     }
   }
+
+
+
   async function handleSubmit(e) {
     e.preventDefault();
+    //checking if all fields are valid 
     if (!isFormValid) return;
 
     const updatedClient = {

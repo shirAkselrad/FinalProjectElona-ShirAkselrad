@@ -44,6 +44,7 @@ function RegisterForm() {
     password: "",
     verifyPassword: "",
   });
+  //while the values are sent to back end 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   //This state is for the popup message after an attempt to sign in
@@ -53,6 +54,7 @@ function RegisterForm() {
     type: "",
   });
 
+  //checking if all the fields are valids 
   const isFormValid = checkRegisterValidation(user);
 
   //The function sends all the inputs values to backend for creating a new user
@@ -92,8 +94,9 @@ function RegisterForm() {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    //if the form is not valid or the form is already in a sending process 
     if (!isFormValid || isSubmitting) return;
-
+    //prepating the data 
     const userData = {
       firstName: Validation.onlyFirstLetterCapital(user.firstName),
       lastName: Validation.onlyFirstLetterCapital(user.lastName),

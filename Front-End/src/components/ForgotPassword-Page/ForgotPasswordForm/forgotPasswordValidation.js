@@ -1,3 +1,4 @@
+//checks if the email address is valid (does not check if its exits )
 export const validateForgotPasswordEmail = (email) => {
   if (!email.trim()) return "Email address cannot be empty";
 

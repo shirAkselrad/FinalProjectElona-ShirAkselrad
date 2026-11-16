@@ -13,6 +13,7 @@ import {
 function SalesChart() {
   const [salesData, setSalesData] = useState([]);
 
+  //getting sales total prices order by month (only those which their status is PAID/SHIPPED/COMPLETED)
   async function getSalesData() {
     try {
       const response = await fetch("/api/manager/salesChart", {

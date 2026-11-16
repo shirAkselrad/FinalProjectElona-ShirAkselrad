@@ -9,7 +9,7 @@ router.get("/user", (req, res) => {
 
   return res.json({
     success: true,
-    user: req.session.user,
+    user: req.session.user,//returns all the user's sessions information 
   });
 });
 

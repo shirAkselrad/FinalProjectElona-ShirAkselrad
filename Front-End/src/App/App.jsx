@@ -26,6 +26,7 @@ import AuthLayout from "../layouts/AuthLayout/AuthLayout.jsx";
 import { CartProvider } from "../context/CartContext.jsx";
 import Refunds from "../components/Manager-Page/RefundsPage/Refunds/Refunds.jsx";
 import Reports from "../components/Manager-Page/ReportsPage/Reports/Reports.jsx"; 
+import EmployeeOverview from "../components/Employee-Page/EmployeeOverView/EmployeeOverview.jsx";
 function App() {
   return (
     <CartProvider>
@@ -48,9 +49,9 @@ function App() {
             <Route path="inventory" element={<Inventory isManager={true} />} />
             <Route path="orders" element={<Orders isManager={true} />} />
             <Route path="reviews" element={<CustomerReviews />} />
-            <Route path="storeManagement" element={<StoreManagement/>}/>
-            <Route path="refunds" element={<Refunds/>}/>
-            <Route path="reports" element={<Reports/>}/>
+            <Route path="storeManagement" element={<StoreManagement />} />
+            <Route path="refunds" element={<Refunds />} />
+            <Route path="reports" element={<Reports />} />
           </Route>
           <Route
             path="myAccount"
@@ -92,6 +93,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/employeePage"
             element={
@@ -100,7 +102,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="clients" replace />} />
+            <Route index element={<EmployeeOverview />} />
             <Route path="clients" element={<Clients />} />
             <Route path="inventory" element={<Inventory />} />
             <Route path="orders" element={<Orders />} />

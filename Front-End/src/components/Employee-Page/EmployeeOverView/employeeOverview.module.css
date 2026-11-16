@@ -1,0 +1,9 @@
+.employeeOverview {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}

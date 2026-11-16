@@ -13,18 +13,19 @@ function OrderReview() {
     type: "",
   });
 
-  const [alreadyReviewed, setAlreadyReviewed] = useState(null);
+  const [alreadyReviewed, setAlreadyReviewed] = useState(null); //user cannot review order more than once
   //getting all the params from the url
   const params = new URLSearchParams(window.location.search);
   //getting the value of order_id from the url's params
   const order_id = Number(params.get("order_id"));
 
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(0); //saving the number which been given
   const [comment, setComment] = useState("");
 
   const isFormValid = rating > 0;
 
   useEffect(() => {
+    //getting the reviews, the emails and the first and last name of the clients
     async function checkReview() {
       try {
         const response = await fetch(`/api/orderReview/${order_id}`, {
@@ -48,8 +49,11 @@ function OrderReview() {
     if (Number.isInteger(order_id) && order_id > 0) checkReview();
   }, [order_id]);
 
+
+  //sending a review 
   async function handleSubmit(e) {
     e.preventDefault();
+    //checking that the review is valid 
     if (
       !isFormValid ||
       !Number.isInteger(order_id) ||
@@ -58,6 +62,7 @@ function OrderReview() {
     )
       return;
     try {
+      //creating new review 
       const response = await fetch("/api/orderReview", {
         method: "POST",
         headers: {

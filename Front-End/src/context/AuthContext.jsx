@@ -1,12 +1,17 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
+//creating a context which will be responsible of saving info and sharing info of the connected user
 const AuthContext = createContext(null);
 
+//this component let other components get information of the current connected user
+//children- the components which gets the information
 export function AuthProvider({ children }) {
+  //user details
   const [user, setUser] = useState(null);
+  //checking if the user is still connecting
   const [loading, setLoading] = useState(true);
 
-  // Check if a user is already logged in
+  // Check if a user is already logged in (also gets user session info)
   useEffect(() => {
     async function checkUser() {
       try {
@@ -65,7 +70,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const isAuthenticated = user !== null;
+  const isAuthenticated = user !== null; //checks if the user is connected or if the user is a host
 
   return (
     <AuthContext.Provider

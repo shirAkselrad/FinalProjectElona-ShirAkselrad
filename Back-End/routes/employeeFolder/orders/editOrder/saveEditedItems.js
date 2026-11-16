@@ -65,4 +65,21 @@ const saveEditedItems = (req, res, next) => {
   saveNext();
 };
 
-module.exports = saveEditedItems;
+const cancelEmptyOrder = (req, res, next) => {
+  const query = `select count(*) as activeItems from order_items where order_id=? and status='Active'`;
+  req.connection.query(query, [req.params.order_id], (err, results) => {
+    if (err) return rollbackEdit(err, req, res);
+    if (results[0].activeItems > 0) return next();
+    const updateQuery = `update orders set status='CANCELED' where order_id=? and status='PAID'`;
+    req.connection.query(updateQuery, [req.params.order_id], (err, result) => {
+      if (err) return rollbackEdit(err, req, res);
+      if (result.affectedRows !== 1)
+        return rollbackEdit(new Error("Couldn't cancel epty order"), req, res);
+      next();
+    });
+  });
+};
+module.exports = {
+  saveEditedItems,
+  cancelEmptyOrder,
+};

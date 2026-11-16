@@ -3,6 +3,8 @@ const router = express.Router();
 const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
+
+//checking if the order can be reviewed (only COMPLETED orders)
 const checkOrderStatus = (req, res, next) => {
   const { order_id } = req.body;
   const query = "select status from orders where order_id=?";
@@ -30,6 +32,8 @@ const checkOrderStatus = (req, res, next) => {
   });
 };
 
+
+//check rather the completed order have been already reviewed 
 const checkExistingReview = (req, res, next) => {
   const { order_id } = req.body;
   const query = "select review_id from order_reviews where order_id=?";
@@ -51,6 +55,7 @@ const checkExistingReview = (req, res, next) => {
   });
 };
 
+//saving a new review
 const saveReview = (req, res) => {
   const { order_id, rating, comment } = req.body;
   const query =

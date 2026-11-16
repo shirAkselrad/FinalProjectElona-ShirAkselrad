@@ -54,7 +54,7 @@ router.get("/citiesNoRepeat", (req, res) => {
       });
     return res.status(200).json({
       success: true,
-      cities: results.map((row) => row.city),
+      cities: results.map((row) => row.city), //only cities names
     });
   });
 });

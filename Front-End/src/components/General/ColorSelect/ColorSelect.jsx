@@ -1,9 +1,11 @@
 import styles from "./colorSelect.module.css";
 import { colors } from "../../../data/colors";
 import { useState } from "react";
+
+//value- selected color
 function ColorSelect({ onChange, value }) {
-  const [display, setDisplay] = useState(false);
-  const selectedColor = colors.find((color) => color.name === value);
+  const [display, setDisplay] = useState(false); //opening/closing the list of the colors
+  const selectedColor = colors.find((color) => color.name === value); //saving the selected color between all the colors array in colors.js
   return (
     <div className={styles.colorSelect}>
       <label className={styles.label}>Color</label>

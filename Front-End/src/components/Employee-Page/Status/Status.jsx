@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiChevronDown } from "react-icons/fi"; //החץ הקטן שפותח את הבחירה
+import { FiChevronDown } from "react-icons/fi"; 
 import MessagePopup from "../../General/MessagePopup/MessagePopup";
 import styles from "./status.module.css";
 /**
@@ -42,6 +42,8 @@ function Status({
       const url = isManager
         ? `/api/manager/orders/${order_id}/status`
         : `/api/employee/orders/${order_id}/status`;
+            console.log("isManager:", isManager);
+            console.log("Request URL:", url);
       const response = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },

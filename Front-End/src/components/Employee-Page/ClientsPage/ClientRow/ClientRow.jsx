@@ -41,6 +41,11 @@ function ClientRow({ client, onEdit, onRemove, isManager = false }) {
       return data;
     } catch (error) {
       console.error("error updating client's details: ", error);
+       setDisplayMessagePopup({
+         show: true,
+         message: "Error updating user staus",
+         type: "error",
+       });
     }
   }
 
@@ -65,7 +70,10 @@ function ClientRow({ client, onEdit, onRemove, isManager = false }) {
       });
     }
   }
-  console.log("CLIENT POINTS:", client.email, client.points);
+
+
+
+
   return (
     <tr
       className={`${styles.row} ${

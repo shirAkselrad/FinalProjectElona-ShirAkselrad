@@ -5,8 +5,30 @@ function OrderSummaryTotal({
   minDeliveryDate,
   maxDeliveryDate,
   isManagement = false,
-  title="ORDER TOTAL"
+  title = "ORDER TOTAL",
+  vatPercentage,
 }) {
+  const finalTotal = Number(order.final_total || 0);
+
+  const vatValue = vatPercentage ?? order.vat_percentage;
+
+  const vatRate = Number(vatValue);
+
+  const hasVat =
+    vatValue !== null &&
+    vatValue !== undefined &&
+    vatValue !== "" &&
+    Number.isFinite(vatRate) &&
+    vatRate >= 0 &&
+    vatRate <= 100;
+
+  const totalBeforeVat = hasVat
+    ? Number((finalTotal / (1 + vatRate / 100)).toFixed(2))
+    : 0;
+
+  const vatAmount = hasVat
+    ? Number((finalTotal - totalBeforeVat).toFixed(2))
+    : 0;
   return (
     <div
       className={`${styles.orderSummaryTotal} ${
@@ -40,9 +62,23 @@ function OrderSummaryTotal({
         <span>{Number(order.shipping).toFixed(2)}₪</span>
       </div>
 
+      {hasVat && (
+        <>
+          <div className={styles.totalRow}>
+            <span>Total Before VAT</span>
+            <span>{totalBeforeVat.toFixed(2)}₪</span>
+          </div>
+
+          <div className={styles.totalRow}>
+            <span>VAT ({vatRate}%)</span>
+            <span>{vatAmount.toFixed(2)}₪</span>
+          </div>
+        </>
+      )}
+
       <div className={styles.finalTotal}>
-        <span>FINAL TOTAL</span>
-        <span>{Number(order.final_total).toFixed(2)}₪</span>
+        <span>FINAL TOTAL (INCLUDING VAT)</span>
+        <span>{finalTotal.toFixed(2)}₪</span>
       </div>
 
       {minDeliveryDate && maxDeliveryDate && (

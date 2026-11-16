@@ -5,20 +5,16 @@ const { rollbackEdit } = require("./editTransaction");
 // CHECK ORDER
 
 const checkOrderEditable = (req, res, next) => {
-  const query = "select status from orders where order_id=?";
+  const query = "select status from orders where order_id=? for update";
 
-  db.query(query, [req.params.order_id], (err, results) => {
-    if (err)
-      return res.status(500).json({
-        success: false,
-        message: "Couldn't check order",
-      });
+  req.connection.query(query, [req.params.order_id], (err, results) => {
+    if (err) return rollbackEdit(err, req, res);
 
-    if (!results.length || results[0].status !== "PAID")
-      return res.status(400).json({
-        success: false,
-        message: "Order cannot be edited",
-      });
+    if (!results.length || results[0].status !== "PAID") {
+      const error = new Error("Order cannot be edited");
+      error.status = 400;
+      return rollbackEdit(error, req, res);
+    }
 
     next();
   });

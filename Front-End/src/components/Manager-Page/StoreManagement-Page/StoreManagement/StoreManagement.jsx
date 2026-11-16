@@ -7,6 +7,7 @@ import ProductsOnSale from "../ProductsOnSale/ProductsOnSale.jsx";
 import { useOutletContext } from "react-router-dom";
 import { useState } from "react";
 import CategoryBtn from "../../../Shop-Page/CategoryBtn/CategoryBtn.jsx";
+import VatSettings from "../VatSettings/VatSettings.jsx";
 
 function StoreManagement() {
   const { inventory, onSave, onRemove } = useOutletContext();
@@ -29,6 +30,12 @@ function StoreManagement() {
           onClick={() => setSelectedSection("points")}
           variant="light"
         />
+        <CategoryBtn
+          text="VAT SETTINGS"
+          active={selectedSection === "vat"}
+          onClick={() => setSelectedSection("vat")}
+          variant="light"
+        />
 
         <CategoryBtn
           text="GENERAL PROMOTIONS"
@@ -49,6 +56,7 @@ function StoreManagement() {
         {selectedSection === "shipping" && <ShippingSettings />}
 
         {selectedSection === "points" && <PointsSettings />}
+        {selectedSection === "vat" && <VatSettings />}
 
         {selectedSection === "promotions" && <GeneralPromotions />}
 

@@ -33,6 +33,7 @@ function InventoryRow({ inv, onEdit, onRemove, onImages, isManager = false }) {
     }
   }
 
+  //chaning product status 
   async function changeStatus() {
     const newStatus = inv.status === "Active" ? "Not Active" : "Active";
     const invData = {

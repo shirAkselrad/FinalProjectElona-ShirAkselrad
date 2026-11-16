@@ -12,6 +12,7 @@ function CategoryTypes({
   const handleStatusChange = async (type) => {
     const newStatus = type.status === "Active" ? "Not Active" : "Active";
     try {
+      //changing a specific category type status 
       const response = await fetch("/api/manager/changeCategoryTypeStatus", {
         method: "PUT",
         headers: {

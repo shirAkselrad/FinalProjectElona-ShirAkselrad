@@ -1,6 +1,7 @@
 const dbSingleton = require("../../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
+//checking if the user is logged in
 const checkUserLoggedIn = (req, res, next) => {
   if (!req?.session?.user?.email)
     return res.status(401).json({
@@ -10,6 +11,7 @@ const checkUserLoggedIn = (req, res, next) => {
   next();
 };
 
+//getting the processing order of the client
 const getProcessingOrder = (req, res, next) => {
   const email = req.session.user.email;
   const query = `select * from orders where client_email=? and status="PROCESSING"`;
@@ -29,6 +31,7 @@ const getProcessingOrder = (req, res, next) => {
   });
 };
 
+//checking if the payPal order id is valid
 const checkPayPalOrderId = (req, res, next) => {
   const { paypal_order_id } = req.body || {};
   if (typeof paypal_order_id !== "string" || !paypal_order_id.trim())

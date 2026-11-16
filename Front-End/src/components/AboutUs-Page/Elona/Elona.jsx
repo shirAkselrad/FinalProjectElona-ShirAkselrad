@@ -1,20 +1,22 @@
 import styles from "./elona.module.css";
 import elonaPhoto from "../../../assets/Photo-Elona.png";
 
-
-/**
- * 
- * @returns {JSX.Element} Elona
- */
 function Elona() {
   return (
-    <div className={styles.container}>
+    <figure className={styles.container}>
       <div className={styles.imageWrapper}>
-        <img src={elonaPhoto} alt="Lea Elona Weiss" className={styles.image} />
+        <img
+          src={elonaPhoto}
+          alt="Elona (Lea) Weiss"
+          className={styles.image}
+        />
       </div>
 
-      <p className={styles.caption}>Lea (Elona) Weiss</p>
-    </div>
+      <figcaption className={styles.caption}>
+        Elona (Lea) Weiss
+        <span>1927 – 2021</span>
+      </figcaption>
+    </figure>
   );
 }
 

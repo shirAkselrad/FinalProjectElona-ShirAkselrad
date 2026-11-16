@@ -5,7 +5,7 @@ import OrderSummaryClientDetails from "../Shop-Page/OrderSummary/OrderSummaryCli
 import MessagePopup from "../General/MessagePopup/MessagePopup";
 import styles from "./myAccountPage.module.css";
 function MyAccountPage() {
-  const { updateUser } = useAuth();
+  const { updateUser } = useAuth(); //getting the function which update the user info to BE 
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
@@ -14,6 +14,7 @@ function MyAccountPage() {
     type: "",
   });
 
+  //checking if the user is logged in, if yes, getting the user details from BE
   async function getUserDetails() {
     try {
       const response = await fetch("/api/editMyAccount/me", {
@@ -32,7 +33,10 @@ function MyAccountPage() {
     getUserDetails();
   }, []);
 
+
+  //
   function handleSave(updatedUser) {
+    //updating the fields which needs to be updated 
     setUser((prevUser) => ({
       ...prevUser,
       ...updatedUser,

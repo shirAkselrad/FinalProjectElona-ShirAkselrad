@@ -10,6 +10,8 @@ const { sendRecoveryCode } = require("./recoveryEmail");
 //This middleware checks if the email exists in the DB
 const checkEmail = (req, res, next) => {
   const { email } = req.body || {};
+
+  //if email is not string/empty
   if (typeof email !== "string" || !email.trim())
     return res.status(400).json({
       success: false,
@@ -31,14 +33,15 @@ const checkEmail = (req, res, next) => {
         message: "Email is not found",
       });
     }
-    req.user = results[0];
-    req.recoveryEmail = email.trim();
+    req.user = results[0]; //saving first_name and last_name
+    req.recoveryEmail = email.trim(); //saving the email address for the recovery code
     next();
   });
 };
 
 //This middleware generates a secure six digits recovery code
 const recoveryCodeGenerate = (req, res, next) => {
+  //creating the recovery code (length=6, numbers between 0 to 9)
   req.recoveryCode = Array.from({ length: 6 }, () => randomInt(0, 10));
   next();
 };
@@ -47,18 +50,22 @@ const recoveryCodeGenerate = (req, res, next) => {
 const sendCode = async (req, res) => {
   try {
     const fullName = req.user.first_name + " " + req.user.last_name;
+
+    //sending the recovery code to the user email with the full name and the recovery code
     await sendRecoveryCode(req.recoveryEmail, fullName, req.recoveryCode);
-    req.session.recoveryCode = req.recoveryCode;
-    req.session.recoveryCodeExpires = Date.now() + 5 * 60 * 1000;
-    req.session.recoveryVerified = false;
-    req.session.email = req.recoveryEmail;
-    delete req.session.resetPasswordExpires;
+
+    req.session.recoveryCode = req.recoveryCode; //saving the recovery code
+    req.session.recoveryCodeExpires = Date.now() + 5 * 60 * 1000; //saving the time the recovery code is still relevate
+
+    req.session.recoveryVerified = false; //saving rather the code has been already matched
+    req.session.email = req.recoveryEmail; //saving the user email
+    delete req.session.resetPasswordExpires; //deleting the line which gives an option to the user for resting the password
+
     return res.status(200).json({
       success: true,
       message: "A recovery code was sent to your email",
       expiresAt: req.session.recoveryCodeExpires,
     });
-    
   } catch (error) {
     console.error("Error sending recovery code:", error);
 
@@ -70,14 +77,15 @@ const sendCode = async (req, res) => {
 };
 
 //check if a new code can be requested
-
 const checkResendPermission = (req, res, next) => {
+  //if there is no email or the recovery code hasn't exipred yet then the user cannot get a new recovery code
   if (!req.session.email || !req.session.recoveryCodeExpires)
     return res.status(400).json({
       success: false,
       message: "There is no active recovery process",
     });
 
+  //if the expiry code time didn't end yet, the user cannot get a new recovery code
   if (Date.now() < req.session.recoveryCodeExpires)
     return res.status(429).json({
       success: false,
@@ -85,6 +93,7 @@ const checkResendPermission = (req, res, next) => {
       expiresAt: req.session.recoveryCodeExpires,
     });
 
+  //saving all the parameters
   req.body = {
     ...req.body,
     email: req.session.email,
@@ -100,7 +109,7 @@ router.post(
   recoveryCodeGenerate,
   (req, res, next) => {
     //invalidates any previous recovery approval
-    req.session.recoveryVerified = false;
+    req.session.recoveryVerified = false;//yet haven't verified
     delete req.session.recoveryCode;
     delete req.session.recoveryCodeExpires;
     delete req.session.email;

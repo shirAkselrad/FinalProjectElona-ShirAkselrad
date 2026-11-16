@@ -1,4 +1,5 @@
 import styles from "./footer.module.css";
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -9,9 +10,9 @@ function Footer() {
       </div>
 
       <nav className={styles.links}>
-        <a href="#">SHOP</a>
-        <a href="#">ABOUT US</a>
-        <a href="#">CONTACT</a>
+        <Link to="/shop">SHOP</Link>
+        <Link to="/aboutUs">ABOUT US</Link>
+        <Link to="/contact">CONTACT</Link>
       </nav>
 
       <div className={styles.copyright}>© 2026 Elona · Israel</div>

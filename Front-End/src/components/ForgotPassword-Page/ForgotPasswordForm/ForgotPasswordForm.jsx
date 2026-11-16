@@ -9,11 +9,14 @@ import { useState } from "react";
 import { validateForgotPasswordEmail } from "./forgotPasswordValidation.js";
 
 function ForgotPasswordForm() {
+  //let us switching between pages
   const navigate = useNavigate();
-  //keeps the user inputs
+
+  //user email & email error (if needs)
   const [userEmail, setUserEmail] = useState("");
-  //keeps the errors accroding the input type
   const [emailError, setEmailError] = useState("");
+
+  //while the form is sent, changing the look of the sending button
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   //This state is for the popup message after an attempt to login
@@ -23,9 +26,10 @@ function ForgotPasswordForm() {
     type: "",
   });
 
+  //checks if user's email is valid
   const isFormValid = validateForgotPasswordEmail(userEmail) === "";
 
-  //The function send the email string to back end to check if valid
+  //The function send the email string to back end to check if exits
   async function accountRecovery(userEmail) {
     try {
       const response = await fetch("/api/forgotPassword", {
@@ -52,22 +56,25 @@ function ForgotPasswordForm() {
   }
 
   //validates the email when leaving the field
- function handleBlur(value) {
-   const error = validateForgotPasswordEmail(value);
-   console.log("Email validation error:", error);
-   setEmailError(error);
- }
-  //The function check if the form is valid if it does, call the createUser function
+  function handleBlur(value) {
+    const error = validateForgotPasswordEmail(value);
+    setEmailError(error);
+  }
+
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (isSubmitting) return;
     const validationError = validateForgotPasswordEmail(userEmail);
+    //if there is an error, the form cannot be send 
     if (validationError) {
       setEmailError(validationError);
       return;
     }
+    //now the form is submmited 
     setIsSubmitting(true);
     try {
+      //sending the user a recovery code 
       const data = await accountRecovery(userEmail.trim());
       setDisplayMessagePopup({
         show: true,
@@ -75,6 +82,7 @@ function ForgotPasswordForm() {
         type: data.success ? "success" : "error",
       });
     } finally {
+      //ending the submmiting 
       setIsSubmitting(false);
     }
   }

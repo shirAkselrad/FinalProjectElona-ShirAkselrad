@@ -27,7 +27,7 @@ router.post("/createPromotion", createPromotion, (req, res) => {
   return res.status(201).json({
     success: true,
     message: "Promotion has been created successfully",
-    promotion_id: req.promotion_id,
+    promotion_id: req.promotion_id,///returns promotion id 
   });
 });
 

@@ -18,15 +18,43 @@ function AddProductDetails({
   isManager = false,
   isEdit = false,
 }) {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);//all the existing categories 
   const [salesSettingsChanged, setSalesSettingsChanged] = useState(false);
+  const [vatPercentage, setVatPercentage] = useState(null);
 
   useEffect(() => {
+    //getting vat percentage 
+    async function getVatPercentage() {
+      try {
+        const response = await fetch("/api/shop/vatSettings");
+
+        if (!response.ok) throw new Error("Couldn't get VAT settings");
+
+        const data = await response.json();
+
+        if (data.success) {
+          const percentage = Number(data.vat_percentage);
+
+          if (Number.isFinite(percentage) && percentage >= 0) {
+            setVatPercentage(percentage);
+          }
+        }
+      } catch (error) {
+        console.error("Couldn't get VAT settings:", error);
+      }
+    }
+
+    getVatPercentage();
+  }, []);
+
+  useEffect(() => {
+    //getting all the existing categories and their types 
     async function getCategories() {
       try {
         const url = isManager
           ? "/api/manager/categories"
           : "/api/employee/categories";
+
         const response = await fetch(url, {
           method: "GET",
         });
@@ -65,10 +93,23 @@ function AddProductDetails({
     checkInputDetailsValidation,
   } = useProductDetails(savedDetails, isEdit);
 
+  // Price is stored including VAT.
+  // The price before VAT is calculated for display only.
+  const priceBeforeVat =
+    details.price !== "" &&
+    details.price != null &&
+    Number.isFinite(Number(details.price)) &&
+    vatPercentage !== null &&
+    Number.isFinite(vatPercentage)
+      ? (Number(details.price) / (1 + vatPercentage / 100)).toFixed(2)
+      : "";
+
+  //saving the selected category for the new product 
   const selectedCategory = categories.find(
     (category) => category.name === details.category,
   );
 
+  //saving the selected category type and all it's performance 
   const selectedType = selectedCategory?.types.find(
     (type) => type.name === details.type,
   );
@@ -193,7 +234,7 @@ function AddProductDetails({
                 />
 
                 <InputField
-                  label="Price"
+                  label="Price (Including VAT)"
                   value={details.price}
                   placeholder="0.00"
                   type="number"
@@ -203,8 +244,18 @@ function AddProductDetails({
                   onBlur={(e) => handleProductPriceChange(e.target.value)}
                 />
 
+                <div className={styles.calculatedPrice}>
+                  <InputField
+                    label="Price Before VAT"
+                    value={priceBeforeVat}
+                    placeholder="Automatically calculated"
+                    type="text"
+                    disabled
+                  />
+                </div>
+
                 <InputField
-                  label="Discount (Precents)"
+                  label="Discount (Percents)"
                   value={details.discount ?? 0}
                   placeholder="0"
                   type="number"

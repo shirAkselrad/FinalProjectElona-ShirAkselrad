@@ -7,6 +7,9 @@ function UnshippedOrdersTable({
   onStatusChange,
   openStatusOrderId,
   setOpenStatusOrderId,
+  onView,
+  onEdit,
+  isManager=false
 }) {
   return (
     <table className={styles.table}>
@@ -17,7 +20,7 @@ function UnshippedOrdersTable({
           <th>DATE</th>
           <th>TOTAL</th>
           <th>ITEMS</th>
-          <th></th>
+          <th>ACTIONS</th>
         </tr>
       </thead>
 
@@ -29,6 +32,9 @@ function UnshippedOrdersTable({
             onStatusChange={onStatusChange}
             openStatusOrderId={openStatusOrderId}
             setOpenStatusOrderId={setOpenStatusOrderId}
+            onView={onView}
+            onEdit={onEdit}
+            isManager={isManager}
           />
         ))}
       </tbody>

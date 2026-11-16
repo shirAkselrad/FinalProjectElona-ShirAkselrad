@@ -17,6 +17,7 @@ const managerOrdersRoutes = require("./orders/orders");
 const bestSellingProductsRoutes = require("./reports/getBestSellingProducts");
 const orderByStatusRoutes = require("./reports/getOrderByStatus");
 const pdfReportsRouter = require("./reports/PDF/pdfReports");
+const vatSettings = require("./vat/vatSettings");
 
 //this middleware check if the user is a manager
 const checkIfManager = (req, res, next) => {
@@ -50,6 +51,6 @@ router.use("/", salesChartRoutes);
 router.use("/", getSalesByCategory);
 router.use("/", bestSellingProductsRoutes);
 router.use("/", orderByStatusRoutes);
-
+router.use("/", vatSettings);
 
 module.exports = router;

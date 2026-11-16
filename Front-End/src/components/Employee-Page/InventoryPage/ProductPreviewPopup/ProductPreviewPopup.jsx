@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 function ProductPreviewPopup({ product, onClose, isManager = false }) {
   const [images, setImages] = useState([]);
 
+  //getting products images
   useEffect(() => {
     async function getProductImages() {
       try {
@@ -26,6 +27,7 @@ function ProductPreviewPopup({ product, onClose, isManager = false }) {
   const frontImg =
     images.find((img) => Number(img.file_number) === 1) ?? images[0];
 
+  //preparing the colors
   const previewProduct = {
     ...product,
     colors:

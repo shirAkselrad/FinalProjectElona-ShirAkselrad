@@ -1,3 +1,4 @@
+//checks if both username and password are not empty 
 export const validateLoginField = (field, value) => {
   if (field === "userName" && !value.trim()) return "Username cannot be empty";
 

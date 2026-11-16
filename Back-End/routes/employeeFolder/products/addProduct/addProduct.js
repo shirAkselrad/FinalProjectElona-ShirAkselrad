@@ -19,12 +19,12 @@ const { createProduct, addFiles } = require("./saveProduct");
 router.post(
   "/createProduct",
   upload.array("uploading-files"),
-  parseProductData,
-  checkProductId,
-  getProductTypeSettings,
-  matchFilesWithData,
-  createProduct,
-  addFiles,
+  parseProductData, //responsible for converthing the string data back to json format
+  checkProductId, //checks rather this product already exists
+  getProductTypeSettings, //gets all the sales settings of the specific product
+  matchFilesWithData, //creating json which includes both image data and the acutal file
+  createProduct, //adding into DB the new product details
+  addFiles, //adding product files intp the DB
 );
 
 module.exports = router;

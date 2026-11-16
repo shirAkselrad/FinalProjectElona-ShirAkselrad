@@ -65,6 +65,7 @@ function AddProductImages({
       formData.append("uploading-files", image.file);
     });
 
+    //creating the product in the DB
     try {
       const url = isManager
         ? "/api/manager/createProduct"
@@ -113,6 +114,7 @@ function AddProductImages({
     }
   }
 
+  //saving the images with their numbering
   function handleSaveEdited() {
     const numberedImgs = productImgs.map((img, index) => ({
       ...img,

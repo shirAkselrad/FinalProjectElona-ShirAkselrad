@@ -4,11 +4,11 @@ import SectionTitle from "../../../Employee-Page/SectionTitle/SectionTitle.jsx";
 import ReviewsList from "../ReviewsList/ReviewsList.jsx";
 
 function CustomerReviews() {
-  const [reviews, setReviews] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [reviews, setReviews] = useState([]);//save all the reviews 
+  const [isLoading, setIsLoading] = useState(true); //loading reviews 
+  const [error, setError] = useState(false);//errors 
 
-  //getting all the reviews
+  //getting all the reviews (review, email, first_name and last_name)
   useEffect(() => {
     async function getReviews() {
       try {

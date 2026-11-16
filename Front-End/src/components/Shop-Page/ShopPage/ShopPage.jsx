@@ -10,7 +10,7 @@ import PromotionBanner from "../PromotionBanner/PromotionBanner.jsx";
 import FilterPanel from "../Filter/FilterPanel/FilterPanel.jsx";
 import GeneralBtn from "../../General/GeneralBtn/GeneralBtn.jsx";
 function ShopPage() {
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false); //display filter panel
   const [filters, setFilters] = useState({
     category_id: "",
     type_id: "",
@@ -27,10 +27,12 @@ function ShopPage() {
   });
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [frontImgs, setFrontImgs] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const { getCartAmount } = useCart();
+  const { getCartAmount } = useCart(); //(cart items- including the front imgs, total items count and total price of all the items in the cart)
 
   const [popup, setPopup] = useState({
     show: false,
@@ -87,6 +89,7 @@ function ShopPage() {
   async function getProducts() {
     try {
       const url = `/api/shop/getProducts?category_id=${filters.category_id}&type_id=${filters.type_id}&search=${encodeURIComponent(filters.search)}&sort=${filters.sort}&minPrice=${filters.minPrice}&maxPrice=${filters.maxPrice}&colors=${filters.colors.join(",")}`;
+
       const response = await fetch(url, {
         method: "GET",
       });
@@ -117,9 +120,12 @@ function ShopPage() {
         message: "Couldn't connect to the server",
         type: "error",
       });
+    } finally {
+      setLoading(false);
     }
   }
 
+  //getting from back end the first img of each product (fornt image)
   async function getFrontImgs() {
     try {
       const response = await fetch("/api/shop/getFrontImgs", {
@@ -134,6 +140,8 @@ function ShopPage() {
     }
   }
 
+
+  //getting the products images 
   async function getProductImgs(product_id) {
     try {
       const response = await fetch(`/api/shop/getProductImgs/${product_id}`, {
@@ -161,6 +169,8 @@ function ShopPage() {
     }
   }
 
+
+  //adding a product to the cart (if the cart doesn't exits creating one)
   async function handleAddToCart(product, quantity) {
     try {
       const response = await fetch("/api/cart/addToCart", {
@@ -183,7 +193,7 @@ function ShopPage() {
         });
         return;
       }
-
+      //refreshing cart details in FE 
       await getCartAmount();
       if (selectedProduct) {
         setSelectedProduct(null);
@@ -217,10 +227,11 @@ function ShopPage() {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     const timeout = setTimeout(() => {
       getProducts();
     }, 350);
-     return () => clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [filters]);
 
   //This function will display a popup which will be closed automaticly after the client added a product to the cart
@@ -233,6 +244,7 @@ function ShopPage() {
     });
   }
 
+  //if the chosen category was changed
   const handleCategoryChange = (categoryId) => {
     setFilters((prev) => ({
       ...prev,
@@ -241,6 +253,7 @@ function ShopPage() {
     }));
   };
 
+  //if the category type was changed 
   const handleTypeChange = (typeId) => {
     setFilters((prev) => ({
       ...prev,
@@ -339,7 +352,7 @@ function ShopPage() {
 
         <div className={styles.productsSection}>
           <div className={styles.productsArea}>
-            {products.length > 0 ? (
+            {loading ? null : products.length > 0 ? (
               <ProductsGrid
                 products={products}
                 frontImgs={frontImgs}

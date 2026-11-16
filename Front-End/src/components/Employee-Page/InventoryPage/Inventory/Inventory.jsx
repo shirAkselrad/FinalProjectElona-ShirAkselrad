@@ -11,23 +11,25 @@ import AddCategoryPopup from "../../../Manager-Page/ProductCategory/AddCategoryP
 import { useState, useEffect } from "react";
 
 function Inventory({ isManager = false }) {
-  const [inventory, setInventory] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [inventory, setInventory] = useState([]);//all the inventory 
+  const [categories, setCategories] = useState([]);//all the existing categoies 
 
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [selectedType, setSelectedType] = useState("All Types");
-  const [selectedStatus, setSelectedStatus] = useState("All Statuses");
-  const [selectedStock, setSelectedStock] = useState("All Stock");
-  const [searchValue, setSearchValue] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");//chosen category 
+  const [selectedType, setSelectedType] = useState("All Types");//chosen category type
+  const [selectedStatus, setSelectedStatus] = useState("All Statuses");//chosen status
+  const [selectedStock, setSelectedStock] = useState("All Stock");//chosen stock status 
+  const [searchValue, setSearchValue] = useState("");//value for searching 
 
   const [refresh, setRefresh] = useState(0);
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);//show filters 
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
 
   const [statusOptions, setStatusOptions] = useState(["All Statuses"]);
   const [stockOptions, setStockOptions] = useState(["All Stock"]);
 
+
+  //gettings all the inventory statuses from BE
   async function getFilterOptions() {
     try {
       const url = isManager
@@ -52,6 +54,8 @@ function Inventory({ isManager = false }) {
     }
   }
 
+
+  //getting a filtered inventory (no filters- all the inventory)
   async function getInventory() {
     try {
       const url = isManager
@@ -81,6 +85,7 @@ function Inventory({ isManager = false }) {
     }
   }
 
+  //getting all categories and categories types
   async function getCategories() {
     try {
       const url = isManager

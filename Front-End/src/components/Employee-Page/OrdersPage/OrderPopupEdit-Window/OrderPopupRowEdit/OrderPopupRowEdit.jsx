@@ -4,6 +4,7 @@ import EmptyInput from "../../../../General/EmptyInput/EmptyInput.jsx";
 import BrightGeneralBtn from "../../../../General/BrightGeneralBtn/BrightGeneralBtn.jsx";
 
 function OrderPopupRowEdit({ product, products, setProducts }) {
+  //saving the edits of a specific products in the order
   const updateProduct = (field, value) => {
     setProducts(
       products.map((item) =>
@@ -14,6 +15,7 @@ function OrderPopupRowEdit({ product, products, setProducts }) {
     );
   };
 
+  //saving the quantity change
   const handleQuantityChange = (e) => {
     const quantity = Number(e.target.value);
 
@@ -27,11 +29,14 @@ function OrderPopupRowEdit({ product, products, setProducts }) {
     updateProduct("quantity", quantity);
   };
 
+  //for FE visibilty
   const toggleRemove = () => {
     updateProduct("removed", !product.removed);
   };
 
+  //calculating the final price of each unit
   const unitPrice = Number(product.sale_price);
+  //the total price of all the product units
   const total = unitPrice * Number(product.quantity);
 
   return (

@@ -5,6 +5,7 @@ import { PieChart, Cell, Pie, Tooltip, ResponsiveContainer } from "recharts";
 function OrderByStatus() {
   const [ordersData, setOrdersData] = useState([]);
 
+  //getting orders grouped by status
   async function getOrdersByStatus() {
     try {
       const response = await fetch("/api/manager/ordersByStatus", {
@@ -32,6 +33,7 @@ function OrderByStatus() {
     getOrdersByStatus();
   }, []);
 
+  //total amount of all orders in the shop
   const totalOrders = ordersData.reduce((sum, item) => sum + item.orders, 0);
 
   return (

@@ -3,6 +3,7 @@ import styles from "./promotionBanner.module.css";
 function PromotionBanner() {
   const [promotion, setPromotion] = useState(null);
 
+  //getting the active promotion from BE 
   useEffect(() => {
     const getActivePromotion = async () => {
       try {

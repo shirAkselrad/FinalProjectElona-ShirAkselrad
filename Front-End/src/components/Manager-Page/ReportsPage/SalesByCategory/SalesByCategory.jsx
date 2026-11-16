@@ -5,6 +5,8 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 function SalesByCategory() {
   const [salesData, setSalesData] = useState([]);
 
+
+  //getting for each category and category type the total price that has been paid for 
   async function getSalesByCategory() {
     try {
       const response = await fetch("/api/manager/salesByCategory", {
@@ -22,10 +24,6 @@ function SalesByCategory() {
     getSalesByCategory();
   }, []);
 
-  //keep category colors consisten
-  const sortedData = [...salesData].sort((a, b) =>
-    a.category.localeCompare(b.category),
-  );
 
   //main categories
   const categories = salesData.map((item) => ({
@@ -44,6 +42,7 @@ function SalesByCategory() {
     })),
   );
 
+  //total sales price 
   const totalSales = categories.reduce(
     (sum, category) => sum + category.value,
     0,

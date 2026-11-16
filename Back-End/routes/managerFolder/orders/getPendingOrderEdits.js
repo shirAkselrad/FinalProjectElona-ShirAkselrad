@@ -19,7 +19,7 @@ const getPendingOrderEdits = (req, res, next) => {
 router.get("/order/pendingEdits", getPendingOrderEdits, (req, res) => {
   res.status(200).json({
     success: true,
-    orders: req.pendingOrderEdits,
+    orders: req.pendingOrderEdits, //all the orders which at least one item has been canceled
   });
 });
 

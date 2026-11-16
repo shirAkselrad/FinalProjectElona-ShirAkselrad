@@ -10,15 +10,21 @@ function AddCategoryTypeRow({ categoryId, onCancel, onSaved }) {
     message: "",
     type: "",
   });
+
+  //category types details
   const [type, setType] = useState({
     name: "",
     min_sales: "",
     sales_check_days: "",
   });
 
+
+  //saving input errors 
   const errors = validationCategoryType(type);
+  //form will be valid and ready to be sent only if there are no errors in it 
   const isFormValid = Object.keys(errors).length === 0;
 
+  //adding a new category type into an exising category 
   const handleSave = async () => {
     if (!isFormValid) return;
     try {

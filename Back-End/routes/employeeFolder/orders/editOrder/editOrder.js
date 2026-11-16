@@ -14,7 +14,7 @@ const {
   getOriginalItems,
 } = require("./checkOrderEdit");
 
-const saveEditedItems = require("./saveEditedItems");
+const { saveEditedItems, cancelEmptyOrder } = require("./saveEditedItems");
 
 const {
   startEditTransaction,
@@ -26,9 +26,9 @@ const {
 
 router.get(
   "/orders/:order_id/summary",
-  getOrderSummary,
-  getOrderSummaryItems,
-  calculateOrderSummary,
+  getOrderSummary, //getting all the order details
+  getOrderSummaryItems, //get all the order items details
+  calculateOrderSummary, //get all the totals details
   (req, res) => {
     return res.status(200).json({
       success: true,
@@ -39,12 +39,13 @@ router.get(
 
 router.post(
   "/orders/:order_id/edit",
-  checkOrderEditable,
   checkEditedProducts,
   startEditTransaction,
+  checkOrderEditable,
   checkPendingEdit,
   getOriginalItems,
   saveEditedItems,
+  cancelEmptyOrder,
   commitEdit,
 );
 

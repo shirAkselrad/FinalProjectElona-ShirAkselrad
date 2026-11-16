@@ -5,6 +5,7 @@ const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
 const stockConditions = require("./stockConditions");
 
+//getting all the inventory statuses 
 router.get("/inventory/filterOptions", (req, res) => {
   const query = `
     select distinct status

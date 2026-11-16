@@ -18,6 +18,7 @@ function OrderPopupEdit({
   const [summary, setSummary] = useState(null);
 
   useEffect(() => {
+    //getting all the order summary information
     const getOrderSummary = async () => {
       try {
         setSummary(null);
@@ -49,12 +50,14 @@ function OrderPopupEdit({
     getOrderSummary();
   }, [order.order_id, isManager]);
 
+  //changing specific product quanitity
   const handleQuantityChange = (orderItemId, value) => {
     if (value === "") return;
 
     const quantity = Number(value);
 
     setEditedProducts((prev) =>
+      //will not change the product quantity if the request product is not in the array/product is not active/quantity is not integer/ quatity is negative/the new quantity is bigger than it was before
       prev.map((product) => {
         if (
           product.order_item_id !== orderItemId ||
@@ -71,27 +74,32 @@ function OrderPopupEdit({
     );
   };
 
+  //all the active products in the order
   const activeProducts = editedProducts.filter(
     (product) => product.status === "Active",
   );
 
+  //all the edited products in the order
   const editedItems = activeProducts.reduce(
     (count, product) => count + Number(product.quantity),
     0,
   );
 
+  //the original total price (without promotions and points or shipping )
   const originalTotal = activeProducts.reduce(
     (sum, product) =>
       sum + Number(product.original_price) * Number(product.quantity),
     0,
   );
 
+  //final price for payment  after promotions
   const productsTotal = activeProducts.reduce(
     (sum, product) =>
       sum + Number(product.sale_price) * Number(product.quantity),
     0,
   );
 
+  //the general promotion price
   const generalDiscount = Number(
     (
       productsTotal *
@@ -99,35 +107,41 @@ function OrderPopupEdit({
     ).toFixed(2),
   );
 
+  //final price after general promotion (without shipping and points )
   const totalAfterPromotions = Number(
     (productsTotal - generalDiscount).toFixed(2),
   );
 
- 
-const maxPoints = Number(
-  (
-    (totalAfterPromotions * Number(summary?.max_redemption_percentage || 0)) /
-    100
-  ).toFixed(2),
-);
+  //the max amount of points which can be paid
+  const maxPoints = Number(
+    (
+      (totalAfterPromotions * Number(summary?.max_redemption_percentage || 0)) /
+      100
+    ).toFixed(2),
+  );
+  //the actual amount of points which were used
+  const pointsUsed = Math.min(Number(summary?.points_used || 0), maxPoints);
 
-const pointsUsed = Math.min(Number(summary?.points_used || 0), maxPoints);
+  //shipping price
+  const shipping = editedItems === 0 ? 0 : Number(summary?.shipping || 0);
 
-  const shipping = Number(summary?.shipping || 0);
-
+  //updated summary after all the products edits
   const updatedSummary = summary && {
     ...summary,
+    total_items: editedItems,
     original_total: originalTotal,
     promotions_discount: Number(
       (originalTotal - totalAfterPromotions).toFixed(2),
     ),
     total_after_promotions: totalAfterPromotions,
-    points_used:pointsUsed,
+    points_used: pointsUsed,
+    shipping: shipping,
     final_total: Number(
       (Math.max(0, totalAfterPromotions - pointsUsed) + shipping).toFixed(2),
     ),
   };
 
+  //finding all the products that have been changed
   const changedProducts = activeProducts
     .filter((product) => Number(product.quantity) !== product.original_quantity)
     .map((product) => ({
@@ -135,11 +149,13 @@ const pointsUsed = Math.min(Number(summary?.points_used || 0), maxPoints);
       quantity: Number(product.quantity),
     }));
 
+  //contains only the products and the order ids which have been changed
   const editedOrder = {
     order_id: order.order_id,
     products: changedProducts,
   };
 
+  //checking if there were any changed 
   const hasChanges = changedProducts.length > 0;
 
   return (

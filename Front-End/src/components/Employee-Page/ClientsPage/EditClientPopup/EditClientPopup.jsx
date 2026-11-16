@@ -19,6 +19,7 @@ function EditClientPopup({ client, onClose, onSave, isManager = false }) {
     isFormValid,
   } = useClientForm(client);
 
+  //this path updates users (manager interface)/clients (employee interface) details
   async function updateClient(clientData) {
     try {
       const url = isManager

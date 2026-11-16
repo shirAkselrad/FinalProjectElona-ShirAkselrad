@@ -55,9 +55,9 @@ const saveOrderSummary = (req, res, next) => {
   const summary = req.orderSummary;
 
   const query = `
-    UPDATE orders
-    SET shipping=?, final_price=?, points_used=?, promotion_id=?
-    WHERE order_id=? AND client_email=? AND status='PROCESSING'
+    update orders
+    set shipping=?, final_price=?, points_used=?, promotion_id=?
+    where order_id=? and client_email=? and status='PROCESSING'
   `;
 
   db.query(

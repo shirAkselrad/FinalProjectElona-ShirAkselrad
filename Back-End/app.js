@@ -22,7 +22,7 @@ const startCheckoutRoutes = require("./routes/clientFolder/checkout/startCheckou
 const orderSummaryRoutes = require("./routes/clientFolder/checkout/getOrderSummary");
 const editClientDetailsRoutes = require("./routes/clientFolder/details/details");
 const paymentRoutes = require("./routes/clientFolder/payment/payment");
-const orderReviewRoutes = require("./routes/clientFolder/client");
+const clientRoutes = require("./routes/clientFolder/client");
 
 // User
 const editMyAccountRoutes = require("./routes/userFolder/user");
@@ -62,7 +62,8 @@ app.use("/api/cart", startCheckoutRoutes);
 app.use("/api/orderSummary", orderSummaryRoutes);
 app.use("/api/client", editClientDetailsRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/orderReview", orderReviewRoutes);
+app.use("/api/orderReview", clientRoutes);
+app.use("/api/client", clientRoutes);
 
 // User
 app.use("/api/editMyAccount", editMyAccountRoutes);

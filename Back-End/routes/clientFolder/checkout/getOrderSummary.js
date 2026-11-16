@@ -30,11 +30,11 @@ router.get(
   getCartItems, //getting all the current cart items by cartOrderId
   getCartTotals, //getting all the totals(order price-before points and shipping, final amount of products)
   getClientsPoints, //getting the amount of points the client has
-  getShippingSettings,
-  getPointsSettings,
-  getActivePromotion,
+  getShippingSettings, //get all the current shipping settings
+  getPointsSettings, //get all the current points settings
+  getActivePromotion, //get the active promotion if exits
   calculateOrderSummary, //saving all the calucaltes results for displaying in FE
-  saveOrderSummary,
+  saveOrderSummary, //saving shipping,final_price, points_used, promotion_id in the orders table 
   (req, res) => {
     return res.status(200).json({
       success: true,

@@ -18,10 +18,10 @@ router.get(
   (req, res) => {
     return res.status(200).json({
       success: true,
-      order_id: req.cartOrderId,
-      items: req.cartItems,
-      total_items: req.cartTotals.total_items,
-      total_price: req.cartTotals.total_price,
+      order_id: req.cartOrderId, //order id
+      items: req.cartItems, // all the cart items info including front img
+      total_items: req.cartTotals.total_items, //total amount of items in the cart
+      total_price: req.cartTotals.total_price, //total price of all items in the cart
     });
   },
 );

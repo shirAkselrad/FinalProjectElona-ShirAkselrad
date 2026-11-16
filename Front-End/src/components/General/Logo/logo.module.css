@@ -1,23 +1,8 @@
-/* 
 .logoContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.logo {
-  width: 340px;
-  max-width: 100%;
-  height: auto;
-  display: block;
-} */
-
-
-
-.logoContainer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
 }
 
 .logo {
@@ -26,39 +11,39 @@
   align-items: center;
   justify-content: center;
 
-  gap: 12px;
+  gap: 8px;
   text-decoration: none;
-  white-space: nowrap;
 }
 
-.brandName {
-  font-family: "Playfair Display", serif;
-  font-size: 64px;
-  font-weight: 400;
-  line-height: 1;
-
-  letter-spacing: 8px;
-  color: #f6f0e9;
+.logoImage {
+  display: block;
+  width: 190px;
+  height: auto;
+  object-fit: contain;
 }
 
 .slogan {
+  display: block;
+  margin: 0;
+
   font-family: "Libre Baskerville", serif;
-  font-size: 10px;
+  font-size: 7px;
   font-weight: 400;
-  letter-spacing: 2px;
-  color: #e8d7d2;
+  letter-spacing: 0.7px;
+  line-height: 1.5;
+
+  color: #e8c4a3;
+  text-align: center;
+  white-space: nowrap;
 }
 
-@media (max-width: 768px) {
-  .brandName {
-    font-size: 42px;
-    letter-spacing: 5px;
+@media (max-width: 1100px) {
+  .logoImage {
+    width: 165px;
   }
 
   .slogan {
-    font-size: 7px;
-    letter-spacing: 1px;
-    text-align: center;
-    white-space: normal;
+    font-size: 6px;
+    letter-spacing: 0.5px;
   }
 }

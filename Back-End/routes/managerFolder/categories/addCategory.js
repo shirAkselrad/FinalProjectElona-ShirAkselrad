@@ -3,6 +3,7 @@ const router = express.Router();
 const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
+//checking if the category already exits
 const checkCategoryExists = (req, res, next) => {
   const { name } = req.body;
   const query = "select category_id from categories where name=?";
@@ -54,11 +55,14 @@ const addCategory = (req, res, next) => {
   });
 };
 
+//adding category types
 const addCategoryTypes = (req, res, next) => {
   const { types } = req.body;
 
+  //no types
   if (!types?.length) return next();
 
+  //sepearting all category's type info
   const values = types.map((type) => [
     req.categoryId,
     type.name,
@@ -71,9 +75,6 @@ const addCategoryTypes = (req, res, next) => {
 
   db.query(query, [values], (err) => {
     if (err) {
-      console.error("addCategoryTypes ERROR:", err);
-      console.log("VALUES:", values);
-
       return db.rollback(() => {
         res.status(500).json({
           success: false,
@@ -88,10 +89,10 @@ const addCategoryTypes = (req, res, next) => {
 
 router.post(
   "/addCategory",
-  checkCategoryExists,
-  startTransaction,
-  addCategory,
-  addCategoryTypes,
+  checkCategoryExists, //checking if the category already exits
+  startTransaction, //starting the transaction
+  addCategory, //adding a new category
+  addCategoryTypes, //adding types to the new category
   (req, res) => {
     db.commit((err) => {
       if (err)

@@ -9,6 +9,7 @@ const { sendMailNewPassword } = require("./passwordResetEmail");
 
 //checks id the recovery code was verified
 const checkResetPermission = (req, res, next) => {
+  //if there is no email or the password was already rest or the is no rest time expiry or if the permission to reset the password expired, the user cannot reset the password
   if (
     !req.session.email ||
     req.session.recoveryVerified !== true ||
@@ -23,19 +24,25 @@ const checkResetPermission = (req, res, next) => {
   next();
 };
 
+
+//updating the new password 
 const encryptPasswordUpdating = (req, res, next) => {
-  const { password } = req.body||{};
+  const { password } = req.body || {};
+  //if the new password is invalid 
   if (typeof password !== "string" || !password)
     return res.status(400).json({
       success: false,
       message: "Invalid password",
     });
+
+  //crypting the new password 
   bcrypt.hash(password, 10, (err, hashedPassword) => {
     if (err)
       return res.status(500).json({
         success: false,
         message: "Encrypting error",
       });
+    //updating the password 
     const query = "update users set password=? where email=?";
     db.query(query, [hashedPassword, req.session.email], (err, results) => {
       if (err)

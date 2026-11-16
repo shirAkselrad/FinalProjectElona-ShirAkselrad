@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 function PromotionAlerts() {
   const [popup, setPopup] = useState(null);
   const [promotions, setPromotions] = useState([]);
+
+  //gettings the promotion details from back end (deactiving promotions which shouldn't be active)
   useEffect(() => {
     const getPromotions = async () => {
       try {
@@ -21,6 +23,7 @@ function PromotionAlerts() {
     getPromotions();
   }, []);
 
+  //activating a promotion (deactiving an old active promotion if exits before starting a new one)
   const handleActivate = async (promotion_id) => {
     try {
       const response = await fetch("/api/manager/activatePromotion", {
@@ -29,6 +32,7 @@ function PromotionAlerts() {
         body: JSON.stringify({ promotion_id }),
       });
       if (!response.ok) throw new Error("Couldn't activate promotion");
+      //saving the updated promotions 
       setPromotions((prev) =>
         prev.map((promotion) => ({
           ...promotion,
@@ -50,6 +54,7 @@ function PromotionAlerts() {
   };
 
   const now = new Date();
+  //checking if there is any active promotion
   const hasActivePromotion = promotions.some(
     (promotion) =>
       promotion.status === "Active" &&
@@ -57,6 +62,7 @@ function PromotionAlerts() {
       new Date(promotion.end_date) > now,
   );
 
+  //finding promotions which can be activate
   const availablePromotions = hasActivePromotion
     ? []
     : promotions.filter(

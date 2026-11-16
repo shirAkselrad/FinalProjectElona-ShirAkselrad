@@ -31,21 +31,22 @@ function ProductImagesGallery({
   //creating an array which includes all the product's images
   const allImages = [frontImg, ...otherImgs].filter(Boolean);
 
+  //take care that the index of the current image is not bigger than the number of existing images 
   useEffect(() => {
     if (currentImageIndex >= allImages.length)
       setCurrentIndex(Math.max(0, allImages.length - 1));
   }, [allImages.length, currentImageIndex]);
 
-  //employee interface: all images are static and don't move
-  //client interface: this part take care of slicing the images array only for front-end, and while switching between the images the images below are switched as well
+
+  // this part take care of slicing the images array only for front-end, and while switching between the images the images below are switched as well
   const orderedImages = editable
     ? allImages
     : [
         ...allImages.slice(currentImageIndex),
         ...allImages.slice(0, currentImageIndex),
       ];
-  //employee interface: the images will not have the option to be moved by the arrows
-  //client interface: the client will be able to switch between the product's images
+
+  //switch between the product's images
   const displayedImage = allImages[currentImageIndex] ?? allImages[0];
 
   //This function responsible for moving to the next image

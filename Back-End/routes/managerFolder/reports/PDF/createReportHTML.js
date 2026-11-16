@@ -1,4 +1,5 @@
 function escapeHTML(value) {
+  //converting special chars to those who can be shown in HTML format 
   return String(value ?? "").replace(/[&<>"']/g, (char) => {
     const entities = {
       "&": "&amp;",
@@ -11,15 +12,18 @@ function escapeHTML(value) {
   });
 }
 
+//how each value will be displayed in the table
 function formatValue(value, key) {
+  //checking empty value 
   if (value === null || value === undefined || value === "") {
     return "-";
   }
-
+  //checking date 
   if (value instanceof Date) {
     return value.toLocaleDateString("en-GB");
   }
 
+  //adding + for positive difference 
   if (key === "difference" && Number(value) > 0) {
     return `+${value}`;
   }

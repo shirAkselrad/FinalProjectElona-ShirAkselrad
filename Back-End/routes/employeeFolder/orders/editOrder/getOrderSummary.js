@@ -1,26 +1,28 @@
 const dbSingleton = require("../../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
-// GET ORDER SUMMARY
+
 
 const getOrderSummary = (req, res, next) => {
-  const query = `
-  SELECT order_id, status, total_items, total_price,
-    points_used, shipping, final_price, promotion_id,
+const query = `
+  select order_id, status, total_items, total_price,
+    points_used, points_earned, shipping, final_price,
+    vat_percentage, promotion_id,
     min_delivery_date, max_delivery_date,
 
-    (SELECT discount_percentage
-     FROM promotions_settings
-     WHERE promotion_id = orders.promotion_id)
-    AS general_discount_percentage,
+    (select discount_percentage
+     from promotions_settings
+     where promotion_id = orders.promotion_id)
+    as general_discount_percentage,
 
-    (SELECT max_redemption_percentage
-     FROM points_settings LIMIT 1)
-    AS max_redemption_percentage
+    (select max_redemption_percentage
+     from points_settings limit 1)
+    as max_redemption_percentage
 
-  FROM orders
-  WHERE order_id = ?
+  from orders
+  where order_id = ?
 `;
+
   db.query(query, [req.params.order_id], (err, results) => {
     if (err)
       return res.status(500).json({
@@ -39,17 +41,18 @@ const getOrderSummary = (req, res, next) => {
   });
 };
 
+//get order items 
 const getOrderSummaryItems = (req, res, next) => {
   const query = `
-    SELECT order_item_id, order_id, product_id,
+    select order_item_id, order_id, product_id,
       product_name, quantity,
-      product_price AS original_price,
-      discount_percentage AS discount,
-      discounted_product_price AS sale_price,
+      product_price as original_price,
+      discount_percentage as discount,
+      discounted_product_price as sale_price,
       total_price, status, replaces_order_item_id
-    FROM order_items
-    WHERE order_id=?
-    ORDER BY order_item_id
+    from order_items
+    where order_id=?
+    order by order_item_id
   `;
   db.query(query, [req.params.order_id], (err, results) => {
     if (err)

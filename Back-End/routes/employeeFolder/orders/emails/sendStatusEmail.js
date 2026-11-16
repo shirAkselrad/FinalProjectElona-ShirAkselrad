@@ -41,38 +41,40 @@ const sendStatusEmail = (req, res, next) => {
 
   if (status === "CANCELED" && !req.refund) return next();
 
-  const sendEmail = (client_email, final_price) => {
-    const order = {
-      order_id,
-      status,
-      client_email,
-      final_price,
-    };
-
-    sendOrderStatusEmail(order)
-      .then((info) => {
-        console.log("Email status:", status);
-        console.log("Accepted:", info.accepted);
-      })
-      .catch((err) => {
-        console.error("Couldn't send order status email:", err);
-      });
+  const sendEmail = async (order) => {
+    try {
+      const info = await sendOrderStatusEmail(order);
+      console.log("Email status:", status);
+      console.log("Accepted:", info.accepted);
+    } catch (error) {
+      console.error("Couldn't send order status email:", error);
+    }
 
     next();
   };
 
-  if (req.refund)
-    return sendEmail(req.refund.client_email, req.refund.final_price);
+  // Refund email
+  if (req.refund) {
+    return sendEmail({
+      ...req.refund,
+      order_id,
+      status,
+    });
+  }
 
-  const query = "select client_email from orders where order_id=?";
+  // Regular status update email
+  const query = "select * from orders where order_id=?";
 
   db.query(query, [order_id], (err, results) => {
-    if (err || results.length === 0) {
-      console.error("Couldn't get client's email address:", err);
+    if (err || !results.length) {
+      console.error("Couldn't get order details:", err);
       return next();
     }
 
-    sendEmail(results[0].client_email);
+    sendEmail({
+      ...results[0],
+      status,
+    });
   });
 };
 

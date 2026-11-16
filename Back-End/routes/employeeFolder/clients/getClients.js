@@ -58,6 +58,7 @@ router.get("/citiesNoRepeat", (req, res) => {
         message: "Failed getting cities from data base",
       });
     }
+    //only cities names
     const cities = results.map((c) => c.city);
     return res.status(200).json({
       success: true,

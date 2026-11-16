@@ -6,11 +6,13 @@ const getProductImages = require("./getProductImages");
 const getCategories = require("./getCategories");
 const getFilterOptions = require("./getFilterOptions");
 const getActivePromotion = require("./getActivePromotion");
+const vatSettings = require("./vatSettings");
 
 router.use("/", getProducts);
 router.use("/", getProductImages);
 router.use("/", getCategories);
 router.use("/", getFilterOptions);
 router.use("/", getActivePromotion);
+router.use("/", vatSettings);
 
 module.exports = router;

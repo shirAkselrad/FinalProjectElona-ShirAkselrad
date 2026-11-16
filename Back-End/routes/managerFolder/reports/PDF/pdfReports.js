@@ -124,9 +124,10 @@ router.get(
 //generate report
 router.get("/reports/:type", async (req, res) => {
   const { type } = req.params;
-  const { from, to } = req.query;
-  console.log("PDF report type:", type);
-  const settings = reportSettings[type];
+  const { from, to } = req.query;//only if the report request it 
+
+  const settings = reportSettings[type];//finding the settings of the requested report according to its type 
+  //doesn't take care of the performance report 
   if (!settings||type==="performance")
     return res.status(400).json({
       success: false,
@@ -142,11 +143,11 @@ router.get("/reports/:type", async (req, res) => {
       });
   }
   try {
-    console.log("Getting report data...");
+    //getting the rows according the report type 
     const rows = await getReportData(type, from, to);
 
-    console.log("Data received:", rows.length);
 
+    //crreating the HTML 
     const html = createReportHTML(
       settings.title,
       settings.columns,
@@ -155,11 +156,8 @@ router.get("/reports/:type", async (req, res) => {
       type === "users" ? null : to,
     );
 
-    console.log("HTML created");
-
+    //generating the pdf with the html info 
     const pdf = await generatePDF(html);
-
-    console.log("PDF generated");
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(

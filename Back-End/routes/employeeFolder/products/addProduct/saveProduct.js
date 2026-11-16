@@ -1,6 +1,7 @@
 const dbSingleton = require("../../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
+//adding into DB the new product details
 const createProduct = (req, res, next) => {
   const {
     product_id,
@@ -22,7 +23,7 @@ const createProduct = (req, res, next) => {
   const { min_sales, sales_check_days } = req.productTypeSettings;
   const productMinSales = Math.min(min_sales, Number(quantity));
   const query =
-    "insert into inventory (product_id, name, category, type, colors, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', NOW(), ?, DATE_ADD(CURDATE(), INTERVAL ? DAY), ?)";
+    "insert into inventory (product_id, name, category, type, colors, country_origin, size, description, price, cost_price, discount, quantity, min_stock, status, creation_date, restock_required, sales_check_date, min_sales) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Active', now(), ?, date_add(curdate(), interval ? day), ?)";
 
   db.query(
     query,
@@ -59,6 +60,8 @@ const createProduct = (req, res, next) => {
   );
 };
 
+
+//adding product files intp the DB
 const addFiles = (req, res, next) => {
   //frontImg is only the index of frontImg
   const { product_id } = req.body.product;

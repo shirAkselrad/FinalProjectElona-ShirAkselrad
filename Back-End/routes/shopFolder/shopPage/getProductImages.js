@@ -5,13 +5,13 @@ const db = dbSingleton.getConnection();
 
 router.get("/getFrontImgs", (req, res) => {
   const query = `
-  SELECT *
-  FROM files
-  WHERE file_number = 1
-  AND product_id IN (
-    SELECT product_id
-    FROM inventory
-    WHERE status = 'Active'
+  select *
+  from files
+  where file_number = 1
+  and product_id in (
+    select product_id
+    from inventory
+    where status = 'Active'
   )
 `;
   db.query(query, (err, results) => {
@@ -30,6 +30,8 @@ router.get("/getFrontImgs", (req, res) => {
   });
 });
 
+
+//get all products images 
 router.get("/getProductImgs/:product_id", (req, res) => {
   const product_id = req.params.product_id;
   const query = "select * from files where product_id=? order by file_number";

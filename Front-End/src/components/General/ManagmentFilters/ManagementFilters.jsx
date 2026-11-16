@@ -2,6 +2,8 @@ import styles from "./managementFilters.module.css";
 import GeneralSelection from "../GeneralSelection/GeneralSelection.jsx";
 import BrightGeneralBtn from "../BrightGeneralBtn/BrightGeneralBtn.jsx";
 function ManagementFilters({ title, filters }) {
+
+  //returns each filter back to it's default value 
   function handleReset() {
     filters.forEach((filter) => {
       filter.setSelected(filter.defaultValue);

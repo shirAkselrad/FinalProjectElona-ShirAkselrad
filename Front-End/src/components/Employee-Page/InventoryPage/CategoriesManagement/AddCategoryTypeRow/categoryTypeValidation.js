@@ -1,3 +1,4 @@
+//checking if all form inputs are valid 
 export const validationCategoryType = (type) => {
   const errors = {};
   if (!type.name.trim()) errors.name = "type name is required";

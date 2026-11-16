@@ -10,6 +10,7 @@ function GeneralPromotionsRow({
   const isActive = promotion.status === "Active";
 
   const now = new Date();
+  //only those promtions which their date didn't pass yet
   const canActivate =
     new Date(promotion.start_date) <= now && new Date(promotion.end_date) > now;
 

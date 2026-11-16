@@ -1,68 +1,116 @@
+
 .sentence {
   width: 100%;
-  min-height: 340px;
-
-  background-color: #1b1109;
+  min-width: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: 55px 20px;
-
+  padding: 42px 24px 46px;
   box-sizing: border-box;
+
+  background-color: #4b1426;
 }
 
 .content {
-  width: min(900px, 90%);
+  width: 100%;
+  max-width: 850px;
+  margin: 0 auto;
+
   text-align: center;
 }
 
-.text {
-  margin: 0;
+/* Memorial quote */
 
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 30px;
+.text {
+  margin: 0 0 14px;
+
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: clamp(23px, 3vw, 30px);
   font-weight: 400;
   font-style: italic;
+  line-height: 1.5;
 
-  line-height: 1.85;
-
-  color: #f5eee8;
+  color: #f6f0e9;
 }
 
-.divider {
-  margin: 28px auto 18px;
+/* Author */
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.author {
+  margin: 0 0 18px;
 
-  gap: 12px;
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  line-height: 1.7;
+
+  color: #f6f0e9;
 }
 
-.line {
-  width: 40px;
-  height: 1px;
+/* Memorial dedication */
 
-  background-color: #b58a45;
-}
-
-.diamond {
-  width: 5px;
-  height: 5px;
-
-  background-color: #c9a05d;
-  transform: rotate(45deg);
-}
-
-.signature {
+.memory {
   margin: 0;
 
-  font-family: Arial, sans-serif;
+  font-family: "Libre Baskerville", Georgia, serif;
   font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 2.5px;
+  line-height: 1.8;
 
-  letter-spacing: 4px;
+  color: #d8afa6;
+  text-transform: uppercase;
+}
 
-  color: #c9a05d;
+/* Tablet */
+
+@media (max-width: 900px) {
+  .sentence {
+    padding: 40px 24px 44px;
+  }
+
+  .text {
+    font-size: 26px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .sentence {
+    padding: 38px 20px 42px;
+  }
+
+  .text {
+    font-size: 23px;
+    line-height: 1.55;
+  }
+
+  .author {
+    font-size: 10px;
+  }
+
+  .memory {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+  }
+}
+
+/* Small mobile */
+
+@media (max-width: 400px) {
+  .sentence {
+    padding: 34px 16px 38px;
+  }
+
+  .text {
+    font-size: 21px;
+  }
+
+  .memory {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
 }

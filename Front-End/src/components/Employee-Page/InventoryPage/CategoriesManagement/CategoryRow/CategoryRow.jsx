@@ -6,9 +6,9 @@ import GeneralBtn from "../../../../General/GeneralBtn/GeneralBtn.jsx";
 
 function CategoryRow({ category, isManager = false, onRefreshCategories }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAddingType, setIsAddingType] = useState(false);
-  console.log("Category:", category);
+  const [isAddingType, setIsAddingType] = useState(false);//displaying an adding new type to an existing category 
 
+  //change category status, if will be displayed on the client's shop interface
   const handleStatusChange = async () => {
     const newStatus = category.status === "Active" ? "Not Active" : "Active";
 

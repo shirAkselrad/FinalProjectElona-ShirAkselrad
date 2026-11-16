@@ -6,24 +6,29 @@ import AddProductImages from "../AddProductPopup/AddProductImages/AddProductImag
 import { useEffect, useState } from "react";
 
 function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); //according the pages in the popup starting with part 1
+  //displaying al the products details to the inputs
   const [productDetails, setProductDetails] = useState({
     ...product,
     colors: Array.isArray(product.colors)
       ? product.colors
       : product.colors.split(",").map((color) => color.trim()),
   });
+
+  //all product images
   const [productImgs, setProductImgs] = useState([]);
 
   useEffect(() => {
     async function getProductImgs() {
       try {
+        //getting product images by product_id
         const url = isManager
           ? `/api/manager/getProductImages/${product.product_id}`
           : `/api/employee/getProductImages/${product.product_id}`;
         const response = await fetch(url, { method: "GET" });
         const data = await response.json();
         if (!response.ok) throw new Error(data.message);
+        //sorting images by numbers 
         setProductImgs(
           data.files.sort((a, b) => a.file_number - b.file_number),
         );
@@ -34,10 +39,13 @@ function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
     getProductImgs();
   }, [product.product_id, isManager]);
 
+
+  //going to next page 
   function handleDetailsNext(details) {
     setProductDetails(details);
     setStep(2);
   }
+
   function handleNext() {
     setStep((prev) => prev + 1);
   }
@@ -45,6 +53,7 @@ function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
     setStep((prev) => prev - 1);
   }
 
+  //responsible for when the employee/manager changes the order of the images 
   function handleImagesReorder(fromIndex, toIndex) {
     setProductImgs((prev) => {
       const frontImg = prev.find((img) => img.file_number === 1);
@@ -56,6 +65,7 @@ function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
     });
   }
 
+  //saving the updated product, formating the images and saving them 
   async function savedEditedProduct(productToSave) {
     try {
       const formData = new FormData();
@@ -85,7 +95,8 @@ function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
       const responseText = await response.text();
       console.log("Server response:", response.status, responseText);
 
-      const data = JSON.parse(responseText);0
+      const data = JSON.parse(responseText);
+      0;
 
       if (data.success) {
         await onSave({

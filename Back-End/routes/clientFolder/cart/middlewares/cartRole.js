@@ -1,7 +1,6 @@
 //This middleware checks if the user is client, in case it does then next, else matched message to the popup
 const checkingRole = (req, res, next) => {
   const user = req.session.user;
-
   //no user is logged in
   if (!user) {
     return res.status(401).json({

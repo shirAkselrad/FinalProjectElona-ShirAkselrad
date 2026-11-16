@@ -25,12 +25,12 @@ router.use("/", getProductImages);
 router.put(
   "/editedProduct/:product_id",
   upload.array("uploading-files"),
-  prepareEditedProduct,
-  beginEditTransaction,
-  updateProductDetails,
-  updateProductStatus,
-  replaceProductImages,
-  commitEditTransaction,
+  prepareEditedProduct, //preparing the images rather if they already existed in the be or if they just been uploaded by the user
+  beginEditTransaction, //starting transaction
+  updateProductDetails, //updating products details according to what have been given in FE
+  updateProductStatus, //updating product status if requiref
+  replaceProductImages, //deleting product images which was before the update, and instering the updated ones
+  commitEditTransaction, //ending transaction
 );
 
 module.exports = router;

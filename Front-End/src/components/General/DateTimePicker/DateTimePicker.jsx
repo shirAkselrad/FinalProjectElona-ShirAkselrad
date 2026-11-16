@@ -15,6 +15,8 @@ function DateTimePicker({
 }) {
   const datePickerRef = useRef(null);
 
+
+  //converting date into a string 
   const formatLocalDateTime = (date) => {
     if (!date) return "";
 
@@ -29,6 +31,7 @@ function DateTimePicker({
     return `${datePart}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   };
 
+  //prasing a value into a Date object 
   const parseDate = (dateValue) => {
     if (!dateValue) return null;
 
@@ -44,6 +47,7 @@ function DateTimePicker({
     return new Date(dateValue);
   };
 
+  //range of dates 
   const min = parseDate(minDate);
   const max = parseDate(maxDate);
 

@@ -13,10 +13,11 @@ import { FiSettings } from "react-icons/fi";
 import { FiRotateCcw } from "react-icons/fi";
 
 function ManagerPage() {
-  const [users, setUsers] = useState([]);
-  const [managerOrders, setManagerOrders] = useState([]);
-  const [inventory, setInventory] = useState([]);
+  const [users, setUsers] = useState([]); //all users
+  const [managerOrders, setManagerOrders] = useState([]); //orders
+  const [inventory, setInventory] = useState([]); //inventory
 
+  //getting all the inventory (no filters)
   useEffect(() => {
     async function getInventory() {
       try {
@@ -34,6 +35,7 @@ function ManagerPage() {
     getInventory();
   }, []);
 
+  //getting all the orders (no filters)
   useEffect(() => {
     async function getOrders() {
       try {
@@ -52,6 +54,7 @@ function ManagerPage() {
     getOrders();
   }, []);
 
+  //getting all the users (no filters)
   useEffect(() => {
     async function getUsers() {
       try {
@@ -120,31 +123,7 @@ function ManagerPage() {
     },
   ];
 
-  const orders = ["#1002", "#1003", "#1006", "#1007"];
-
-  const clients = ["Roni Peretz", "Yael Mor", "Roni Peretz", "Yael Mor"];
-
-  const dates = ["2025-07-18", "2025-07-21", "2025-08-03", "2025-08-05"];
-
-  const totals = [490, 490, 335, 465];
-
-  const items = [
-    "Gold Wrist Watch",
-    "Rose Agate Pendant, Cream Fedora Hat",
-    "Cream Fedora Hat, Tan Leather Belt",
-    "Golden Leaf Brooch",
-  ];
-
-  const products = [
-    "Gold Wrist Watch",
-    "Rose Agate Pendant",
-    "Art Deco Crystal Brooch",
-  ];
-
-  const statuses = ["OUT OF STOCK", "LOW STOCK", "LOW STOCK"];
-
-  const stocks = [0, 3, 2];
-
+  //saving edited product info
   const onSave = (editedInv) => {
     setInventory((prevInventory) =>
       prevInventory.map((inv) =>
@@ -153,6 +132,7 @@ function ManagerPage() {
     );
   };
 
+  //updating the inventory after change
   const onRemove = (updatedInv) => {
     setInventory((prevInventory) =>
       prevInventory.map((inv) =>
@@ -166,14 +146,6 @@ function ManagerPage() {
         <div className={styles.pageContent}>
           <Outlet
             context={{
-              orders,
-              clients,
-              dates,
-              totals,
-              items,
-              products,
-              statuses,
-              stocks,
               users,
               setUsers,
               managerOrders,

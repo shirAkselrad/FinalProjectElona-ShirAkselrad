@@ -14,7 +14,8 @@ function AddCategoryPopup({ onClose, onRefreshCategories }) {
     message: "",
     type: "",
   });
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); // new category name
+  //saving category types
   const [types, setTypes] = useState([
     {
       name: "",
@@ -23,10 +24,14 @@ function AddCategoryPopup({ onClose, onRefreshCategories }) {
     },
   ]);
   const [nameTouched, setNamedTouched] = useState(false);
+
+  //checking if all the inputs are valid and not empty
   const isFormValid = checkCategoryValidation(name, types);
 
   async function handleSave() {
+    //form is not valid
     if (!isFormValid) return;
+    //all the category data including category types
     const categoryData = {
       name: onlyFirstLetterCapital(name.trim()),
       types: types.map((type) => ({
@@ -35,6 +40,7 @@ function AddCategoryPopup({ onClose, onRefreshCategories }) {
         sales_check_days: Number(type.sales_check_days),
       })),
     };
+    //saving in back end the new category and it's types
     try {
       const response = await fetch("/api/manager/addCategory", {
         method: "POST",

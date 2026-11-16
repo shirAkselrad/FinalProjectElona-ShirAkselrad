@@ -14,15 +14,18 @@ import {
 
 function ResetPasswordForm() {
   const navigate = useNavigate();
+  //current passwords (starts empty)
   const [passwords, setPasswords] = useState({
     password: "",
     verification: "",
   });
+  //current errors also starts empty
   const [errors, setErrors] = useState({
     password: "",
     verification: "",
   });
 
+  //if the form is being sent submitting is true
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
     show: false,
@@ -30,6 +33,7 @@ function ResetPasswordForm() {
     type: "",
   });
 
+  //as long as there is no errors the form is valid 
   const isFormValid = checkResetPasswordValidation(
     passwords.password,
     passwords.verification,
@@ -37,6 +41,7 @@ function ResetPasswordForm() {
 
   async function resetPassword(password) {
     try {
+      //adding a the new password 
       const response = await fetch("/api/resetPassword", {
         method: "POST",
         headers: {

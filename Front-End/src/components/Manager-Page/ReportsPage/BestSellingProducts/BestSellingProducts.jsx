@@ -1,17 +1,19 @@
 import styles from "./bestSellingProducts.module.css";
 import { useState, useEffect } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
+  BarChart,//graph type 
+  Bar,//set the bars 
+  XAxis,//X
+  YAxis,//Y
+  CartesianGrid,//grid lines 
+  Tooltip,//present data on the graph
+  ResponsiveContainer,//fit the size of the graph 
 } from "recharts";
 
 function BestSellingProducts() {
   const [products, setProducts] = useState([]);
+
+  //gettings the 10 best selling products (names and amount)
   async function getBestSellingProducts() {
     try {
       const response = await fetch("/api/manager/bestSellingProducts", {

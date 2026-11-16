@@ -66,6 +66,10 @@ router.get("/orders", (req, res) => {
   });
 });
 
+
+
+
+
 //this path responsible to pass all the order's products to FE
 router.get("/orders/:order_id/items", (req, res) => {
   const { order_id } = req.params;

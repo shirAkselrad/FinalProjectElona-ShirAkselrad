@@ -1,12 +1,13 @@
 import styles from "./unshippedOrdersRow.module.css";
 import Status from "../../../../Employee-Page/Status/Status.jsx";
-import EditBtn from "../../../../General/EditBtn/EditBtn.jsx";
 
 function UnshippedOrdersRow({
   order,
   onStatusChange,
   openStatusOrderId,
   setOpenStatusOrderId,
+  onView,
+  isManager=false
 }) {
   return (
     <tr className={styles.row}>
@@ -20,15 +21,25 @@ function UnshippedOrdersRow({
 
       <td>{order.total_items}</td>
 
-      <td className={styles.edit}>
-        <Status
-          status={order.status}
-          order_id={order.order_id}
-          onStatusChange={onStatusChange}
-          openStatusOrderId={openStatusOrderId}
-          setOpenStatusOrderId={setOpenStatusOrderId}
-          isManager={true}
-        />
+      <td>
+        <div className={styles.actions}>
+          <Status
+            status={order.status}
+            order_id={order.order_id}
+            onStatusChange={onStatusChange}
+            openStatusOrderId={openStatusOrderId}
+            setOpenStatusOrderId={setOpenStatusOrderId}
+            isManager={isManager}
+          />
+
+          <button
+            type="button"
+            className={styles.viewBtn}
+            onClick={() => onView(order)}
+          >
+            View
+          </button>
+        </div>
       </td>
     </tr>
   );

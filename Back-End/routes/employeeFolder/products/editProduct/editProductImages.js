@@ -25,6 +25,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+//preparing the images rather if they already existed in the be or if they just been uploaded by the user
 const prepareEditedProduct = (req, res, next) => {
   try {
     const product = JSON.parse(req.body.product);
@@ -57,6 +58,8 @@ const prepareEditedProduct = (req, res, next) => {
   }
 };
 
+
+//deleting product images which was before the update, and instering the updated ones 
 const replaceProductImages = (req, res, next) => {
   const { product_id } = req.params;
   const values = req.editedImages.map((image) => [

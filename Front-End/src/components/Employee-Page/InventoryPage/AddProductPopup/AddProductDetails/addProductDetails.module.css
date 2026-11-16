@@ -49,10 +49,22 @@
   gap: 10px;
 }
 
+/* Pricing & Quantity */
 .pricingGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
+}
+
+.pricingGrid > * {
+  min-width: 0;
+}
+
+/* Automatically calculated price before VAT */
+.calculatedPrice {
+  min-width: 0;
+  opacity: 0.8;
 }
 
 /* Sales monitoring and restock settings */

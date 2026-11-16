@@ -10,7 +10,7 @@ function DynamicInputsList({
   addBtnText = "+ADD",
   maxInputs = Infinity,
 }) {
-  //this function adds a new empty input to the list
+  //this function adds a new empty input to the list (limited by maxInputs)
   function handleAdd() {
     if (values.length >= maxInputs) return;
     onChange([...values, ""]);
@@ -23,7 +23,7 @@ function DynamicInputsList({
     onChange(updateValues);
   }
 
-  //this function removes an wanted input from the inputs list
+  //this function removes unwanted input from the inputs list
   function handleRemove(index) {
     const updateValues = values.filter((_, i) => i !== index);
     onChange(updateValues);

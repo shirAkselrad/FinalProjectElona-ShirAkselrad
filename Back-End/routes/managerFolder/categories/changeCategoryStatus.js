@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const dbSingleton = require("../../../dbSingleton");
 
+//starting a transaction
 const startTransaction = (req, res, next) => {
   dbSingleton.getPoolConnection((err, connection) => {
     if (err)
@@ -23,6 +24,7 @@ const startTransaction = (req, res, next) => {
   });
 };
 
+//ending transaction
 const commitTransaction = (req, res) => {
   req.db.commit((err) => {
     if (err)
@@ -73,6 +75,7 @@ const changeCategoryStatus = (req, res, next) => {
   });
 };
 
+//changing all the types statuses to be just like the category status
 const changeAllCategoryTypesStatus = (req, res, next) => {
   const { category_id, status } = req.body;
   const query = "update category_types set status=? where category_id=?";

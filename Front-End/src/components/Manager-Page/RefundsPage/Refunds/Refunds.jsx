@@ -4,8 +4,8 @@ import MessagePopup from "../../../General/MessagePopup/MessagePopup";
 import styles from "./refunds.module.css";
 
 function Refunds() {
-  const [pendingOrders, setPendingOrders] = useState([]);
-  const [canceledOrders, setCanceledOrders] = useState([]);
+  const [pendingOrders, setPendingOrders] = useState([]); //all the orders which are waiting to be refund
+  const [canceledOrders, setCanceledOrders] = useState([]); //orders which has been canceled
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
@@ -13,9 +13,9 @@ function Refunds() {
       try {
         const [editsResponse, refundsResponse, ordersResponse] =
           await Promise.all([
-            fetch("/api/manager/order/pendingEdits"),
-            fetch("/api/manager/pendingRefunds"),
-            fetch("/api/manager/orders?status=CANCELED"),
+            fetch("/api/manager/order/pendingEdits"), //all the orders which at least one item has been canceled
+            fetch("/api/manager/pendingRefunds"), //pending refunds
+            fetch("/api/manager/orders?status=CANCELED"), //canceled orders
           ]);
 
         if (!editsResponse.ok || !refundsResponse.ok || !ordersResponse.ok) {
@@ -28,11 +28,12 @@ function Refunds() {
 
         setPendingOrders(editsData.orders || []);
 
-        // Get full order details for orders waiting for refund
+        // saving all the ids of the orders which are waiting to be refunded
         const pendingIds = refundsData.refunds.map((refund) =>
           String(refund.order_id),
         );
 
+        //saving all the ids of the orders which have been canceled but have been refunded yet
         const pendingCanceledOrders = ordersData.orders.filter((order) =>
           pendingIds.includes(String(order.order_id)),
         );
@@ -87,7 +88,7 @@ function Refunds() {
     }
   };
 
-  // Approve full order refund
+  // Approve full order refund (canceled order)
   const handleRefund = async (orderId) => {
     try {
       const response = await fetch(
@@ -98,7 +99,7 @@ function Refunds() {
       if (!response.ok) {
         throw new Error("Couldn't approve order refund");
       }
-
+      //updating the canceled orders state variable
       setCanceledOrders((prev) =>
         prev.filter((order) => order.order_id !== orderId),
       );
@@ -121,6 +122,26 @@ function Refunds() {
     }
   };
 
+  //changes all the order lines to be active again and the order status to be PAID again
+  const handleRejectRefund = async (orderId) => {
+    try {
+      const response = await fetch(
+        `/api/manager/orders/${orderId}/rejectRefund`,
+        {
+          method: "PUT",
+        },
+      );
+      if (!response.ok) throw new Error("Couldn't reject order cancellation");
+      //updating the canceled orders after that change 
+      setCanceledOrders((prev) =>
+        prev.filter((order) => order.order_id !== orderId),
+      );
+      return true;
+    } catch (error) {
+      console.error("Reject refund error:", error);
+      return false;
+    }
+  };
   return (
     <div className={styles.refunds}>
       <h2>Refunds</h2>
@@ -160,6 +181,7 @@ function Refunds() {
           <OrdersTable
             orders={canceledOrders}
             onApprove={handleRefund}
+            onReject={handleRejectRefund}
             isManager={true}
             isRefunds={true}
             refundType="canceled"

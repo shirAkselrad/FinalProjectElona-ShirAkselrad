@@ -4,10 +4,11 @@ import PendingRefundsTable from "./PendingRefundsTable/PendingRefundsTable.jsx";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import AlertsTitle from "../AlertsTitle/AlertsTitle.jsx";
 function PendingRefunds({ refundRefresh }) {
-  const [refunds, setRefunds] = useState([]);
-  const [approvingId, setApprovingId] = useState(null);
+  const [refunds, setRefunds] = useState([]); //refunds waiting
+  const [approvingId, setApprovingId] = useState(null); //order ids which have been approved to be refounded
   const [message, setMessage] = useState(null);
 
+  //gettings all the orders which are waiting to be refunded (CANCLED orders)
   const getPendingRefunds = async () => {
     try {
       const response = await fetch("/api/manager/pendingRefunds", {
@@ -33,7 +34,9 @@ function PendingRefunds({ refundRefresh }) {
     getPendingRefunds();
   }, [refundRefresh]);
 
+  //update all the pending orders which have been approved at BE 
   const approveRefund = async (order_id) => {
+    //saving all the approved orders id 
     setApprovingId(order_id);
 
     try {
@@ -47,6 +50,7 @@ function PendingRefunds({ refundRefresh }) {
       if (!response.ok || !data.success)
         throw new Error(data.message || "Couldn't approve refund");
 
+      //updating all the pending to refund orders after some of them have been approved 
       setRefunds((prev) =>
         prev.filter((refund) => refund.order_id !== order_id),
       );

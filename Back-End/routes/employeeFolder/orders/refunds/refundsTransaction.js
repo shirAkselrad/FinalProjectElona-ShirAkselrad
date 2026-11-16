@@ -1,5 +1,6 @@
 const dbSingleton = require("../../../../dbSingleton");
 
+//starting the refund transaction
 const startRefund = (req, res, next) => {
   dbSingleton.getPoolConnection((err, connection) => {
     if (err)

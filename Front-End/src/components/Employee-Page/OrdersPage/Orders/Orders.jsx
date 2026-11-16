@@ -14,6 +14,7 @@ import { useEffect } from "react";
  * @returns Orders
  */
 function Orders({ isManager = false }) {
+
   const context = useOutletContext();
   const orders = isManager ? context.managerOrders : context.orders;
   const setOrders = isManager ? context.setManagerOrders : context.setOrders;

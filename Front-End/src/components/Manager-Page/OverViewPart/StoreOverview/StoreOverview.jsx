@@ -1,20 +1,25 @@
 import styles from "./storeOverview.module.css";
 import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
+
 import Title from "../../../General/Title/Title.jsx";
 import OverviewLine from "../OverViewLine/OverViewLine.jsx";
 import UnshippedOrders from "../UnshippedOrdersPart/UnshippedOrders/UnshippedOrders.jsx";
 import LowStock from "../LowStockPart/LowStock/LowStock.jsx";
-import { useOutletContext } from "react-router-dom";
-import EditInventoryPopup from "../../../Employee-Page/InventoryPage/EditInventoryPopup/EditInventoryPopup.jsx";
-import OrderPopupEdit from "../../../Employee-Page/OrdersPage/OrderPopupEdit-Window/OrderPopupEdit/OrderPopupEdit.jsx";
 import PromotionAlerts from "../PromotionAlerts/PromotionAlerts.jsx";
 import PendingRefunds from "../PendingRefunds/PendingRefunds.jsx";
+
+import EditInventoryPopup from "../../../Employee-Page/InventoryPage/EditInventoryPopup/EditInventoryPopup.jsx";
+import OrderPopupEdit from "../../../Employee-Page/OrdersPage/OrderPopupEdit-Window/OrderPopupEdit/OrderPopupEdit.jsx";
+import OrderPopupView from "../../../Employee-Page/OrdersPage/OrderPopupView-Window/OrderPopupView/OrderPopupView.jsx";
 
 function StoreOverview() {
   const { inventory, onSave, managerOrders, setManagerOrders } =
     useOutletContext();
+
   const [openStatusOrderId, setOpenStatusOrderId] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [viewOrder, setViewOrder] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [refundRefresh, setRefundRefresh] = useState(0);
 
@@ -26,7 +31,10 @@ function StoreOverview() {
         order.order_id === order_id ? { ...order, status: newStatus } : order,
       ),
     );
-    if (newStatus === "CANCELED") setRefundRefresh((prev) => prev + 1);
+
+    if (newStatus === "CANCELED") {
+      setRefundRefresh((prev) => prev + 1);
+    }
   };
 
   const outOfStock = inventory.filter(
@@ -74,8 +82,12 @@ function StoreOverview() {
           onStatusChange={onStatusChange}
           openStatusOrderId={openStatusOrderId}
           setOpenStatusOrderId={setOpenStatusOrderId}
+          onView={setViewOrder}
+          onEdit={setSelectedOrder}
+          isManager={true}
         />
       </div>
+
       <div className={styles.pendingRefunds}>
         <PendingRefunds refundRefresh={refundRefresh} />
       </div>
@@ -83,9 +95,12 @@ function StoreOverview() {
       <div className={styles.lowStock}>
         <LowStock products={stockAlerts} onEdit={setSelectedProduct} />
       </div>
+
       <div>
         <PromotionAlerts />
       </div>
+
+      {/* Edit product */}
       {selectedProduct && (
         <EditInventoryPopup
           product={selectedProduct}
@@ -95,6 +110,20 @@ function StoreOverview() {
         />
       )}
 
+      {/* View order */}
+      {viewOrder && (
+        <OrderPopupView
+          order={viewOrder}
+          isManager={true}
+          onClose={() => setViewOrder(null)}
+          onEdit={() => {
+            setSelectedOrder(viewOrder);
+            setViewOrder(null);
+          }}
+        />
+      )}
+
+      {/* Edit order */}
       {selectedOrder && (
         <OrderPopupEdit
           order={selectedOrder}

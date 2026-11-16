@@ -1,12 +1,13 @@
 const { getPayPalAccessToken } = require("../../../../services/paypal");
 
+//this middleware responsible to check that the order details are just the same as in the websit, to capture the payment and to check that the final price is the same as the order final price
 const verifyPayment = async (req, res, next) => {
   const { paypal_order_id } = req.body;
-
   const order = req.order;
 
   try {
-    const accessToken = await getPayPalAccessToken();
+    const accessToken = await getPayPalAccessToken(); //for the requests which will be sent from the server to paypal
+    //getting order details
     const detailsResponse = await fetch(
       `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders/${encodeURIComponent(paypal_order_id)}`,
       {
@@ -17,12 +18,13 @@ const verifyPayment = async (req, res, next) => {
     );
 
     const details = await detailsResponse.json();
+    //request failed 
     if (!detailsResponse.ok)
       return res.status(502).json({
         success: false,
         message: "Couldn't verify PayPal order",
       });
-    const purchaseUnit = details.purchase_units?.[0];
+    const purchaseUnit = details.purchase_units?.[0];//array which includes all the purching units 
     // Verify that the PayPal order matches the local order
     if (
       details.purchase_units?.length !== 1 ||
@@ -44,6 +46,7 @@ const verifyPayment = async (req, res, next) => {
       });
     }
 
+    //processing the payment 
     const response = await fetch(
       `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders/${encodeURIComponent(paypal_order_id)}/capture`,
       {
@@ -62,7 +65,7 @@ const verifyPayment = async (req, res, next) => {
         success: false,
         message: "Couldn't capture PayPal payment",
       });
-    const capture = data.purchase_units?.[0]?.payments?.captures?.[0];
+    const capture = data.purchase_units?.[0]?.payments?.captures?.[0];//if payment successed getting all the payment values 
     if (
       data.status !== "COMPLETED" ||
       capture?.status != "COMPLETED" ||
@@ -134,31 +137,36 @@ const createPayPalOrder = async (req, res) => {
   }
 };
 
+//checking if paypal already completed a payment while the FE didn't get an approvent from it
 const recoverPayPalOrder = async (req, res, next) => {
+  //getting paypal_order_id
   const { paypal_order_id } = req.body;
+  //order info
   const order = req.order;
   try {
-    const accessToken = await getPayPalAccessToken();
+    const accessToken = await getPayPalAccessToken(); //let the server sending requests to the payal server
+    //url paypal
     const response = await fetch(
       `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders/${encodeURIComponent(paypal_order_id)}`,
       {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}`, //let the paypal server response
         },
       },
     );
-    const details = await response.json();
+    const details = await response.json(); //the response
     if (!response.ok)
       return res.status(502).json({
         success: false,
         message: "Couldn't verify PayPal order",
       });
-    const purchaseUnit = details.purchase_units?.[0];
+    const purchaseUnit = details.purchase_units?.[0]; //purching array in paypal
+
     if (
-      details.purchase_units?.length !== 1 ||
-      purchaseUnit?.custom_id !== String(order.order_id) ||
-      purchaseUnit?.amount?.currency_code !== "ILS" ||
-      purchaseUnit?.amount?.value !== Number(order.final_price).toFixed(2)
+      details.purchase_units?.length !== 1 || //checking there if there is at least one purching
+      purchaseUnit?.custom_id !== String(order.order_id) || //checking if the order_id fits
+      purchaseUnit?.amount?.currency_code !== "ILS" || //checking if the money is shekel
+      purchaseUnit?.amount?.value !== Number(order.final_price).toFixed(2) //checking if the final price fits to the final price of the order
     ) {
       return res.status(409).json({
         success: false,
@@ -167,6 +175,8 @@ const recoverPayPalOrder = async (req, res, next) => {
         capture_completed: false,
       });
     }
+
+    //contains all the operations of the payment
     const captures = purchaseUnit?.payments?.captures || [];
     const captureCompleted = captures.some(
       (capture) =>

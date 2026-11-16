@@ -74,12 +74,16 @@ function useClientForm(initialClient) {
     }));
   }
 
+  //checks if all the fields have info in them 
   const allFieldsFilled = Object.values(client).every(
     (value) => String(value).trim() !== "",
   );
+  //checks if all the fields are clean from errors
   const allFieldsValid = Object.entries(client).every(
     ([field, value]) => validateField(field, value) === "",
   );
+
+  //check if the whole form is valid 
   const isFormValid = allFieldsFilled && allFieldsValid;
 
   return {

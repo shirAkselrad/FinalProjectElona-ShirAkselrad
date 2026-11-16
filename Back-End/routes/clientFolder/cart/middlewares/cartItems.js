@@ -48,6 +48,7 @@ const addOrUpdateCartItem = (req, res, next) => {
 
 //this middleware gets all the items of req.cartOrderId
 const getCartItems = (req, res, next) => {
+  //if there is no cart for the client 
   if (req.cartOrderId === null) {
     req.cartItems = [];
     return next();
@@ -70,7 +71,7 @@ const getCartItems = (req, res, next) => {
       });
     }
 
-    req.cartItems = results;
+    req.cartItems = results;//all the cart items
     next();
   });
 };

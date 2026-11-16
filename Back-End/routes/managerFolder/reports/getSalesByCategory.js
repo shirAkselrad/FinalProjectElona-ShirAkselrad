@@ -14,7 +14,7 @@ const getPaidOrders = (req, res, next) => {
         message: "Couldn't get paid orders",
       });
 
-    req.orders = results;
+    req.orders = results; //all the orders which have been paid/shipped/completed at the last 12 months
     next();
   });
 };
@@ -25,9 +25,9 @@ const getOrderItems = (req, res, next) => {
     req.orderItems = [];
     return next();
   }
-
+  //only orders ids
   const orderIds = req.orders.map((order) => order.order_id);
-
+  //all the active items that have been sold by orders
   const query = `select product_id, total_price from order_items where order_id in (?) and status='Active'`;
 
   db.query(query, [orderIds], (err, results) => {
@@ -37,7 +37,7 @@ const getOrderItems = (req, res, next) => {
         message: "Couldn't get order items",
       });
 
-    req.orderItems = results;
+    req.orderItems = results; //product_id, total_price
     next();
   });
 };
@@ -53,7 +53,7 @@ const getProductCategories = (req, res, next) => {
         message: "Couldn't get product categories",
       });
 
-    req.products = results;
+    req.products = results; //product_id, category, type
     next();
   });
 };
@@ -63,12 +63,12 @@ const calculateSalesByCategories = (req, res) => {
   const sales = [];
 
   req.orderItems.forEach((item) => {
-    //find the product
+    //find the ordered product in the inventory
     const product = req.products.find((p) => p.product_id === item.product_id);
 
     if (!product) return;
 
-    //find the category
+    //find the category of the product
     let category = sales.find((c) => c.category === product.category);
 
     if (!category) {
@@ -80,7 +80,7 @@ const calculateSalesByCategories = (req, res) => {
       sales.push(category);
     }
 
-    //add sales to category
+    //add price sales to category.sale (total sales price)
     category.sales += Number(item.total_price);
 
     //find the category type
@@ -106,10 +106,10 @@ const calculateSalesByCategories = (req, res) => {
 
 router.get(
   "/salesByCategory",
-  getPaidOrders,
-  getOrderItems,
-  getProductCategories,
-  calculateSalesByCategories,
+  getPaidOrders, //get paid orders from last 12 months
+  getOrderItems, //get order items
+  getProductCategories, //get product categories and types
+  calculateSalesByCategories, //for each category and category type calculating the total sales price
 );
 
 module.exports = router;

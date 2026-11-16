@@ -4,6 +4,7 @@ export const validateShippingSettings = (settings) => {
   const minDays = Number(settings.min_delivery_days);
   const maxDays = Number(settings.max_delivery_days);
 
+  //invalid shipping_price value
   if (
     settings.shipping_price === "" ||
     !Number.isFinite(price) ||
@@ -12,6 +13,7 @@ export const validateShippingSettings = (settings) => {
   )
     errors.shipping_price = "Enter a valid shipping price";
 
+  //invalid min_delivery days value
   if (
     settings.min_delivery_days === "" ||
     !Number.isInteger(minDays) ||
@@ -19,6 +21,7 @@ export const validateShippingSettings = (settings) => {
   )
     errors.min_delivery_days = "Enter valid minimum delivery days";
 
+  //invalid max_delivery days value
   if (
     settings.max_delivery_days === "" ||
     !Number.isInteger(maxDays) ||
@@ -26,6 +29,7 @@ export const validateShippingSettings = (settings) => {
   )
     errors.max_delivery_days = "Enter valid maximum delivery days";
 
+  //checking validation between the min_delivery_days to yhe max_delivery_days
   if (
     !errors.min_delivery_days &&
     !errors.max_delivery_days &&

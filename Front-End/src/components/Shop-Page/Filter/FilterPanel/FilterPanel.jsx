@@ -7,9 +7,12 @@ import PriceRangeSlider from "../PriceRangeSlider/PriceRangeSlider.jsx";
 import { colors } from "../../../../data/colors";
 
 function FilterPanel({ filters, setFilters, filterOptions, onClose }) {
+  //all the existing active product colors 
   const availableColors = colors.filter((color) =>
     filterOptions.colors.includes(color.name),
   );
+
+  //chosing the wanted colors and updating the filters 
   const handleColorChange = (color) => {
     setFilters((prev) => ({
       ...prev,
@@ -19,6 +22,7 @@ function FilterPanel({ filters, setFilters, filterOptions, onClose }) {
     }));
   };
 
+  //clearing all filters, returning to the default values 
   const clearFilters = () => {
     setFilters((prev) => ({
       ...prev,

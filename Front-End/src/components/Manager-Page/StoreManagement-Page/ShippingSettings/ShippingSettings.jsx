@@ -6,14 +6,17 @@ import { validateShippingSettings } from "./shippingSettings.js";
 import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 function ShippingSettings() {
   const [popup, setPopup] = useState(null);
+  //all the shipping settings- starts empty 
   const [settings, setSettings] = useState({
     shipping_price: "",
     min_delivery_days: "",
     max_delivery_days: "",
   });
+  //orginal settings which are given from the BE 
   const [originalSettings, setOriginalSettings] = useState(null);
 
   useEffect(() => {
+    //getting all shipping settings 
     const getShippingSettings = async () => {
       try {
         const response = await fetch("/api/manager/shippingSettings", {
@@ -24,7 +27,7 @@ function ShippingSettings() {
           throw new Error(`HTTP error! status: ${response.status}`);
 
         const data = await response.json();
-
+        //setting in the original shipping settings state variable 
         if (data.success && data.settings) {
           setSettings(data.settings);
           setOriginalSettings({ ...data.settings });
@@ -40,6 +43,8 @@ function ShippingSettings() {
     getShippingSettings();
   }, []);
 
+
+  //in case one of the fields gets change 
   const handleChange = (field, value) => {
     setSettings((prev) => ({
       ...prev,
@@ -47,6 +52,8 @@ function ShippingSettings() {
     }));
   };
 
+
+  //saving the new updated shipping settings 
   const handleSave = async () => {
     if (!isFormValid || !hasChanges) return;
     try {
@@ -60,6 +67,7 @@ function ShippingSettings() {
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      //now the original settings are the new updated settings 
       if (data.success) {
         setOriginalSettings({ ...settings });
         setPopup({
@@ -76,6 +84,7 @@ function ShippingSettings() {
     }
   };
 
+  //no errors 
   const validationErrors =
     originalSettings !== null ? validateShippingSettings(settings) : {};
   const isFormValid =

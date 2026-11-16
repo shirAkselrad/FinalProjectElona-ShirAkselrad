@@ -11,6 +11,7 @@ function CartTotal({ total, disabled, onClose }) {
   });
   const navigate = useNavigate();
 
+  //calculating again in BE the final price after all the changes and moving to the order summary page
   async function handleCheckout() {
     try {
       const response = await fetch("/api/cart/startCheckout", {

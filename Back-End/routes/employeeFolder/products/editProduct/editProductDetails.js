@@ -2,6 +2,8 @@ const dbSingleton = require("../../../../dbSingleton");
 const db = dbSingleton.getConnection();
 const { editError } = require("./editTransaction");
 
+
+//updating product status if required 
 const updateProductStatus = (req, res, next) => {
   const { product_id } = req.params;
   const { quantity, restock_required } = req.body.product;
@@ -13,6 +15,8 @@ const updateProductStatus = (req, res, next) => {
   });
 };
 
+
+//updating products details according to what have been given in FE 
 const updateProductDetails = (req, res, next) => {
   const { product_id } = req.params;
   const product = req.body.product;

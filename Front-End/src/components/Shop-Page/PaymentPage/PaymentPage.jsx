@@ -12,10 +12,11 @@ const paypalOptions = {
 
 function PaymentPage() {
   const navigate = useNavigate();
-  const { getCartAmount } = useCart();
+  const { getCartAmount } = useCart(); //(cart items- including the front imgs, total items count and total price of all the items in the cart)
 
   const [paymentError, setPaymentError] = useState("");
 
+  //after successfull payment, updating: inventory, user points and order status
   const recoveryPayment = async (paypalOrderId) => {
     const response = await fetch("/api/payment/recoverOrder", {
       method: "POST",
@@ -81,10 +82,9 @@ function PaymentPage() {
                 }
               }}
               onApprove={async (data) => {
-                console.log("PayPal approved order:", data.orderID);
-
-                // The buyer approved the payment, but capture is not confirmed yet
                 setPaymentError("");
+
+                let result;
 
                 try {
                   const response = await fetch("/api/payment/captureOrder", {
@@ -98,54 +98,42 @@ function PaymentPage() {
                     }),
                   });
 
-                  const result = await response.json();
+                  result = await response.json();
 
-                  console.log("Capture response:", result);
-
-                  if (!response.ok || !result.success) {
+                  if (!response.ok || !result.success)
                     throw new Error(
                       result.message || "Payment confirmation failed",
                     );
-                  }
-
-                  console.log("Payment completed successfully:", result);
-
-                  // Navigate immediately after the server confirms payment
-                  navigate("/paymentSuccess", {
-                    replace: true,
-                    state: {
-                      order_id: result.order_id,
-                    },
-                  });
-
-                  // Refresh the cart without delaying navigation
-                  Promise.resolve()
-                    .then(() => getCartAmount())
-                    .catch((error) => {
-                      console.error("Couldn't update cart amount:", error);
-                    });
                 } catch (error) {
                   console.error("Payment confirmation error:", error);
 
-                  // A failed response does not necessarily mean
-                  // the PayPal charge failed
-                  setPaymentError(
-                    "We couldn't confirm your payment status. " +
-                      "Please don't try paying again yet.",
-                  );
-                }
-              }}
-              onError={(error) => {
-                console.error("PayPal payment error:", error);
+                  try {
+                    //check if PayPal already completed the payment
+                    result = await recoveryPayment(data.orderID);
+                  } catch (recoveryError) {
+                    console.error("Payment recovery error:", recoveryError);
 
-                setPaymentError(
-                  (currentError) =>
-                    currentError ||
-                    "A PayPal error occurred. Please check your payment status before trying again.",
-                );
-              }}
-              onCancel={(data) => {
-                console.log("PayPal payment cancelled:", data);
+                    setPaymentError(
+                      "We couldn't confirm your payment. " +
+                        "Please check your order status before trying again.",
+                    );
+                    return;
+                  }
+                }
+
+                //payment completed or recovered successfully
+                navigate("/paymentSuccess", {
+                  replace: true,
+                  state: {
+                    order_id: result.order_id,
+                  },
+                });
+
+                try {
+                  await getCartAmount();
+                } catch (error) {
+                  console.error("Couldn't update cart:", error);
+                }
               }}
             />
           </PayPalScriptProvider>

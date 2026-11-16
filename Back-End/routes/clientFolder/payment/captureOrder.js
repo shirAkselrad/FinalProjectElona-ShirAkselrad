@@ -18,6 +18,7 @@ const {
 const { verifyPayment } = require("./middlewares/paypalOperation");
 
 const {
+  getVatPercentage,
   updateOrderStatus,
   updateClientPoints,
   completedPayment,
@@ -44,23 +45,23 @@ const handlePaymentError = (err, req, res, next) => {
 
 router.post(
   "/captureOrder",
-  checkUserLoggedIn,
-  checkPayPalOrderId,
-  getProcessingOrder,
-  getShippingSettings,
-  getPointsSettings,
-  verifyPayment,
-  beginPaymentTransaction,
-  updateOrderStatus,
-  getOrderItems,
-  updateInventory,
-  updateProductsStatus,
-  updateClientPoints,
-  commitPaymentTransaction,
-  sendConfirmationEmail,
-  completedPayment,
-  rollbackPaymentTransaction,
-  handlePaymentError,
+  checkUserLoggedIn, //checking if the user is logged in
+  checkPayPalOrderId, //checking if the payPal order id is valid
+  getProcessingOrder, //getting the processing order of the client
+  getShippingSettings, //getting the shipping settings
+  getPointsSettings, //getting the points settings
+  verifyPayment, //this middleware responsible to check that the order details are just the same as in the websit, to capture the payment and to check that the final price is the same as the order final price
+  beginPaymentTransaction, //starting the transaction
+  getVatPercentage, //getting the vat
+  updateOrderStatus, //changing the order status to be 'PAID'
+  getOrderItems, //getting all the order items
+  updateInventory, //updating the inventory after a successfull payment
+  updateProductsStatus, //updating a product status if needed (for products which shouldn't be restock)
+  updateClientPoints, //updating the clients points
+  commitPaymentTransaction, //ending the transaction
+  sendConfirmationEmail, //sending a successfull payment email
+  completedPayment, //returning that payment was compeleted with the order id
+  rollbackPaymentTransaction, //if there is an error doing a roll back
+  handlePaymentError, //sending message about the error
 );
-
 module.exports = router;

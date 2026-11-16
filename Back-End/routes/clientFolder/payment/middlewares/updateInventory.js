@@ -1,4 +1,4 @@
-//get all the paid cart items (product_id and quantity)
+//get all the cart items (product_id and quantity)
 const getOrderItems = (req, res, next) => {
   const query = "select product_id, quantity from order_items where order_id=?";
   req.paymentDb.query(query, [req.orderId], (err, results) => {
@@ -9,6 +9,7 @@ const getOrderItems = (req, res, next) => {
   });
 };
 
+//after a successfull payment, if the products are no longer in stock and restock is not required then the status changes to "Not Active"
 const updateProductsStatus = (req, res, next) => {
   const query = `update inventory set status='Not Active' where restock_required=0 and quantity=0 and product_id in(select product_id from order_items where order_id=?)`;
   req.paymentDb.query(query, [req.orderId], (err) => {

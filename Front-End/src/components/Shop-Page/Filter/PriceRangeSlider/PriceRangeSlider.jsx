@@ -2,17 +2,20 @@ import { useState, useEffect } from "react";
 import styles from "./priceRangeSlider.module.css";
 
 function PriceRangeSlider({ min, max, minPrice, maxPrice, onChange }) {
-  const minLimit = Math.floor(Number(min));
-  const maxLimit = Math.ceil(Number(max));
+  const minLimit = Math.floor(Number(min)); //min price (including sales)
+  const maxLimit = Math.ceil(Number(max)); //ma price (including sales)
+
+  //the range is between the min to max existing price (including sales)
   const [range, setRange] = useState({
     min: minPrice === "" ? minLimit : Number(minPrice),
     max: maxPrice === "" ? maxLimit : Number(maxPrice),
   });
 
   useEffect(() => {
+    //choosing the new min and the new max 
     const selectedMin = minPrice === "" ? minLimit : Number(minPrice);
     const selectedMax = maxPrice === "" ? maxLimit : Number(maxPrice);
-
+    //setting the range (taking care that min and max stays valid )
     setRange({
       min: Math.min(selectedMin, selectedMax - 1),
       max: selectedMax,

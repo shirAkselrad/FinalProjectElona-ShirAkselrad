@@ -4,12 +4,15 @@ async function generatePDF(html) {
   const browser = await puppeteer.launch();
 
   try {
+    //opening the browser 
     const page = await browser.newPage();
-
+    //setting the html content to the page 
     await page.setContent(html);
 
+    //waiting for all the info to be ready 
     await page.evaluate(() => document.fonts.ready);
 
+    //creating the pdf 
     const pdf = await page.pdf({
       format: "A4",
       landscape: true,
@@ -32,7 +35,7 @@ async function generatePDF(html) {
           <span class="totalPages"></span>
         </div>
       `,
-
+      
       margin: {
         top: "15mm",
         bottom: "20mm",

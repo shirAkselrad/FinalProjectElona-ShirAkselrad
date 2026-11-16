@@ -12,11 +12,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 function Header() {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuth(); //gettings all the user session info from useAuth
   const location = useLocation();
   const navigate = useNavigate();
   const isShopPage = location.pathname === "/";
 
+  //letting the manager/employee to go back to their interface after being in the shop page
   const showBackToSystem =
     isShopPage && (user?.role === "Manager" || user?.role === "Employee");
 
@@ -25,6 +26,7 @@ function Header() {
     else if (user?.role === "Employee") navigate("/employeePage");
   }
 
+  //in case the user is not logged in then going tob the login page
   function openMyAccount() {
     if (!user) {
       navigate("/loginPage");
@@ -32,6 +34,7 @@ function Header() {
     }
     navigate("/myAccount");
   }
+
   return (
     <div>
       <header className={styles.header}>

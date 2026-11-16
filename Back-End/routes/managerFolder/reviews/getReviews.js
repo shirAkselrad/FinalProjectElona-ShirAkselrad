@@ -15,7 +15,7 @@ const getReviews = (req, res, next) => {
       });
     }
 
-    req.reviews = results;
+    req.reviews = results; //saving review info (review_id, order_id, rating,comment, created_at)
     next();
   });
 };
@@ -23,7 +23,9 @@ const getReviews = (req, res, next) => {
 //this middleware gets all the clients emails
 const getReviewEmails = (req, res, next) => {
   if (req.reviews.length === 0) return next();
+  //getting all the orders ids from the reviews
   const orderIds = req.reviews.map((review) => review.order_id);
+  //getting user email fitted with order_id
   const query =
     "select order_id, client_email from orders where order_id in (?)";
   db.query(query, [orderIds], (err, results) => {
@@ -35,6 +37,7 @@ const getReviewEmails = (req, res, next) => {
       });
     }
 
+    //fits each review to an email
     req.reviews = req.reviews.map((review) => {
       const order = results.find((order) => order.order_id === review.order_id);
       return {
@@ -48,11 +51,12 @@ const getReviewEmails = (req, res, next) => {
 
 //this middleware gets all the clients names
 const getReviewClients = (req, res, next) => {
+  //getting all the emails from the reviews
   const emails = req.reviews
     .map((review) => review.client_email)
     .filter(Boolean);
   if (emails.length === 0) return next();
-
+  //getting the first and the last name according to the emails
   const query =
     "select email, first_name, last_name from users where email in (?)";
   db.query(query, [emails], (err, results) => {
@@ -64,6 +68,7 @@ const getReviewClients = (req, res, next) => {
       });
     }
 
+    //fits each email to each first and last name of the client
     req.reviews = req.reviews.map((review) => {
       const client = results.find(
         (client) => client.email === review.client_email,
@@ -81,13 +86,13 @@ const getReviewClients = (req, res, next) => {
 //get all customer reviews
 router.get(
   "/reviews",
-  getReviews,
-  getReviewEmails,
-  getReviewClients,
+  getReviews, //gets the reviews
+  getReviewEmails, //gets the emails
+  getReviewClients, //gets the first and the last name of the client
   (req, res) => {
     return res.status(200).json({
       success: true,
-      reviews: req.reviews,
+      reviews: req.reviews, //returns the review, email, first_name, last_name of the client
     });
   },
 );

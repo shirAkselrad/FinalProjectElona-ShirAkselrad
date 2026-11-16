@@ -14,7 +14,7 @@ import { validateLoginField, checkLoginValidation } from "./loginValidation.js";
 function LoginForm() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login } = useAuth(); //setting user info into session in BE after login
 
   const [user, setUser] = useState({
     userName: "",
@@ -27,7 +27,9 @@ function LoginForm() {
   });
 
   const [lockUntil, setLockUntil] = useState(null);
+  //while the form is sent to back end
   const [isSubmitting, setIsSubmitting] = useState(false);
+  //the user which is being login
   const [authenticatedUser, setAuthenticatedUser] = useState(null);
   const [displayMessagePopup, setDisplayMessagePopup] = useState({
     show: false,
@@ -35,9 +37,12 @@ function LoginForm() {
     type: "",
   });
 
+  //checking the both username and passwords are not empty
   const isFormValid = checkLoginValidation(user);
+  //check if the user is blocked from trying to login (10 mins)
   const isLocked = lockUntil !== null && Date.now() < lockUntil;
 
+  //checking username and password, if success then creating a new session
   async function loginUser(userData) {
     try {
       const response = await fetch("/api/login", {
@@ -59,6 +64,8 @@ function LoginForm() {
     }
   }
 
+
+
   //removes temporary login lock when it expires
   useEffect(() => {
     if (!lockUntil) return;
@@ -68,6 +75,8 @@ function LoginForm() {
     return () => clearInterval(interval);
   }, [lockUntil]);
 
+
+  
   //updates input values
   function handleChange(field, value) {
     setUser((prev) => ({

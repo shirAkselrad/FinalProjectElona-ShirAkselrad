@@ -7,15 +7,16 @@ import { validatePointsSettings } from "./pointsSettings";
 
 function PointsSettings() {
   const [settings, setSettings] = useState({
-    min_order_price: 0,
-    earning_percentage: 0,
-    max_redemption_percentage: 0,
+    min_order_price: 0, //the min order price which needs to be paid for using the points
+    earning_percentage: 0, //the amount of percentage the user can earn points
+    max_redemption_percentage: 0, //the the percentage price the user can use the point
   });
   const [errors, setErrors] = useState({});
   const [popup, setPopup] = useState(null);
-  const [originalSettings, setOriginalSettings] = useState(null);
+  const [originalSettings, setOriginalSettings] = useState(null); //before changing
 
   useEffect(() => {
+    //getting the points settings
     const getPointsSettings = async () => {
       try {
         const response = await fetch("/api/manager/pointsSettings", {
@@ -25,6 +26,7 @@ function PointsSettings() {
           throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         console.log("Points settings response:", data);
+        //getting the original settings
         if (data.success && data.settings) {
           setSettings(data.settings);
           setOriginalSettings(data.settings);
@@ -40,16 +42,20 @@ function PointsSettings() {
     getPointsSettings();
   }, []);
 
+  //saving the updated settings
   const handleChange = (field, value) => {
     const updatedSettings = {
       ...settings,
       [field]: value,
     };
     setSettings(updatedSettings);
+    //in case there are errors
     setErrors(validatePointsSettings(updatedSettings));
   };
 
+  //saving the new updated points settings errors
   const handleSave = async () => {
+    //in case there is any error
     const validationErrors = validatePointsSettings(settings);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -57,6 +63,7 @@ function PointsSettings() {
     }
     setErrors({});
     try {
+      //updating a new points settings
       const response = await fetch("/api/manager/updatePointsSettings", {
         method: "PUT",
         headers: {
@@ -69,6 +76,7 @@ function PointsSettings() {
         throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       if (data.success) {
+        //changing the original settings to be the new ones
         setOriginalSettings({ ...settings });
         setPopup({
           type: "success",
@@ -84,8 +92,10 @@ function PointsSettings() {
     }
   };
 
+  //checkin if the form is valid 
   const isValid = Object.keys(validatePointsSettings(settings)).length === 0;
 
+  //if there is no change in the original points settings the saving button stays disabled 
   const hasChanges =
     originalSettings !== null &&
     (Number(settings.min_order_price) !==

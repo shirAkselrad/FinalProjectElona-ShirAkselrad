@@ -3,6 +3,7 @@ const router = express.Router();
 const dbSingleton = require("../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
+//getting categories
 const getCategories = (req, res, next) => {
   const query =
     "select category_id, name, status from categories where status='Active' and name in(select category from inventory where status='Active')";
@@ -19,6 +20,7 @@ const getCategories = (req, res, next) => {
   });
 };
 
+//getting category types
 const getCategoryTypes = (req, res, next) => {
   const query =
     "select type_id, category_id, name, status from category_types where status='Active' and name in(select type from inventory where status='Active')";
@@ -37,6 +39,7 @@ const getCategoryTypes = (req, res, next) => {
 
 //this middleware send to FE all the products categories
 router.get("/getCategories", getCategories, getCategoryTypes, (req, res) => {
+  //fitting each type category to the main category
   const categories = req.categories.map((category) => ({
     ...category,
     types: req.categoryTypes.filter(

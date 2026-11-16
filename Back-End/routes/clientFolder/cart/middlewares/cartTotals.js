@@ -17,7 +17,7 @@ const calculateCartTotals = (req, res, next) => {
         message: "Couldn't calculate cart totals",
       });
     }
-    req.cartTotals = results[0];
+    req.cartTotals = results[0]; //returns the total items count and the total price of all cart items
     next();
   });
 };

@@ -6,23 +6,38 @@ import { useOutletContext } from "react-router-dom";
 import ManagementFilters from "../../../General/ManagmentFilters/ManagementFilters.jsx";
 import ManagementLegend from "../../../General/ManagementLegend/ManagementLegend.jsx";
 import GeneralBtn from "../../../General/GeneralBtn/GeneralBtn.jsx";
+import MessagePopup from "../../../General/MessagePopup/MessagePopup.jsx";
 import { useState, useEffect } from "react";
+import {
+  getClientCounts,
+  getActiveFilterCount,
+  getStatusLegendItems,
+  getRoleLegendItems,
+} from "./clients.js";
 
 function Clients({ isManager = false }) {
   const { clients, setClients, users, setUsers } = useOutletContext();
 
+  //according to the user role (manager/employee)
   const displayedClients = isManager ? users : clients;
   const updateDisplayedClients = isManager ? setUsers : setClients;
 
+  //for filters ans search
   const [cities, setCities] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("All Statuses");
   const [selectedCity, setSelectedCity] = useState("All Cities");
   const [searchValue, setSearchValue] = useState("");
   const [filteredClients, setFilteredClients] = useState(null);
-  const [refresh, setRefresh] = useState(0);
+  const [refresh, setRefresh] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
-  //The function gets all the cities names with no repeats
+  const [messagePopup, setMessagePopup] = useState({
+    show: false,
+    message: "",
+    type: "",
+  });
+
+  //The function gets all the cities names with no repeats (for the filter)
   async function getCitiesNoRepeat() {
     try {
       const url = isManager
@@ -38,6 +53,11 @@ function Clients({ isManager = false }) {
       if (data.success) setCities(data.cities);
     } catch (error) {
       console.error("Error getting cities: ", error);
+      setMessagePopup({
+        show: true,
+        message: "Failed to load cities. Please try again.",
+        type: "error",
+      });
     }
   }
 
@@ -58,6 +78,13 @@ function Clients({ isManager = false }) {
         setFilteredClients(isManager ? data.users : data.clients);
     } catch (error) {
       console.error("Error filtering clients:", error);
+      setMessagePopup({
+        show: true,
+        message: isManager
+          ? "Failed to load users. Please try again."
+          : "Failed to load clients. Please try again.",
+        type: "error",
+      });
     }
   }
 
@@ -81,7 +108,7 @@ function Clients({ isManager = false }) {
           : client,
       ),
     );
-    setRefresh((prev) => prev + 1);
+    setRefresh((prev) => !prev);
   }
 
   const results = filteredClients ?? displayedClients;
@@ -103,57 +130,32 @@ function Clients({ isManager = false }) {
     },
   ];
 
-  const activeFilterCount = filters.filter(
-    (filter) => filter.selected !== filter.defaultValue,
-  ).length;
-  const totalCount = results.length;
-  const activeCount = results.filter(
-    (client) => client.status?.toLowerCase() === "active",
-  ).length;
-  const notActiveCount = results.filter(
-    (client) => client.status?.toLowerCase() === "not active",
-  ).length;
+  // Calculate active filters
+  const activeFilterCount = getActiveFilterCount(filters);
 
-  const managerCount = results.filter(
-    (user) => user.role?.toLowerCase() === "manager",
-  ).length;
-  const employeeCount = results.filter(
-    (user) => user.role?.toLowerCase() === "employee",
-  ).length;
-  const clientCount = results.filter(
-    (user) => user.role?.toLowerCase() === "client",
-  ).length;
+  // Calculate user counts
+  const {
+    totalCount,
+    activeCount,
+    notActiveCount,
+    managerCount,
+    employeeCount,
+    clientCount,
+  } = getClientCounts(results);
 
-  const statusLegendItems = [
-    {
-      label: "Active",
-      count: activeCount,
-      className: styles.active,
-    },
-    {
-      label: "Not Active",
-      count: notActiveCount,
-      className: styles.notActive,
-    },
-  ];
+  // Prepare legend data
+  const statusLegendItems = getStatusLegendItems(
+    activeCount,
+    notActiveCount,
+    styles,
+  );
 
-  const roleLegendItems = [
-    {
-      label: "Managers",
-      count: managerCount,
-      className: styles.managers,
-    },
-    {
-      label: "Employees",
-      count: employeeCount,
-      className: styles.employees,
-    },
-    {
-      label: "Clients",
-      count: clientCount,
-      className: styles.clientsRole,
-    },
-  ];
+  const roleLegendItems = getRoleLegendItems(
+    managerCount,
+    employeeCount,
+    clientCount,
+    styles,
+  );
 
   return (
     <div className={styles.clients}>
@@ -222,6 +224,19 @@ function Clients({ isManager = false }) {
           <h3>NO MATCHING {isManager ? "USERS" : "CLIENTS"}</h3>
           <p>Try adjusting your search or filters.</p>
         </div>
+      )}
+      {messagePopup.show && (
+        <MessagePopup
+          message={messagePopup.message}
+          type={messagePopup.type}
+          onClose={() =>
+            setMessagePopup({
+              show: false,
+              message: "",
+              type: "",
+            })
+          }
+        />
       )}
     </div>
   );
