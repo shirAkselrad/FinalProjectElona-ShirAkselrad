@@ -51,6 +51,7 @@ const commitEdit = (req, res) => {
     res.status(200).json({
       success: true,
       message: "Order changes submitted for manager approval",
+      status: req.updatedOrderStatus,
     });
   });
 };

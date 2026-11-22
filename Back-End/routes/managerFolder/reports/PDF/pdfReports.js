@@ -3,14 +3,6 @@ const router = express.Router();
 const getReportData = require("./getReportData");
 const createReportHTML = require("./createReportHTML");
 const generatePDF = require("./generatePDF");
-const {
-  getProducts,
-  getCategories,
-  getCategoryTargets,
-  getOrderItems,
-  getOrders,
-  calculatePerformance,
-} = require("./getSalesPerformance");
 
 //report settings
 const reportSettings = {
@@ -61,74 +53,29 @@ const reportSettings = {
       { key: "created_at", label: "Created At" },
     ],
   },
-  performance: {
-    title: "Sales Performance Report",
-    columns: [
-      { key: "product_id", label: "Product ID" },
-      { key: "name", label: "Product Name" },
-      { key: "category", label: "Category" },
-      { key: "type", label: "Type" },
-      { key: "min_sales", label: "Target" },
-      { key: "sales_check_days", label: "Days" },
-      { key: "check_date", label: "Check Date" },
-      { key: "units_sold", label: "Sold" },
-      { key: "difference", label: "Difference" },
-      { key: "achievement", label: "Achievement" },
-      { key: "performance", label: "Performance" },
-    ],
-  },
 };
 
 //check valid date format
 function isValidDate(value) {
   if (typeof value !== "string") return false;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
   const date = new Date(`${value}T00:00:00Z`);
+
   return (
     !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value
   );
 }
 
-router.get(
-  "/reports/performance",
-  getProducts,
-  getCategories,
-  getCategoryTargets,
-  getOrderItems,
-  getOrders,
-  calculatePerformance,
-  async (req, res) => {
-    try {
-      const settings = reportSettings.performance;
-      const html = createReportHTML(
-        settings.title,
-        settings.columns,
-        res.locals.performanceData,
-      );
-      const pdf = await generatePDF(html);
-      res.setHeader("Content-Type", "application/pdf");
-      res.setHeader(
-        "Content-Disposition",
-        'attachment; filename="performance-report.pdf"',
-      );
-      return res.send(pdf);
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to generate performance report",
-      });
-    }
-  },
-);
-
 //generate report
 router.get("/reports/:type", async (req, res) => {
   const { type } = req.params;
-  const { from, to } = req.query;//only if the report request it 
+  const { from, to } = req.query;
 
-  const settings = reportSettings[type];//finding the settings of the requested report according to its type 
-  //doesn't take care of the performance report 
-  if (!settings||type==="performance")
+  //finding the settings according to the requested report type
+  const settings = reportSettings[type];
+
+  if (!settings)
     return res.status(400).json({
       success: false,
       message: "Invalid report type",
@@ -142,12 +89,12 @@ router.get("/reports/:type", async (req, res) => {
         message: "Invalid date range",
       });
   }
+
   try {
-    //getting the rows according the report type 
+    //getting the rows according to the report type
     const rows = await getReportData(type, from, to);
 
-
-    //crreating the HTML 
+    //creating the HTML
     const html = createReportHTML(
       settings.title,
       settings.columns,
@@ -156,7 +103,7 @@ router.get("/reports/:type", async (req, res) => {
       type === "users" ? null : to,
     );
 
-    //generating the pdf with the html info 
+    //generating the PDF
     const pdf = await generatePDF(html);
 
     res.setHeader("Content-Type", "application/pdf");
@@ -175,6 +122,5 @@ router.get("/reports/:type", async (req, res) => {
     });
   }
 });
-
 
 module.exports = router;

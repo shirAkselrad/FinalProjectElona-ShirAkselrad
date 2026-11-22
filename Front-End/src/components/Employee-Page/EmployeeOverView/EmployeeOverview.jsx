@@ -28,14 +28,41 @@ function EmployeeOverview() {
   };
 
   //updating orders in case one of the orders details had changed
-  const onSaveOrder = (editedOrder) => {
-    setOrders((prev) =>
-      prev.map((order) =>
-        order.order_id === editedOrder.order_id
-          ? { ...order, ...editedOrder }
-          : order,
-      ),
-    );
+  const onSaveOrder = async (editedOrder) => {
+    try {
+      const response = await fetch(
+        `/api/employee/orders/${editedOrder.order_id}/edit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            products: editedOrder.products,
+          }),
+        },
+      );
+      const data = await response.json();
+      if (!response.ok || !data.success)
+        throw new Error(data.message || "Couldn't edit order");
+      if (data.status !== "PAID" && data.status !== "CANCELED") {
+        console.error("Invalid status from server: ", data);
+        setSelectedOrder(null);
+        return;
+      }
+
+      setOrders((prev) =>
+        prev.map((order) =>
+          Number(order.order_id) === Number(editedOrder.order_id)
+            ? { ...order, status: data.status }
+            : order,
+        ),
+      );
+
+      setSelectedOrder(null);
+    } catch (error) {
+      console.error("Error saving order: ", error);
+    }
   };
 
   return (

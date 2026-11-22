@@ -33,6 +33,18 @@ const deactivateExpiredPromotion = (req, res, next) => {
   });
 };
 
-router.get("/getGeneralPromotions", deactivateExpiredPromotion, getPromotions);
+//this middleware activates a scheduled promotion
+const activateScheduledPromotion = (req, res, next) => {
+  const query = `update promotions_settings set status='Active' where status='Not Active' and start_date<=now() and end_date>now() and not exists(select 1 from (select promotion_id from promotions_settings where status='Active') as active_promotions) order by start_date, promotion_id limit 1`;
+  db.query(query, (err) => {
+    if (err)
+      return res.status(500).json({
+        success: false,
+        message: "Couldn't activate scheduled promotion",
+      });
+      next(); 
+  });
+};
+router.get("/getGeneralPromotions", deactivateExpiredPromotion,activateScheduledPromotion, getPromotions);
 
 module.exports = router;

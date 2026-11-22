@@ -15,10 +15,14 @@
   background-color: #fbf8f5;
 }
 
-.role {
-  display: inline-block;
-  padding: 6px 12px;
+/* Role */
 
+.role {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 6px 12px;
   border: 1px solid;
   border-radius: 0;
 
@@ -38,25 +42,28 @@
   flex-shrink: 0;
 }
 
-
 .manager {
+  --role-color: #755c87;
   color: #755c87;
   background-color: #ede7f3;
   border-color: #cdbedb;
 }
 
-
 .employee {
+  --role-color: #58728f;
   color: #58728f;
   background-color: #e8edf4;
   border-color: #bccddd;
 }
 
 .client {
+  --role-color: #95694f;
   color: #95694f;
   background-color: #f5eae2;
   border-color: #dec6b5;
 }
+
+/* Actions */
 
 .actions {
   display: flex;
@@ -73,6 +80,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 
   padding: 0;
   font-size: 22px;
@@ -87,7 +95,10 @@
   width: 90px;
   height: 32px;
   padding: 0;
+  flex-shrink: 0;
 }
+
+/* Removed row */
 
 .removedRow {
   opacity: 0.45;
@@ -96,4 +107,93 @@
 .removedRow td:not(:last-child) {
   text-decoration: line-through;
   text-decoration-thickness: 1px;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .row {
+    font-size: 13px;
+  }
+
+  .row td {
+    padding: 8px 12px;
+  }
+
+  .role {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .actions {
+    gap: 10px;
+    min-width: 132px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .row {
+    height: 44px;
+    font-size: 12px;
+  }
+
+  .row td {
+    padding: 8px 10px;
+  }
+
+  .role {
+    font-size: 10px;
+    padding: 5px 8px;
+    gap: 6px;
+  }
+
+  .role::before {
+    width: 8px;
+    height: 8px;
+  }
+
+  .actions {
+    gap: 8px;
+    min-width: 112px;
+  }
+
+  .editBtn {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+
+  .editBtn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .actions button:last-child {
+    width: 76px;
+    height: 28px;
+  }
+}
+
+/* Small mobile */
+
+@media (max-width: 400px) {
+  .row td {
+    padding: 7px 8px;
+  }
+
+  .role {
+    font-size: 9px;
+    padding: 5px 7px;
+  }
+
+  .actions {
+    gap: 6px;
+    min-width: 106px;
+  }
+
+  .actions button:last-child {
+    width: 72px;
+  }
 }

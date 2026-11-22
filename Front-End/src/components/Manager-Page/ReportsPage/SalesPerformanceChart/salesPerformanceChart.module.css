@@ -1,0 +1,92 @@
+.performanceChart {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 24px;
+  background-color: #fbf8f5;
+  border: 1px solid #e8d7d2;
+}
+
+.chartHeader {
+  margin-bottom: 24px;
+}
+
+.chartTitle {
+  margin: 0 0 8px;
+  color: #4b1426;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.chartSubtitle {
+  margin: 0;
+  color: #987b76;
+  font-size: 12px;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.selectionGroup,
+.rangeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.selectionGroup label,
+.rangeGroup label {
+  color: #4b1426;
+  font-size: 12px;
+}
+
+.filterFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px 0;
+  border-top: 1px solid #e8d7d2;
+}
+
+.resetBtn {
+  padding: 10px 16px;
+  background-color: transparent;
+  border: 1px solid #4b1426;
+  color: #4b1426;
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.resetBtn:hover {
+  background-color: #4b1426;
+  color: white;
+}
+
+/* Important for Recharts */
+.chartContainer {
+  width: 100%;
+  min-width: 0;
+  height: 380px;
+}
+
+.noResults {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #987b76;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+}

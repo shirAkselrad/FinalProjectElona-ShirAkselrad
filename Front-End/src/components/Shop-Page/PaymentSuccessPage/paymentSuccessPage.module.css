@@ -1,3 +1,4 @@
+
 .container {
   min-height: 80vh;
   width: 100%;
@@ -6,7 +7,7 @@
   justify-content: center;
   align-items: center;
 
-  padding: 40px 20px;
+  padding: 35px 20px;
   box-sizing: border-box;
 
   background-color: #4b1426;
@@ -16,74 +17,18 @@
   background-repeat: no-repeat;
 }
 
-.pointsSection {
-  width: 100%;
-  margin: 25px 0;
-  padding-top: 22px;
-  border-top: 1px solid #e8d7d2;
-}
-
-.pointsSection h2 {
-  margin: 0 0 18px;
-  font-family: "Playfair Display", serif;
-  font-size: 18px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  color: #4b1426;
-  text-align: center;
-}
-
-.pointsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.pointsItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 20px 12px;
-
-  background-color: #fffdfb;
-  border: 1px solid #e8d7d2;
-  border-radius: 8px;
-}
-
-.pointsItem strong {
-  font-family: "Playfair Display", serif;
-  font-size: 28px;
-  font-weight: 500;
-  color: #4b1426;
-}
-
-.pointsItem span {
-  font-family: "Libre Baskerville", serif;
-  font-size: 10px;
-  letter-spacing: 0.6px;
-  color: #987b76;
-  text-align: center;
-}
-
-@media (max-width: 400px) {
-  .pointsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* Success Card */
 .successCard {
   width: 100%;
   max-width: 520px;
-  padding: 55px 40px;
+  padding: 35px 38px;
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 18px;
+  gap: 12px;
 
   background-color: #f6f0e9;
   border: 1px solid #e8d7d2;
@@ -92,26 +37,26 @@
   box-shadow: 0 12px 40px rgba(25, 5, 13, 0.2);
 }
 
+/* Success Icon */
 .successIcon {
   position: relative;
-
-  width: 78px;
-  height: 78px;
+  width: 68px;
+  height: 68px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   flex-shrink: 0;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .successIcon::before {
   content: "";
   position: absolute;
 
-  width: 52px;
-  height: 52px;
+  width: 47px;
+  height: 47px;
 
   border: 1.5px solid #c9a9ad;
   transform: rotate(45deg);
@@ -122,19 +67,18 @@
   z-index: 1;
 
   font-family: Arial, sans-serif;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 500;
-
   color: #6b2939;
 }
 
+/* Main Text */
 .successCard h1 {
   margin: 0;
 
   font-family: "Playfair Display", serif;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 400;
-
   color: #4b1426;
 }
 
@@ -142,9 +86,8 @@
   margin: 0;
 
   font-family: "Libre Baskerville", serif;
-  font-size: 13px;
-  line-height: 1.8;
-
+  font-size: 12px;
+  line-height: 1.7;
   color: #765563;
 }
 
@@ -153,31 +96,224 @@
   font-weight: 600;
 }
 
+/* Loyalty Points Section */
+.pointsSection {
+  width: 100%;
+  margin: 16px 0 0;
+  padding: 18px 0;
+  box-sizing: border-box;
+
+  border-top: 1px solid #d8afa6;
+  border-bottom: 1px solid #d8afa6;
+}
+
+/* Points Heading */
+.pointsHeading {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.pointsHeading h2 {
+  margin: 0 0 5px;
+
+  font-family: "Playfair Display", serif;
+  font-size: 21px;
+  font-weight: 400;
+  color: #4b1426;
+}
+
+.pointsHeading p {
+  margin: 0;
+
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  color: #987b76;
+}
+
+/* Points Details */
+.pointsDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 100%;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #d8afa6;
+}
+
+.pointsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pointsRow span {
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  color: #765563;
+  text-align: left;
+}
+
+.pointsRow strong {
+  font-family: "Playfair Display", serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: #4b1426;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Current Points Balance */
+.pointsTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+
+  padding-top: 17px;
+}
+
+.totalLabel,
+.totalValue {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.totalLabel {
+  text-align: left;
+}
+
+.totalLabel span {
+  font-family: "Libre Baskerville", serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #4b1426;
+}
+
+.totalLabel small,
+.totalValue small {
+  font-family: "Libre Baskerville", serif;
+  font-size: 10px;
+  color: #987b76;
+}
+
+.totalValue {
+  text-align: right;
+  align-items: flex-end;
+}
+
+.totalValue strong {
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+  font-weight: 500;
+  color: #4b1426;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Back to Shop Button */
 .backButton {
-  margin-top: 20px;
+  margin-top: 12px;
   min-width: 190px;
+  min-height: 42px;
+  padding: 12px 20px;
 
   background-color: #4b1426;
   border: 1px solid #4b1426;
-
   color: #f6f0e9;
 
   font-family: "Libre Baskerville", serif;
-  font-size: 12px;
-  letter-spacing: 2px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .backButton:not(:disabled):hover {
   background-color: #6b2939;
   border-color: #6b2939;
+  color: #f6f0e9;
 }
 
+/* Responsive */
 @media (max-width: 600px) {
+  .container {
+    padding: 25px 15px;
+  }
+
   .successCard {
-    padding: 40px 24px;
+    padding: 30px 24px;
+    gap: 12px;
   }
 
   .successCard h1 {
-    font-size: 26px;
+    font-size: 25px;
+  }
+
+  .pointsHeading h2 {
+    font-size: 20px;
+  }
+
+  .pointsHeading p {
+    font-size: 9px;
+  }
+
+  .pointsRow span,
+  .totalLabel span {
+    font-size: 11px;
+  }
+
+  .pointsRow strong {
+    font-size: 16px;
+  }
+
+  .totalLabel small,
+  .totalValue small {
+    font-size: 9px;
+  }
+
+  .totalValue strong {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 400px) {
+  .successCard {
+    padding: 28px 18px;
+  }
+
+  .successCard h1 {
+    font-size: 23px;
+  }
+
+  .pointsSection {
+    padding: 15px 0;
+  }
+
+  .pointsDetails {
+    gap: 11px;
+  }
+
+  .pointsRow span,
+  .totalLabel span {
+    font-size: 10px;
+  }
+
+  .pointsRow strong {
+    font-size: 15px;
+  }
+
+  .totalLabel small {
+    font-size: 8px;
+  }
+
+  .totalValue strong {
+    font-size: 21px;
   }
 }

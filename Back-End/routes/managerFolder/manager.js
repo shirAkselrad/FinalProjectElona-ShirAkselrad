@@ -11,13 +11,9 @@ const reviewsRouter = require("./reviews/reviews");
 const shippingSettingsRoutes = require("./shipping/shipping");
 const pointsSettingsRoutes = require("./points/points");
 const generalPromotionsRoutes = require("./promotions/promotions");
-const salesChartRoutes = require("./reports/getSalesChart");
-const getSalesByCategory = require("./reports/getSalesByCategory");
 const managerOrdersRoutes = require("./orders/orders");
-const bestSellingProductsRoutes = require("./reports/getBestSellingProducts");
-const orderByStatusRoutes = require("./reports/getOrderByStatus");
-const pdfReportsRouter = require("./reports/PDF/pdfReports");
 const vatSettings = require("./vat/vatSettings");
+const reportsRoutes=require("./reports/reports")
 
 //this middleware check if the user is a manager
 const checkIfManager = (req, res, next) => {
@@ -35,7 +31,6 @@ const checkIfManager = (req, res, next) => {
 };
 
 router.use("/", checkIfManager);
-router.use("/", pdfReportsRouter);
 router.use("/", usersRoutes);
 router.use("/", categoriesRoutes);
 router.use("/", ordersRoutes);
@@ -47,10 +42,7 @@ router.use("/", shippingSettingsRoutes);
 router.use("/", pointsSettingsRoutes);
 router.use("/", generalPromotionsRoutes);
 router.use("/", managerOrdersRoutes);
-router.use("/", salesChartRoutes);
-router.use("/", getSalesByCategory);
-router.use("/", bestSellingProductsRoutes);
-router.use("/", orderByStatusRoutes);
+router.use("/", reportsRoutes); 
 router.use("/", vatSettings);
 
 module.exports = router;

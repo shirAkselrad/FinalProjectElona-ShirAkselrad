@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const dbSingleton = require("../../../dbSingleton");
+const dbSingleton = require("../../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
 //get paid orders from last 12 months

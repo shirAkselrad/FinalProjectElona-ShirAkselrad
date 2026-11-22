@@ -1,3 +1,12 @@
+
+.tableWrapper {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -23,6 +32,7 @@
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 .table td {
@@ -39,4 +49,56 @@
 
 .table tbody tr:last-child td {
   border-bottom: none;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .table th {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .table td {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 700px) {
+  .table {
+    min-width: 700px;
+  }
+
+  .table th {
+    height: 42px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .table td {
+    height: 46px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Small Mobile */
+
+@media (max-width: 400px) {
+  .table {
+    min-width: 650px;
+  }
+
+  .table th {
+    padding: 8px;
+    font-size: 10px;
+  }
+
+  .table td {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
 }

@@ -3,7 +3,8 @@
   width: 100%;
   max-width: 320px;
   margin: 0 auto;
-
+  padding: 0 16px;
+  box-sizing: border-box;
   text-align: center;
 }
 
@@ -66,7 +67,6 @@
 
 .caption span {
   display: block;
-
   margin-top: 4px;
 
   font-family: "Libre Baskerville", Georgia, serif;
@@ -90,6 +90,7 @@
 @media (max-width: 768px) {
   .container {
     max-width: 300px;
+    padding: 0 14px;
   }
 
   .imageWrapper {
@@ -99,5 +100,37 @@
 
   .caption {
     font-size: 15px;
+  }
+}
+
+/* Small mobile */
+
+@media (max-width: 480px) {
+  .container {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+
+  .imageWrapper {
+    width: 85%;
+    max-width: 220px;
+    margin: 12px auto 22px;
+  }
+
+  .imageWrapper::before {
+    top: -8px;
+    left: -8px;
+    right: 8px;
+    bottom: 8px;
+  }
+
+  .caption {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .caption span {
+    font-size: 9px;
+    letter-spacing: 1.5px;
   }
 }

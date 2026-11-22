@@ -14,7 +14,6 @@ import { useEffect } from "react";
  * @returns Orders
  */
 function Orders({ isManager = false }) {
-
   const context = useOutletContext();
   const orders = isManager ? context.managerOrders : context.orders;
   const setOrders = isManager ? context.setManagerOrders : context.setOrders;
@@ -113,8 +112,24 @@ function Orders({ isManager = false }) {
           products: editedOrder.products,
         }),
       });
-      if (!response.ok)
-        throw new Error(`HTTP error! status:${response.status}`);
+      const data = await response.json();
+      if (!response.ok || !data.success)
+        throw new Error(
+          data.message || `HTTP error! status:${response.status}`,
+        );
+
+      if (!["PAID", "CANCELED"].includes(data.success))
+        throw new Error("Invalid order status returned from server");
+
+      setOrders((prev) =>
+        prev.map((order) =>
+          Number(order.order_id) === Number(editedOrder.order_id)
+            ? { ...order, status: data.status }
+            : order,
+        ),
+      );
+      setRefresh((prev)=>prev+1); 
+      
       setMessage({
         type: "success",
         text: "Order changes submitted for manager approval",

@@ -3,3 +3,23 @@
   min-width: 0;
   background-color: #f6f0e9;
 }
+.aboutUs {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  background-color: #f6f0e9;
+}
+
+@media (max-width: 768px) {
+  .aboutUs {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutUs {
+    width: 100%;
+    min-width: 0;
+  }
+}

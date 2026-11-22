@@ -10,7 +10,11 @@ function GeneralPromotionsTable({
 }) {
   return (
     <div className={styles.tableContainer}>
-      <table className={`${styles.table} ${variant==="overview"? styles.overview:""}`}>
+      <table
+        className={`${styles.table} ${
+          variant === "overview" ? styles.overview : ""
+        }`}
+      >
         <thead>
           <tr>
             <th>PROMOTION NAME</th>
@@ -19,14 +23,15 @@ function GeneralPromotionsTable({
             <th>START DATE</th>
             <th>END DATE</th>
             <th>STATUS</th>
-            {!readOnly && <th>Actions</th>}
+            {!readOnly && <th>ACTIONS</th>}
           </tr>
         </thead>
+
         <tbody>
           {promotions.length === 0 ? (
             <tr>
               <td colSpan={readOnly ? 6 : 7} className={styles.empty}>
-                No promotions avaliable.
+                No promotions available.
               </td>
             </tr>
           ) : (
@@ -45,4 +50,5 @@ function GeneralPromotionsTable({
     </div>
   );
 }
+
 export default GeneralPromotionsTable;

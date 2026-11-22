@@ -53,6 +53,8 @@ const getActivePromotion = (req, res, next) => {
   });
 };
 
+
+
 module.exports = {
   getShippingSettings,
   getPointsSettings,

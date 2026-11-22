@@ -6,16 +6,21 @@
 }
 
 /* Header */
+
 .top {
   display: flex;
   align-items: center;
   min-height: 46px;
   margin-bottom: 24px;
 }
+
+/* Tools */
+
 .tools {
   display: flex;
   align-items: center;
   gap: 16px;
+  min-width: 0;
   margin-bottom: 20px;
 }
 
@@ -25,15 +30,21 @@
 }
 
 /* Add Client Button */
+
 .addClient {
   height: 42px;
   padding: 0 18px;
+  flex-shrink: 0;
+
   border: none;
   background-color: #4b1426;
   color: #fff;
+
   font-size: 11px;
   letter-spacing: 1px;
+  white-space: nowrap;
   cursor: pointer;
+
   transition: background-color 0.25s ease;
 }
 
@@ -42,23 +53,31 @@
 }
 
 /* Clients Toolbar */
+
 .clientsToolbar {
   display: flex;
   align-items: center;
   gap: 16px;
+
+  width: 100%;
   min-width: 0;
   min-height: 40px;
   margin-bottom: 16px;
 }
 
 /* Legend */
+
 .legendGroups {
   display: flex;
   align-items: center;
   gap: 14px;
+
+  flex: 1;
   min-width: 0;
+
   overflow-x: auto;
   scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
 }
 
 .totalCount {
@@ -83,10 +102,12 @@
 }
 
 /* Filters */
+
 .filtersArea {
   position: relative;
   display: flex;
   align-items: center;
+
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -95,6 +116,7 @@
   width: auto;
   height: 36px;
   padding: 0 16px;
+
   border: 1px solid #e4d5cf;
   border-radius: 5px;
   background-color: #fffaf7;
@@ -122,20 +144,25 @@
 }
 
 /* Filters Dropdown */
+
 .filtersDropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
   z-index: 20;
+
   width: 300px;
   max-width: calc(100vw - 32px);
+  box-sizing: border-box;
 }
 
 /* No Results */
+
 .noResults {
   width: 100%;
   box-sizing: border-box;
   padding: 55px 20px;
+
   text-align: center;
   background-color: #fffdfb;
   border: 1px solid #e5d8d2;
@@ -143,6 +170,7 @@
 
 .noResults h3 {
   margin: 0 0 12px;
+
   color: #4b1426;
   font-size: 16px;
   font-weight: 600;
@@ -151,11 +179,13 @@
 
 .noResults p {
   margin: 0;
+
   color: #a18b7d;
   font-size: 13px;
 }
 
 /* Status Legend */
+
 .active {
   background-color: #f6eee9;
   color: #6c3444;
@@ -175,6 +205,7 @@
 }
 
 /* Role Legend */
+
 .managers {
   background-color: #ede7f3;
   color: #755c87;
@@ -202,10 +233,139 @@
   background-color: #d9b59c;
 }
 
-/* Responsive */
-@media (max-width: 650px) {
+/* Tablet */
+
+@media (max-width: 900px) {
+  .top {
+    margin-bottom: 20px;
+  }
+
   .tools {
-    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .clientsToolbar {
+    gap: 12px;
+  }
+
+  .legendGroups {
+    gap: 10px;
+  }
+
+  .roleLegendSection {
+    gap: 10px;
+  }
+
+  .totalCount {
+    font-size: 11px;
+  }
+
+  .filtersArea .filtersToggle {
+    padding: 0 12px;
+    font-size: 11px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 650px) {
+  .top {
+    min-height: 40px;
+    margin-bottom: 18px;
+  }
+
+  .tools {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .search {
+    width: 100%;
+    flex: none;
+  }
+
+  .addClient {
+    width: 100%;
+    height: 40px;
+    font-size: 11px;
+  }
+
+  .clientsToolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .legendGroups {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+    gap: 10px;
+    padding-bottom: 6px;
+  }
+
+  .totalCount {
+    font-size: 11px;
+  }
+
+  .legendDivider {
+    height: 22px;
+  }
+
+  .roleLegendSection {
+    gap: 10px;
+  }
+
+  .filtersArea {
+    width: 100%;
+    justify-content: flex-end;
+    margin-left: 0;
+  }
+
+  .filtersArea .filtersToggle {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 11px;
+  }
+
+  .filtersDropdown {
+    width: 300px;
+    max-width: 100%;
+    right: 0;
+  }
+
+  .noResults {
+    padding: 40px 16px;
+  }
+
+  .noResults h3 {
+    font-size: 15px;
+  }
+
+  .noResults p {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+}
+
+/* Small Mobile */
+
+@media (max-width: 400px) {
+  .top {
+    margin-bottom: 16px;
+  }
+
+  .tools {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .addClient {
+    height: 38px;
+    font-size: 10px;
   }
 
   .clientsToolbar {
@@ -213,10 +373,37 @@
   }
 
   .legendGroups {
-    flex: 1;
+    gap: 8px;
+  }
+
+  .roleLegendSection {
+    gap: 8px;
+  }
+
+  .totalCount {
+    font-size: 10px;
+  }
+
+  .filtersArea .filtersToggle {
+    height: 34px;
+    font-size: 10px;
   }
 
   .filtersDropdown {
-    max-width: calc(100vw - 32px);
+    width: 280px;
+    max-width: 100%;
+  }
+
+  .noResults {
+    padding: 35px 12px;
+  }
+
+  .noResults h3 {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .noResults p {
+    font-size: 12px;
   }
 }

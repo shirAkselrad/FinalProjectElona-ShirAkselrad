@@ -52,6 +52,17 @@ function OrderPopupEdit({
 
   //changing specific product quanitity
   const handleQuantityChange = (orderItemId, value) => {
+      console.log("Quantity change:", { orderItemId, value });
+
+      console.table(
+        editedProducts.map((product) => ({
+          order_item_id: product.order_item_id,
+          status: product.status,
+          quantity: product.quantity,
+          original_quantity: product.original_quantity,
+        })),
+      );
+
     if (value === "") return;
 
     const quantity = Number(value);
@@ -155,7 +166,7 @@ function OrderPopupEdit({
     products: changedProducts,
   };
 
-  //checking if there were any changed 
+  //checking if there were any changed
   const hasChanges = changedProducts.length > 0;
 
   return (
@@ -172,7 +183,15 @@ function OrderPopupEdit({
             <GeneralBtn
               text="SAVE"
               onClick={() => {
-                if (summary && hasChanges) onSave(editedOrder);
+                console.log("SAVE CLICKED");
+                console.log("summary:", summary);
+                console.log("hasChanges:", hasChanges);
+                console.log("changedProducts:", changedProducts);
+                console.log("editedOrder:", editedOrder);
+
+                if (summary && hasChanges) {
+                  onSave(editedOrder);
+                }
               }}
               className={styles.saveBtn}
             />

@@ -5,6 +5,7 @@ import SalesByCategory from "../SalesByCategory/SalesByCategory";
 import SectionTitle from "../../../Employee-Page/SectionTitle/SectionTitle";
 import BestSellingProducts from "../BestSellingProducts/BestSellingProducts";
 import OrderByStatus from "../OrdersByStatus/OrdersByStatus";
+import SalesPerformanceChart from "../SalesPerformanceChart/SalesPerformanceChart";
 
 function Reports() {
   return (
@@ -27,6 +28,10 @@ function Reports() {
 
         <div className={styles.chartCard}>
           <OrderByStatus />
+        </div>
+
+        <div className={`${styles.chartCard} ${styles.fullWidth}`}>
+          <SalesPerformanceChart />
         </div>
       </div>
     </div>

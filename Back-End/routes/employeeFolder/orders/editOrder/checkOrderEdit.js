@@ -65,15 +65,14 @@ const getOriginalItems = (req, res, next) => {
 
     for (const product of req.body.products) {
       const original = results.find(
-        (item) => item.order_item_id === product?.order_item_id,
+        (item) => Number(item.order_item_id) === Number(product?.order_item_id),
       );
 
       if (
         !original ||
-        original.replaces_order_item_id != null ||
         !Number.isInteger(product.quantity) ||
         product.quantity < 0 ||
-        product.quantity >= original.quantity ||
+        product.quantity >= Number(original.quantity) ||
         originals.some((item) => item.order_item_id === original.order_item_id)
       ) {
         const error = new Error("Invalid quantity change");

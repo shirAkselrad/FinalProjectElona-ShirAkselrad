@@ -4,22 +4,7 @@ const {
 
 // get the order and its pending changes
 const getPendingEdit = (req, res, next) => {
-const orderQuery = `
-  SELECT *,
-    (SELECT discount_percentage
-     FROM promotions_settings
-     WHERE promotion_id=orders.promotion_id)
-    AS general_discount_percentage,
-
-    (SELECT max_redemption_percentage
-     FROM points_settings
-     LIMIT 1)
-    AS max_redemption_percentage
-
-  FROM orders
-  WHERE order_id=? AND status='PAID'
-  FOR UPDATE
-`;
+  const orderQuery = `select *, (select discount_percentage from promotions_settings where promotion_id=orders.promotion_id) as general_discount_percentage, (select max_redemption_percentage from points_settings limit 1 ) as max_redemption_percentage from orders where order_id=? and (status='PAID' or (status='CANCELED' and points_refunded=0)) for update`;
 
   req.connection.query(orderQuery, [req.params.order_id], (err, results) => {
     if (err) return rollbackEdit(err, req, res);

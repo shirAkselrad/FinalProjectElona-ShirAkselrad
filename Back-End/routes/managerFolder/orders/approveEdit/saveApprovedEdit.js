@@ -2,7 +2,7 @@ const {
   rollbackEdit,
 } = require("../../../employeeFolder/orders/editOrder/editTransaction");
 
-const sendApprovedOrderEmail=require("./sendApprovedOrderEmail"); 
+const sendApprovedOrderEmail = require("./sendApprovedOrderEmail");
 
 // restore removed quantities to inventory and mark old items as refunded
 const approveEdit = (req, res, next) => {
@@ -14,7 +14,8 @@ const approveEdit = (req, res, next) => {
     const oldItem = req.pendingItems[index++];
 
     const newItem = req.activeItems.find(
-      (item) => item.replaces_order_item_id === oldItem.order_item_id,
+      (item) =>
+        Number(item.replaces_order_item_id) === Number(oldItem.order_item_id),
     );
 
     // If the product was completely removed, the new quantity is zero
@@ -132,24 +133,8 @@ const updateOrderAndPoints = (req, res, next) => {
 
   // Full cancellation keeps original financial details
   const orderQuery = isFullCancellation
-    ? `
-      UPDATE orders
-      SET status='CANCELED',
-          points_refunded=1,
-          points_earned=0
-      WHERE order_id=?
-        AND status='PAID'
-        AND points_refunded=0
-    `
-    : `
-      UPDATE orders
-      SET total_items=?,
-          total_price=?,
-          points_used=?,
-          final_price=?,
-          points_earned=?
-      WHERE order_id=? AND status='PAID'
-    `;
+    ? `update orders set points_refunded=1, points_earned=0 where order_id=? and status='CANCELED' and points_refunded=0`
+    : `update orders set total_items=?, total_price=?, points_used=?, final_price=?, points_earned=? where order_id=? and status='PAID'`;
 
   const params = isFullCancellation
     ? [req.params.order_id]
@@ -228,7 +213,6 @@ const commitApproval = (req, res) => {
     });
   });
 };
-
 
 module.exports = {
   approveEdit,

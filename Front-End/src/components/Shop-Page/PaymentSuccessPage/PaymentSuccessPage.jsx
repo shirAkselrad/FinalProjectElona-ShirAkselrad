@@ -29,6 +29,8 @@ function PaymentSuccessPage() {
 
         if (data.success) {
           setPoints({
+            before: Number(data.points_before),
+            used: Number(data.points_used),
             earned: Number(data.points_earned),
             total: Number(data.total_points),
           });
@@ -60,17 +62,38 @@ function PaymentSuccessPage() {
 
         {points && (
           <div className={styles.pointsSection}>
-            <h2>YOUR LOYALTY POINTS</h2>
+            <div className={styles.pointsHeading}>
+              <span>ELONA</span>
+              <h2>Your Loyalty Points</h2>
+              <p>YOUR REWARDS SUMMARY</p>
+            </div>
 
-            <div className={styles.pointsGrid}>
-              <div className={styles.pointsItem}>
-                <strong>+{points.earned}</strong>
-                <span>POINTS EARNED</span>
+            <div className={styles.pointsDetails}>
+              <div className={styles.pointsRow}>
+                <span>Points before purchase</span>
+                <strong>{points.before.toFixed(2)}</strong>
               </div>
 
-              <div className={styles.pointsItem}>
-                <strong>{points.total}</strong>
-                <span>TOTAL POINTS BALANCE</span>
+              <div className={styles.pointsRow}>
+                <span>Points redeemed</span>
+                <strong>−{points.used.toFixed(2)}</strong>
+              </div>
+
+              <div className={styles.pointsRow}>
+                <span>Points earned</span>
+                <strong>+{points.earned.toFixed(2)}</strong>
+              </div>
+            </div>
+
+            <div className={styles.pointsTotal}>
+              <div className={styles.totalLabel}>
+                <span>CURRENT BALANCE</span>
+                <small>Available for your next purchase</small>
+              </div>
+
+              <div className={styles.totalValue}>
+                <strong>{points.total.toFixed(2)}</strong>
+                <small>POINTS</small>
               </div>
             </div>
           </div>

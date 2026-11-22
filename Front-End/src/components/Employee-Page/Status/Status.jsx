@@ -68,7 +68,7 @@ function Status({
   return (
     <div className={styles.statusContainer}>
       <button
-        className={`${styles.status} ${styles[status.toLowerCase()]}`}
+      className={`${styles.status} ${styles[status?.toLowerCase()] || ""}`}
         disabled={isUpdating}
         onClick={() => {
           if (availableOptions.length > 0)

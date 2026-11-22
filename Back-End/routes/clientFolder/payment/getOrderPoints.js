@@ -13,7 +13,7 @@ router.get("/orders/:orderId/points", (req, res) => {
   }
 
   const orderQuery = `
-    select points_earned
+    select points_earned, points_used
     from orders
     where order_id = ?
       and client_email = ?
@@ -56,10 +56,17 @@ router.get("/orders/:orderId/points", (req, res) => {
         });
       }
 
+      const earned = Number(orders[0].points_earned);
+      const used = Number(orders[0].points_used);
+      const total = Number(users[0].points);
+      const previous = Number((total + used - earned).toFixed(2));
+
       return res.status(200).json({
         success: true,
-        points_earned: Number(orders[0].points_earned),
-        total_points: Number(users[0].points),
+        points_before: previous,
+        points_used: used,
+        points_earned: earned,
+        total_points: total,
       });
     });
   });

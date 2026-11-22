@@ -65,7 +65,7 @@ function Header() {
         </div>
 
         <div className={styles.right}>
-          <CartBtn />
+          {(!user || user.role === "Client") && <CartBtn />}
 
           <span className={styles.diamond}></span>
 

@@ -55,14 +55,40 @@ function StoreOverview() {
     (order) => order.status === "PAID",
   );
 
-  const onSaveOrder = (editedOrder) => {
-    setManagerOrders((prevOrders) =>
-      prevOrders.map((order) =>
-        order.order_id === editedOrder.order_id ? editedOrder : order,
-      ),
-    );
-  };
+  //submitting order changes
+  const onSaveOrder = async (editedOrder) => {
+    try {
+      const response = await fetch(
+        `/api/manager/orders/${editedOrder.order_id}/edit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            products: editedOrder.products,
+          }),
+        },
+      );
 
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Couldn't edit order");
+      }
+        setManagerOrders((prev) =>
+          prev.map((order) =>
+            order.order_id === editedOrder.order_id
+              ? { ...order, status:data.status }
+              : order,
+          ),
+        );
+        if (data.status === "CANCELED") setRefundRefresh((prev) => prev + 1);
+      setSelectedOrder(null);
+    } catch (error) {
+      console.error("Error saving order:", error);
+    }
+  };
   return (
     <div className={styles.storeOverview}>
       <Title text="Store Overview" />
