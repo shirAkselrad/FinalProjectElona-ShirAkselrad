@@ -67,22 +67,24 @@ function isValidDate(value) {
   );
 }
 
-//generate report
+//generate report for preview or download
 router.get("/reports/:type", async (req, res) => {
   const { type } = req.params;
-  const { from, to } = req.query;
+  const { from, to, download } = req.query;
 
-  //finding the settings according to the requested report type
-  const settings = reportSettings[type];
-
-  if (!settings)
+  //checking the requested report type
+  if (!Object.hasOwn(reportSettings, type))
     return res.status(400).json({
       success: false,
       message: "Invalid report type",
     });
 
-  //users report does not require dates
-  if (type !== "users") {
+  const settings = reportSettings[type];
+
+  //checking if the report requires a date range
+  const requiresDates = type === "inventory" || type === "orders";
+
+  if (requiresDates) {
     if (!isValidDate(from) || !isValidDate(to) || from > to)
       return res.status(400).json({
         success: false,
@@ -99,17 +101,21 @@ router.get("/reports/:type", async (req, res) => {
       settings.title,
       settings.columns,
       rows,
-      type === "users" ? null : from,
-      type === "users" ? null : to,
+      requiresDates ? from : null,
+      requiresDates ? to : null,
     );
 
     //generating the PDF
     const pdf = await generatePDF(html);
 
+    //determining whether to preview or download the report
+    const disposition = download === "true" ? "attachment" : "inline";
+
     res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Cache-Control", "no-store");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${type}-report.pdf"`,
+      `${disposition}; filename="${type}-report.pdf"`,
     );
 
     return res.send(pdf);

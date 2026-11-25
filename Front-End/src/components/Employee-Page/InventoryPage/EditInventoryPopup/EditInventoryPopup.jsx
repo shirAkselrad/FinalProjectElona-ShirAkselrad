@@ -124,6 +124,7 @@ function EditInventoryPopup({ onClose, product, onSave, isManager = false }) {
         {step === 1 && (
           <AddProductDetails
             savedDetails={productDetails}
+            originalProduct={product}
             onNext={handleDetailsNext}
             isManager={isManager}
             isEdit={true}

@@ -82,8 +82,6 @@ function SalesPerformanceChart() {
     name: product.name,
     sold: Number(product.units_sold),
     target: Number(product.min_sales),
-    performance: product.performance,
-    achievement: product.achievement,
   }));
 
   //resetting all filters
@@ -127,6 +125,7 @@ function SalesPerformanceChart() {
             value={type}
             options={["All Types", ...types]}
             onChange={(e) => setType(e.target.value)}
+            disabled={category === "All Categories"}
           />
         </div>
 

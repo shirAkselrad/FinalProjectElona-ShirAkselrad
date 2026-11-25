@@ -25,8 +25,9 @@ import ProtectedRoute from "../routes/ProtectedRoute.jsx";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout.jsx";
 import { CartProvider } from "../context/CartContext.jsx";
 import Refunds from "../components/Manager-Page/RefundsPage/Refunds/Refunds.jsx";
-import Reports from "../components/Manager-Page/ReportsPage/Reports/Reports.jsx"; 
+import Reports from "../components/Manager-Page/ReportsPage/Reports/Reports.jsx";
 import EmployeeOverview from "../components/Employee-Page/EmployeeOverView/EmployeeOverview.jsx";
+import CustomerReviewsPage from "../components/Shop-Page/CustomerReviews-Page/CustomerReviewsPage/CustomerReviewsPage.jsx";
 function App() {
   return (
     <CartProvider>
@@ -35,6 +36,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<ShopPage />} />
           <Route path="/aboutUs" element={<AboutUsPage />} />
+          <Route path="/customerReviewsPage" element={<CustomerReviewsPage />} />
           <Route
             path="/managerPage"
             element={

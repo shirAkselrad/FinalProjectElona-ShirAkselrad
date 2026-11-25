@@ -5,8 +5,23 @@ const db = dbSingleton.getConnection();
 
 //get paid orders id from the last 12 months including the current month
 const getPaidOrders = (req, res, next) => {
-  const query = `select order_id from orders where status in('PAID','SHIPPED','COMPLETED') and created_at >= date_format(date_sub(curdate(), interval 11 month), '%Y-%m-01')`;
-  db.query(query, (err, results) => {
+  const { from, to } = req.query;
+  const values = [];
+
+  let query = `select order_id from orders where status in ('PAID','SHIPPED','COMPLETED')`;
+
+  //filtering by start date
+  if (from) {
+    query += " and created_at >=?";
+    values.push(from);
+  }
+
+  //filtering by end date
+  if (to) {
+    query += " and created_at < date_add(?, interval 1 day)";
+    values.push(to);
+  }
+  db.query(query, values,(err, results) => {
     if (err)
       return res.status(500).json({
         success: false,
@@ -77,7 +92,7 @@ const calculateBestSellingProducts = (req, res) => {
 
 router.get(
   "/bestSellingProducts",
-  getPaidOrders, //getting all the paid orders id from the last 12 including current month
+  getPaidOrders, //getting paid orders within the selected period
   getSoldProducts, //getting the 10 best selling products
   getProductNames, //getting the product id and names of the 10 best sellings
   calculateBestSellingProducts, //saving in proper way for the chart the names and the qauntity

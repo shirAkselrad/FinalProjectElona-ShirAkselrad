@@ -17,13 +17,14 @@ function AddProductDetails({
   onNext,
   isManager = false,
   isEdit = false,
+  originalProduct
 }) {
-  const [categories, setCategories] = useState([]);//all the existing categories 
-  const [salesSettingsChanged, setSalesSettingsChanged] = useState(false);
+  const [categories, setCategories] = useState([]); //all the existing categories
+
   const [vatPercentage, setVatPercentage] = useState(null);
 
   useEffect(() => {
-    //getting vat percentage 
+    //getting vat percentage
     async function getVatPercentage() {
       try {
         const response = await fetch("/api/shop/vatSettings");
@@ -48,7 +49,7 @@ function AddProductDetails({
   }, []);
 
   useEffect(() => {
-    //getting all the existing categories and their types 
+    //getting all the existing categories and their types
     async function getCategories() {
       try {
         const url = isManager
@@ -104,15 +105,21 @@ function AddProductDetails({
       ? (Number(details.price) / (1 + vatPercentage / 100)).toFixed(2)
       : "";
 
-  //saving the selected category for the new product 
+  //saving the selected category for the new product
   const selectedCategory = categories.find(
     (category) => category.name === details.category,
   );
 
-  //saving the selected category type and all it's performance 
+  //saving the selected category type and all it's performance
   const selectedType = selectedCategory?.types.find(
     (type) => type.name === details.type,
   );
+
+  const salesSettingsChanged =
+    isEdit &&
+    (details.category !== originalProduct.category ||
+      details.type !== originalProduct.type ||
+      Number(details.quantity) !== Number(originalProduct.quantity));
 
   const calculateMinSales = selectedType
     ? details.quantity === ""
@@ -122,7 +129,7 @@ function AddProductDetails({
 
   const minSales =
     isEdit && !salesSettingsChanged
-      ? Math.min(Number(details.min_sales), Number(details.quantity))
+      ? Number(originalProduct.min_sales)
       : calculateMinSales;
 
   const calculatedSalesCheckDate = selectedType
@@ -140,7 +147,7 @@ function AddProductDetails({
 
   const salesCheckDate =
     isEdit && !salesSettingsChanged
-      ? details.sales_check_date
+      ? originalProduct.sales_check_date
       : calculatedSalesCheckDate;
 
   return (
@@ -184,7 +191,6 @@ function AddProductDetails({
                     error={errors.category}
                     onChange={(e) => {
                       handleProductCategoryChange(e.target.value);
-                      setSalesSettingsChanged(true);
                     }}
                   />
 
@@ -200,7 +206,6 @@ function AddProductDetails({
                       disabled={!selectedCategory}
                       onChange={(e) => {
                         handleProductTypeChange(e.target.value);
-                        setSalesSettingsChanged(true);
                       }}
                     />
                   </div>

@@ -8,16 +8,19 @@ import Logout from "../General/Logout/Logout.jsx";
 import Logo from "../General/Logo/Logo.jsx";
 import ShopBtn from "../General/ShopBtn/ShopBtn.jsx";
 import UserBtn from "../General/UserBtn/UserBtn.jsx";
+import CustomerReviewsBtn from "../General/CustomerReviewsBtn/CustomerReviewsBtn.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
 
 function Header() {
-  const { user, logout } = useAuth(); //gettings all the user session info from useAuth
+  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const isShopPage = location.pathname === "/";
 
-  //letting the manager/employee to go back to their interface after being in the shop page
+  const isShopPage = location.pathname === "/";
+  const isCustomerOrGuest = !user || user.role === "Client";
+
+  //letting the manager/employee go back to their interface
   const showBackToSystem =
     isShopPage && (user?.role === "Manager" || user?.role === "Employee");
 
@@ -26,12 +29,13 @@ function Header() {
     else if (user?.role === "Employee") navigate("/employeePage");
   }
 
-  //in case the user is not logged in then going tob the login page
+  //in case the user is not logged in, going to the login page
   function openMyAccount() {
     if (!user) {
       navigate("/loginPage");
       return;
     }
+
     navigate("/myAccount");
   }
 
@@ -44,6 +48,14 @@ function Header() {
           <span className={styles.diamond}></span>
 
           <ShopBtn />
+
+          {isCustomerOrGuest && (
+            <div className={styles.navigationGroup}>
+              <span className={styles.diamond}></span>
+
+              <CustomerReviewsBtn />
+            </div>
+          )}
 
           {showBackToSystem && (
             <div>
@@ -65,7 +77,7 @@ function Header() {
         </div>
 
         <div className={styles.right}>
-          {(!user || user.role === "Client") && <CartBtn />}
+          {isCustomerOrGuest && <CartBtn />}
 
           <span className={styles.diamond}></span>
 

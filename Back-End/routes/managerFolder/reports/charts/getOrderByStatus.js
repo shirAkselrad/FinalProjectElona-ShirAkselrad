@@ -3,10 +3,27 @@ const router = express.Router();
 const dbSingleton = require("../../../../dbSingleton");
 const db = dbSingleton.getConnection();
 
-//get orders grouped by status for the last 12 months
+//get orders grouped by status according to the selected period
 router.get("/ordersByStatus", (req, res) => {
-  const query = `select status, count(*) as orders from orders where created_at >= date_format(date_sub(curdate(), interval 11 month), '%Y-%m-01') group by status order by orders desc`;
-  db.query(query, (err, results) => {
+  const { from, to } = req.query;
+  const conditions = [];
+  const values = [];
+  let query = `select status, count(*) as orders from orders`;
+  //filtering by start date
+  if (from) {
+    conditions.push("created_at >= ?");
+    values.push(from);
+  }
+  //filtering by end date
+  if (to) {
+    conditions.push("created_at < date_add(?, interval 1 day)");
+    values.push(to);
+  }
+  //adding filtering conditions if required
+  if(conditions.length>0)
+    query+=" where "+conditions.join(" and "); 
+  query+=" group by status order by orders desc";
+  db.query(query, values, (err, results) => {
     if (err)
       return res.status(500).json({
         success: false,
@@ -19,4 +36,4 @@ router.get("/ordersByStatus", (req, res) => {
   });
 });
 
-module.exports=router; 
+module.exports = router;

@@ -1,0 +1,59 @@
+.dateFilter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  padding: 20px 0;
+  border-bottom: 1px solid #e8d7d2;
+}
+
+.periodSelection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  width: 100%;
+}
+
+.label {
+  color: #4b1426;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.periodButtons {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.customRange {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .periodSelection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .periodButtons {
+    gap: 8px;
+  }
+
+  .customRange {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+}

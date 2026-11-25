@@ -2,16 +2,19 @@ import styles from "./salesByCategory.module.css";
 import { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-function SalesByCategory() {
+function SalesByCategory({ dateRange }) {
   const [salesData, setSalesData] = useState([]);
+  const { from, to } = dateRange;
 
-
-  //getting for each category and category type the total price that has been paid for 
+  //getting for each category and category type the total price that has been paid for
   async function getSalesByCategory() {
     try {
-      const response = await fetch("/api/manager/salesByCategory", {
-        method: "GET",
-      });
+      const response = await fetch(
+        `/api/manager/salesByCategory?from=${from}&to=${to}`,
+        {
+          method: "GET",
+        },
+      );
       if (!response.ok)
         throw new Error(`HTTP error! status:${response.status}`);
       const data = await response.json();
@@ -22,13 +25,12 @@ function SalesByCategory() {
   }
   useEffect(() => {
     getSalesByCategory();
-  }, []);
-
+  }, [from, to]);
 
   //main categories
   const categories = salesData.map((item) => ({
     name: item.category,
-    value: item.sales,
+    value: Number(item.sales),
   }));
 
   //category types-outer ring
@@ -42,7 +44,7 @@ function SalesByCategory() {
     })),
   );
 
-  //total sales price 
+  //total sales price
   const totalSales = categories.reduce(
     (sum, category) => sum + category.value,
     0,
@@ -52,7 +54,7 @@ function SalesByCategory() {
       <div className={styles.chartHeader}>
         <h3 className={styles.chartTitle}>SALES BY CATEGORY</h3>
         <p className={styles.chartSubtitle}>
-          Sales distribution by category and type
+          Sales distribution by category and type over the selected period
         </p>
       </div>
 

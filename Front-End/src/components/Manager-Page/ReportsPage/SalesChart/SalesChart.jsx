@@ -10,15 +10,19 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-function SalesChart() {
+function SalesChart({ dateRange }) {
   const [salesData, setSalesData] = useState([]);
+  const { from, to } = dateRange;
 
   //getting sales total prices order by month (only those which their status is PAID/SHIPPED/COMPLETED)
   async function getSalesData() {
     try {
-      const response = await fetch("/api/manager/salesChart", {
-        method: "GET",
-      });
+      const response = await fetch(
+        `/api/manager/salesChart?from=${from}&to=${to}`,
+        {
+          method: "GET",
+        },
+      );
 
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -39,13 +43,15 @@ function SalesChart() {
 
   useEffect(() => {
     getSalesData();
-  }, []);
+  }, [from, to]);
 
   return (
     <div className={styles.salesChart}>
       <div className={styles.chartHeader}>
         <h3 className={styles.chartTitle}>SALES OVER TIME</h3>
-        <p className={styles.chartSubtitle}>Monthly sales performance</p>
+        <p className={styles.chartSubtitle}>
+          Sales performance over the selected period
+        </p>
       </div>
 
       <div className={styles.chartContainer}>

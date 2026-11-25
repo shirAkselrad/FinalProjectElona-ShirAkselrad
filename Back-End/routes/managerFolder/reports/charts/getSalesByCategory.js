@@ -5,9 +5,21 @@ const db = dbSingleton.getConnection();
 
 //get paid orders from last 12 months
 const getPaidOrders = (req, res, next) => {
-  const query = `select order_id from orders where status in('PAID','SHIPPED','COMPLETED') and created_at>=date_format(date_sub(curdate(), interval 11 month), '%Y-%m-01')`;
+  const { from, to } = req.query;
+  const values = [];
 
-  db.query(query, (err, results) => {
+  let query = `select order_id from orders where status in ('PAID','SHIPPED','COMPLETED')`;
+  //filtering by start date
+  if (from) {
+    query += ` and created_at >=?`;
+    values.push(from);
+  }
+  //filtering by end date
+  if (to) {
+    query += " and created_at < date_add(?, interval 1 day)";
+    values.push(to);
+  }
+  db.query(query, values, (err, results) => {
     if (err)
       return res.status(500).json({
         success: false,
@@ -106,7 +118,7 @@ const calculateSalesByCategories = (req, res) => {
 
 router.get(
   "/salesByCategory",
-  getPaidOrders, //get paid orders from last 12 months
+  getPaidOrders, //get paid orders according to the selected period
   getOrderItems, //get order items
   getProductCategories, //get product categories and types
   calculateSalesByCategories, //for each category and category type calculating the total sales price

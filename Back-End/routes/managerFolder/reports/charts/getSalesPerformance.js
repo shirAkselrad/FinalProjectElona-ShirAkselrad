@@ -6,8 +6,8 @@ const db = dbSingleton.getConnection();
 //get products
 const getProducts = (req, res, next) => {
   const query = `
-    SELECT product_id, name, category, type, sales_check_date
-    FROM inventory
+    select product_id, name, category, type, sales_check_date,min_sales
+    from inventory
   `;
 
   db.query(query, (err, results) => {
@@ -21,8 +21,8 @@ const getProducts = (req, res, next) => {
 //get category targets
 const getTargets = (req, res, next) => {
   const query = `
-    SELECT category_id, name, min_sales, sales_check_days
-    FROM category_types
+    select category_id, name, sales_check_days
+    from category_types
   `;
 
   db.query(query, (err, results) => {
@@ -75,32 +75,43 @@ const getOrders = (req, res, next) => {
   });
 };
 
-//calculate performance for one product
+//calculate sales performance for each product
 const calculateProductPerformance = (product, data) => {
   const { categories, targets, orderItems, orders } = data;
 
+  //finding the product's category
   const category = categories.find((item) => item.name === product.category);
 
+  //finding the product's sales check period
   const targetData = targets.find(
     (item) =>
       item.category_id === category?.category_id && item.name === product.type,
   );
 
+  if (!targetData || !product.sales_check_date) return null;
+
+  const target = Number(product.min_sales);
+  const days = Number(targetData.sales_check_days);
+
   if (
-    !targetData ||
-    Number(targetData.min_sales) <= 0 ||
-    Number(targetData.sales_check_days) <= 0 ||
-    !product.sales_check_date
+    !Number.isFinite(target) ||
+    target <= 0 ||
+    !Number.isFinite(days) ||
+    days <= 0
   )
     return null;
 
-  const target = Number(targetData.min_sales);
-  const days = Number(targetData.sales_check_days);
-
+  //calculating sales monitoring period
   const checkDate = new Date(product.sales_check_date);
+
+  if (isNaN(checkDate.getTime())) return null;
+
+  checkDate.setHours(0, 0, 0, 0);
+
   const startDate = new Date(checkDate);
   startDate.setDate(startDate.getDate() - days);
 
+  //counting sold units during the monitoring period
   let sold = 0;
 
   orderItems.forEach((item) => {
@@ -118,12 +129,6 @@ const calculateProductPerformance = (product, data) => {
       sold += Number(item.quantity);
   });
 
-  let performance = "Below Target";
-
-  if (sold > target) performance = "Exceeded";
-  else if (sold === target) performance = "Met";
-  else if (new Date() < checkDate) performance = "In Progress";
-
   return {
     product_id: product.product_id,
     name: product.name,
@@ -131,11 +136,7 @@ const calculateProductPerformance = (product, data) => {
     type: product.type,
     min_sales: target,
     sales_check_days: days,
-    check_date: checkDate.toLocaleDateString("en-GB"),
     units_sold: sold,
-    difference: sold - target,
-    achievement: `${((sold / target) * 100).toFixed(1)}%`,
-    performance,
   };
 };
 
@@ -199,18 +200,12 @@ const sendPerformance = (req, res) => {
     Boolean,
   );
 
-  const typeOptions = [
-    ...new Set(
-      products
-        .filter(
-          (p) =>
-            !category ||
-            category === "All Categories" ||
-            p.category === category,
-        )
-        .map((p) => p.type),
-    ),
-  ].filter(Boolean);
+  const typeOptions = [];
+  if (category && category !== "All Categories")
+    products.forEach((p) => {
+      if (p.category === category && p.type && !typeOptions.includes(p.type))
+        typeOptions.push(p.type);
+    });
 
   return res.status(200).json({
     success: true,

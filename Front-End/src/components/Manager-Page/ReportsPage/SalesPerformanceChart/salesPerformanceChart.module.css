@@ -90,3 +90,10 @@
     grid-template-columns: 1fr;
   }
 }
+
+.selection:disabled {
+  background-color: #f0ebe6;
+  color: #a99a90;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

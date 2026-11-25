@@ -1,6 +1,6 @@
 import styles from "./generalSelection.module.css";
 
-function GeneralSelection({ value, options, onChange, onBlur, error }) {
+function GeneralSelection({ value, options, onChange, onBlur, error, disabled=false }) {
   return (
     <div>
       <select
@@ -8,6 +8,7 @@ function GeneralSelection({ value, options, onChange, onBlur, error }) {
         value={value}
         onChange={onChange}
         onBlur={onBlur}
+        disabled={disabled}
       >
         {options.length === 0 ? (
           <option value="">None</option>

@@ -2,15 +2,19 @@ import styles from "./ordersByStatus.module.css";
 import { useState, useEffect } from "react";
 import { PieChart, Cell, Pie, Tooltip, ResponsiveContainer } from "recharts";
 
-function OrderByStatus() {
+function OrderByStatus({ dateRange }) {
   const [ordersData, setOrdersData] = useState([]);
+  const { from, to } = dateRange;
 
   //getting orders grouped by status
   async function getOrdersByStatus() {
     try {
-      const response = await fetch("/api/manager/ordersByStatus", {
-        method: "GET",
-      });
+      const response = await fetch(
+        `/api/manager/ordersByStatus?from=${from}&to=${to}`,
+        {
+          method: "GET",
+        },
+      );
 
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -31,9 +35,9 @@ function OrderByStatus() {
 
   useEffect(() => {
     getOrdersByStatus();
-  }, []);
+  }, [from, to]);
 
-  //total amount of all orders in the shop
+  //total amount of all orders within the selected period
   const totalOrders = ordersData.reduce((sum, item) => sum + item.orders, 0);
 
   return (
@@ -41,7 +45,7 @@ function OrderByStatus() {
       <div className={styles.chartHeader}>
         <h3 className={styles.chartTitle}>ORDERS BY STATUS</h3>
         <p className={styles.chartSubtitle}>
-          Order distribution by current status
+          Order distribution by current status over the selected period
         </p>
       </div>
 

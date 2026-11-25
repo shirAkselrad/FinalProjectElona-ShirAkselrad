@@ -1,0 +1,114 @@
+.customerReviews {
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  box-sizing: border-box;
+
+  position: relative;
+
+  background-color: #4b1426;
+  background-image:
+    linear-gradient(rgba(75, 20, 38, 0.35), rgba(75, 20, 38, 0.35)),
+    url("../../../../assets/backgrounds/background.png");
+
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: repeat-y;
+
+  padding: 55px 35px 90px;
+}
+
+/* Main Frame */
+.reviewsContainer {
+  width: 100%;
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 35px;
+
+  background-color: rgba(55, 14, 28, 0.8);
+  border: 1px solid #a47783;
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.header h1 {
+  margin: 0 0 12px;
+
+  color: #f6f0e9;
+  font-family: "Playfair Display", serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+}
+
+.header p {
+  margin: 0;
+
+  color: #e8c4a3;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+/* Content */
+.content {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Reviews Grid */
+.reviewsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 18px;
+
+  margin-top: 28px;
+}
+
+/* Messages */
+.message {
+  margin: 30px 0;
+
+  text-align: center;
+  color: #e8c4a3;
+  font-size: 13px;
+}
+
+/* Responsive */
+@media (max-width: 950px) {
+  .reviewsContainer {
+    padding: 25px;
+  }
+
+  .reviewsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .customerReviews {
+    padding: 35px 16px 60px;
+  }
+}
+
+@media (max-width: 600px) {
+  .reviewsContainer {
+    padding: 20px 15px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .reviewsGrid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
